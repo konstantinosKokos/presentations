@@ -24,9 +24,12 @@
 \usepackage{qtree}
 
 
+\newcommand{\owl}{\includegraphics[scale=0.04]{owl.png}}
+\newcommand{\flamingo}{\includegraphics[scale=0.02]{flamingo.pdf}}
+
 \title{Typed Supertags and Semantic Parses for Dutch}
-\institute{${}^1$Utrecht University, ${}^2$Universit{\'e} de Montpellier}
-\author{Konstantinos Kogkalidis$^1$, Michael Moortgat$^1$, Richard Moot$^2$}
+\institute{\owl UiL-OTS Utrecht University, \flamingo Universit{\'e} de Montpellier, CNRS}
+\author{Konstantinos Kogkalidis\textsuperscript{\owl}, Michael Moortgat\textsuperscript{\owl}, Richard Moot\textsuperscript{\flamingo}}
 \date{January 2020}
 
 \algnewcommand\algorithmicforeach{\textbf{for each}}
@@ -39,30 +42,34 @@
 
 \begin{frame}{Overview}
 	\begin{itemize}
-	\item[$\lambda$] Type-Logical Grammars {\footnotesize\textit{why types?}}
-	\item[$\lambda$] Type System {\footnotesize\textit{how types?}}
-	\item[$\lambda$] Type Lexicon
-	\item[$\lambda$] Semantic Parses
-	\item[$\lambda$] Usecases
+	\item[$\lambda$] {\textbf{Introduction}  {\footnotesize\textit{(or: why types?)}}\\
+	 Type-Logical Grammars
+	 }
+	\item[$\lambda$] {\textbf{Framework} {\footnotesize\textit{(or: types, how?)}}\\
+	Type System}
+	\item[$\lambda$] {\textbf{Resources} \\
+	Type Lexicon\\
+	Semantic Parses
+	}
+	\item[$\lambda$] \textbf{Use Cases}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Type-Logical Grammars}
 
-	\begin{block}{Idea}
+	\begin{block}{TL;DR}
 		Words assigned \textit{formulas}, 
-parsing a process of \textit{deduction}.
+parsing a process of formal \textit{deduction}.
 	\end{block}
 	\vfill
 	
- 
-	
 	\textbf{Syntax}
 	\begin{itemize}
-	\item[] Structural Well-Formedness $\equiv$ Formal Derivability
+	\item[] Structural Well-Formedness $\equiv$ Derivability
 	\end{itemize}
 	\vfill
 	
+ 	\pause	
 	\textbf{Curry-Howard Isomorphism}
 	\begin{itemize}
 	\item[] Propositions $\equiv$ Types
@@ -92,7 +99,7 @@ $
 	{} & 	\text{
 		\alert{
 		\scriptsize
-		N, NP, S, \dots
+		N, NP, PRON, S \dots
 		}
 	}\\	
 	T_1 \multimap T_2 &{\quad::\quad}
@@ -107,9 +114,11 @@ $
 	}	
 	\end{align*}
 
+	\pause
 	\begin{equation*}
 	\infer[E]{\Gamma,\Delta\vdash (M\ N): {B}}{\Gamma\vdash M: A \multimap {B} & \Delta\vdash N: {A}}
 	\end{equation*}
+	\vfill
 	\begin{equation*}
     \infer[I]{\Gamma \vdash \lambda x.M: {A}\multimap {B}}{\Gamma, x: {A} \vdash M: {B}}
 	\end{equation*}
@@ -122,7 +131,7 @@ $
 $
 		\mathcal{T} := \color{gray}{A \ | \ T_1 \multimap T_2 \ } \color{black}{
 		| \ \diamond^d {T_1} \multimap T_2 \ 
-		| \ \Box^d {T_1} \multimap T_2 }
+		| \ \Box^d ({T_1} \multimap T_2) }
 $
 	\end{block}
 	\vspace{-20pt}
@@ -133,11 +142,11 @@ $
 	{} & 	\text{
 		\alert{
 		\scriptsize
-		subj, dobj, mod, body \dots
+		subj, dobj, body, mod, app, det \dots
 		}
 	}\\	
 	\diamond^d T_1 \multimap T_2 &{\quad::\quad}
-		\text{\small .. selecting complement $T_1$ under dependency domain $d$}\\
+		\text{\footnotesize .. head fn selecting complement with dependency role $d$}\\
 	{} & 
 	\text{
 		\alert{
@@ -145,8 +154,8 @@ $
 		$\diamond^{subj}$ NP $\multimap$ S, $\diamond^{dobj}$ NP $\multimap$ $\diamond^{subj}$ NP $\multimap$ S, \dots
 		}
 	}\\	
-	\Box^d T_1 \multimap T_2  &{\quad::\quad}
-		\text{\small .. transforming $T_1$ by projecting dependency $d$ }\\
+	\Box^d (T_1 \multimap T_2)  &{\quad::\quad}
+		\text{\footnotesize .. non-head fn projecting dependency $d$ }\\
 	{} & 
 	\text{
 		\alert{
@@ -159,13 +168,14 @@ $
 
 {
 \setbeamercolor{background canvas}{bg=white}
-\begin{frame}{Ducks, in Alpino}
+\begin{frame}{Ducks, in Lassy}
 \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{quackers.pdf}\end{frame}
 }
 
 \begin{frame}{Ducks, Proven}
 	\tiny
 
+	\vfill
 	\infer[E]{
 		\textit{vogels}
 		\left\langle 		
@@ -174,47 +184,67 @@ $
 		\left\langle \textit{sierlijk} \right\rangle^{mod}			\textit{zwemmen}
 		\right\rangle^{body}		
 		\right\rangle^{mod} \vdash 
-		S
+		NP
 		}{
-		\infer[\hspace{-3pt}Ax]{
+		\infer[\mathcal{L}]{
 			NP}{\text{\textit{vogels}}}
 		&
-		\hspace{-2pt}
-		\infer[\hspace{-3pt}E]{
-			\text{die sierlijk zwemmen} \vdash
-			\Box^{mod} NP \multimap NP}
+		\infer[E]{
+			\text{die} \left\langle \left\langle \text{sierlijk} \right\rangle^{mod} \text{zwemmen} \right\rangle^{body} \vdash
+%			\text{die sierlijk zwemmen} \vdash
+			\Box^{mod} (NP \multimap NP)}
 			{
-			\infer[\hspace{-3pt}Ax]{
-				\diamond^{body}(\diamond^{subj} NP \multimap S) \multimap \Box^{mod} NP \multimap NP}{die}
+			\infer[\mathcal{L}]{
+				RELPRO^{\color{red} 1}}{die}
+%				\diamond^{body}(\diamond^{subj} NP \multimap S) \multimap \Box^{mod} (NP \multimap NP)}{die}
 			&
-			\hspace{-10pt}
-			\infer[\hspace{-3pt}I]{
-				\text{sierlijk zwemmen} \vdash 
-				\diamond^{subj} NP \multimap S}{
-					\infer[\hspace{-3pt}E]{
-						\diamond^{subj}NP, \text{sierlijk zwemmen} \vdash
+			\infer[I]{
+				\left\langle \text{sierlijk} \right\rangle^{mod} \text{zwemmen}
+%				\text{sierlijk zwemmen} 
+				\vdash 
+				\diamond^{subj} PRON \multimap S}{
+					\infer[E]{
+						\left\langle PRON \right\rangle^{subj}
+%						\diamond^{subj}PRON,\ 
+						\left\langle \text{sierlijk} \right\rangle^{mod} \text{zwemmen}
+%						\text{sierlijk zwemmen} 
+						\vdash
 						S
 					}{
-						\infer[\hspace{-3pt}E]{
-\diamond^{subj}NP, \text{zwemmen} \vdash
+						\infer[E]{
+							\langle PRON \rangle^{subj} 						
+							%\diamond^{subj}PRON, 
+							\text{zwemmen}
+							 \vdash
 							S}{
-							\infer[\hspace{-3pt}Ax]{
-								\diamond^{subj}NP \vdash \diamond^{subj}NP}{}
+							\infer[Ax]{
+							\diamond^{subj}PRON}{}
 							&
-							\infer[\hspace{-3pt}Ax]{\diamond^{subj}NP \multimap S}{\text{\textit{zwemmen}}}
+							\hspace{2.5pt}
+							\infer[\mathcal{L}]{\diamond^{subj}PRON \multimap S}{\text{\textit{zwemmen}}}
 						}
 						&
-						\infer[\hspace{-3pt}Ax]{
-							\Box^{mod} S \multimap S}{\text{\textit{sierlijk}}}
+						\hspace{8pt}
+						\infer[\mathcal{L}]{
+							\Box^{mod} (S \multimap S)}{\text{\textit{sierlijk}}}
 					}
 				}
 			}
 		}
 		\vfill
 		
-\[
-	\texttt{die}\left(\lambda x.\left(\texttt{sierlijk} \ \left(\texttt{zwemmen} \ x\right)\right)\right) \ \texttt{vogels}
-\]
+	\scriptsize
+	
+	
+	\[
+		\texttt{die}\left(\lambda x.\left(\texttt{sierlijk} \ \left(\texttt{zwemmen} \ x\right)\right)\right) \ \texttt{vogels}
+	\]
+	\vfill
+	
+	\begin{flushleft}
+	{\color{red} 1}: $RELPRO := \diamond^{body} (\diamond^{su} PRON \multimap S) \multimap \Box^{mod} (NP \multimap NP)$
+	\end{flushleft}
+			
 \end{frame}
 
 \begin{frame}{\AE THEL}
@@ -232,6 +262,7 @@ $
 	\item[\textbf{1}] Type Lexicon: Word $\to$ Type Distribution
 	\item[\textbf{2}] Proofs: Lassy DAG $\to$ IILL Proof
 	\begin{flushright}
+		\footnotesize
 			$\sim97\%$ \textit{coverage}
 	\end{flushright}
 	\end{itemize}
@@ -290,19 +321,24 @@ $
 \end{frame}
 }
 
-\begin{frame}{Usecases \& Applications}
+\begin{frame}{Use Cases \& Applications}
 	\begin{itemize}
 	\item {Supertagging with no type lexicon\\
 	\begin{flushright}
 	\textbf{arxiv}: \quad \texttt{abs/1905.13418}	
 	\end{flushright}
 	}
-	\item {Parsing with type hints}
+	\item {Parsing with type hints
+	\begin{flushright}
+	\textbf{hal-lirmm}: \quad \texttt{lirmm-02313572}	
+	\end{flushright}
+	}
 	\item {Type-aware language modeling}
 	\item {Text to $\lambda$-term translation}
 	\item {Semantic Compositionality}
 	\item {...?}
 	\end{itemize}
+	
 \end{frame}
 
 %\begin{frame}{Why Types?}
