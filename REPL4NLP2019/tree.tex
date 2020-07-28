@@ -1,0 +1,32 @@
+
+\documentclass{article}
+
+\usepackage{qtree}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+\def\qlabelhook{\let\tabular=\array \let\endtabular=\endarray}
+
+\Tree 
+[.{\textsc{np}} 
+    [.{\textsc{np}_\text{mod}\to\textsc{np}} 
+        [.{(\textsc{np}_\text{obj}\to\textsc{s})\to(\textsc{np}_\text{mod}\to\textsc{np}}) that ]
+        [.{\textsc{np}_\text{obj}\to\textsc{s}} 
+            [.{\textsc{s}} 
+                [.{\textsc{np}_\text{su}\to\textsc{s}}
+                    [.{\textsc{np}_\text{obj}\to\textsc{np}_\text{su}\to\textsc{s}} play ]
+                    [.{\textsc{np}} NP ]
+                ]
+                [.{\textsc{np}} types ]
+            ]
+        ]
+    ]
+    [.{\textsc{np}} 
+        [.{\textsc{n}_\text{det}\to\textsc{np}} the ]
+        [.{\textsc{n}} role ]
+    ]
+]
+
+\end{document}
