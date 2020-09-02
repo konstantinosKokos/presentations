@@ -1,0 +1,460 @@
+\documentclass{beamer}	
+\usecolortheme{wolverine}
+
+\setbeamertemplate{caption}{\raggedright\insertcaption\par}
+
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\usepackage{proof}
+\usepackage{amsmath}
+\usepackage{wasysym}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,matrix}
+
+\newcommand{\term}[1]{\texttt{#1}}
+\newcommand{\li}{\!\multimap\!}
+\newcommand{\lotimes}{\!\otimes\!}
+\newcommand{\loplus}{\!\oplus\!}
+\newcommand{\lin}[1]{\langle#1\rangle}
+\newcommand{\lint}[1]{[#1]}
+
+\title{Linear Logic}
+\author{K. Kogkalidis}
+\institute{Logic \& Language 2020}
+
+\begin{document}
+\date{}
+\maketitle
+
+\begin{frame}{Truth vs. Resource}
+	\begin{block}{Linear Logic}
+	Proposed by Girard (1987) as a resource-conscious alternative to classical \& intuitionistic logic.
+	\end{block}
+	\vfill
+	
+	\alt<3>{
+	\begin{itemize}
+		\item Propositions now represent \alert{resources}
+		\item Resources are \alert{not} free to discard and replicate
+		\item $\Rightarrow$ Contraction \& Weakening are not universally applicable\\
+		\begin{flushright}
+			\alert{Substructural!}
+		\end{flushright}
+		\item Inference rules can share contexts
+	\end{itemize}}{
+		\alt<2>{
+		``
+		\small
+		\textit{Classical and intuitionistic logics deal with stable truths:
+			\begin{center}
+				if $A$ and $A\to B$, then $B$, but $A$ still holds.
+			\end{center}
+			This is perfect in mathematics, but wrong in real life, since real implication is causal.
+			A causal implication cannot be iterated since the conditions are modified after its use; this process of modification of the premises is known in physics as reaction.
+			For instance, if $A$ is to spend \$1 on a pack of a cigarettes and $B$ is to get them, you lose \$1 in this process, and you cannot do it a second time. 
+			The reaction here was that \$1 went out of your pocket.}
+		''
+		}
+		{}
+	}
+\end{frame}
+
+\begin{frame}{Linear Logic: Syntax \& Connectives}
+		Linear propositions $\mathcal{P}$ are defined as:
+		\[
+		\mathcal{P} := \mathcal{C}  \ | \ \mathcal{P}_1 \li \mathcal{P}_2 \ | \ \mathcal{P}_1 \lotimes \mathcal{P}_2 \
+		| \ \mathcal{P}_1 \loplus \mathcal{P}_2 \ | \ !\mathcal{P}
+		\]
+	\vfill
+	
+
+	\begin{itemize}
+		\item[$\li$] is read as ``lolli'' \\
+			\begin{flushright}
+			\small{$A\li B$: consume $A$ to produce a $B$}
+			\end{flushright}		
+		\item[$\lotimes$] is read as ``tensor''
+			\begin{flushright}
+			\small{$A\lotimes B$: both $A$ and $B$}
+			\end{flushright}		
+		\item[$\&$] is read as ``with''
+			\begin{flushright}
+			\small{$A\& B$: pick from $A$ and $B$}
+			\end{flushright}
+		\item[$\loplus$] is read as ``or''
+			\begin{flushright}
+			\small{$A\loplus B$: either $A$ and $B$}
+			\end{flushright}
+		\item[$!$] is read as ``bang''
+			\begin{flushright}
+			\small{$!A$: of course $A$}
+			\end{flushright}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Universal Logic}
+	\small	
+	
+	\begin{block}{Two kinds of resources}
+		IL and LL can co-exist in peace:
+		an \alert{assumption} $\mathcal{A}$ can be either \alert{linear} $\lin{\mathcal{A}}$ or \alert{intuitionistic} $\lint{\mathcal{A}}$; each comes with its own identity:
+		\[
+		\vcenter{\infer[\lin{Id}]{\lin{A} \vdash A}{}}  \quad \vcenter{\infer[\lint{Id}]{\lint{A} \vdash A}{}}
+		\]
+		\begin{flushright}
+			$\Gamma, \Delta, \Theta, \dots$ will now denote \alert{sequences of assumptions}
+		\end{flushright}
+	\end{block}
+	\pause
+	
+	\begin{block}{Intuitionistic Resources}
+		permit contraction \& weakening:
+		\[
+			\vcenter{\infer[C]{\Gamma, \lint{A} \vdash B}{\Gamma, \lint{A}, \lint{A} \vdash B}}
+			\quad\quad
+			\vcenter{\infer[W]{\Gamma, \lint{A} \vdash B}{\Gamma \vdash B}}
+		\]
+		\pause
+		and the introduction/elimination of !:
+		\[
+			\vcenter{\infer[!I]{\lint{\Gamma} \vdash !A}{\lint{\Gamma} \vdash A}}
+			\quad\quad
+			\vcenter{\infer[!E]{\Gamma, \Delta \vdash B}{
+				\Gamma \vdash !A
+				&
+				\Delta, \lint{A} \vdash B
+			}
+			}
+		\]
+	\end{block}
+\end{frame}
+
+\begin{frame}{Logical Rules}
+	\[
+	\infer[\li I]{\Gamma \vdash A \li B}{\Gamma, \lin{A} \vdash B}
+	\quad
+    \infer[\li E]{\Gamma, \Delta \vdash B}
+	{\Gamma \vdash A \li B
+	&
+	\Delta \vdash A}
+	\]
+	\pause
+
+	\[
+	\infer[\otimes I]{\Gamma, \Delta \vdash A \lotimes B}{
+		\Gamma \vdash A
+		&
+		\Delta \vdash B
+	}
+	\quad
+    \infer[\otimes E]{\Gamma, \Delta \vdash C }
+	{\Gamma \vdash A \lotimes B
+	&
+	\Delta, \lin{A}, \lin{B} \vdash C}
+	\]
+	\pause
+	
+	\[
+	\infer[\&I]{\Gamma \vdash A\&B}{
+	\Gamma \vdash A
+	& 
+	\Gamma \vdash B
+	}
+	\quad
+	\infer[\&E_1]{\Gamma \vdash A}{
+		\Gamma \vdash A \& B
+	}
+	\quad
+	\infer[\&E_2]{\Gamma \vdash B}{
+		\Gamma \vdash A \& B
+	}
+	\]
+	\pause
+	
+	\[
+	\infer[\oplus E]{\Gamma, \Delta \vdash C}{
+		\Gamma \vdash A\loplus B
+		&
+		\Delta, \lin{A} \vdash  C
+		&
+		\Delta, \lin{B} \vdash C
+	}
+	\]
+	
+	\[
+	\infer[\oplus I_1]{\Gamma \vdash A \loplus B}{
+		\Gamma \vdash A
+	}
+	\quad
+	\infer[\oplus I_2]{\Gamma \vdash A \loplus B}{
+		\Gamma \vdash B
+	}
+	\]
+	\vfill
+\end{frame}
+
+\begin{frame}{Example}
+	\small 
+	\[	
+		\infer[\visible<2->{!E}]{\lin{!(A\& B)} \vdash !A\otimes !B}{
+		\visible<2->{
+			\infer[\visible<3->{\lin{Id}}]{\lin{!(A\& B)} \vdash !(A\&B)}{}
+			&
+			\infer[\visible<4->{C}]{\lint{A\& B} \vdash !A \otimes !B}{
+			\visible<4->{
+				\infer[\visible<5->{\otimes I}]{\lint{A\& B}, \lint{A\& B} \vdash !A \otimes !B}{
+				\visible<5->{
+					\infer[\visible<6->{!I}]{\lint{A\& B} \vdash !A}{
+					\visible<6->{
+						\infer[\visible<7->{\&E_1}]{\lint{A\& B} \vdash A}{
+						\visible<7->{
+							\infer[\visible<8->{\lint{Id}}]{\lint{A\& B} \vdash A \& B}{
+							}
+						}}
+					}}
+					&
+					\infer[\visible<9->{!I}]{\lint{A\& B} \vdash !B}{
+					\visible<9->{
+						\infer[\&E_2]{\lint{A\& B} \vdash B}{
+							\infer[\lint{Id}]{\lint{A\& B} \vdash B}{}
+						}
+					}}
+				}}
+			}}
+		}}
+	\]
+\end{frame}
+
+
+\begin{frame}{Embedding}
+	\begin{block}{IL in LL}
+	Let $*$ an operator sending formulas of IL to formulas of ILL, such that:
+			\begin{itemize}
+				\item if $p \in \mathcal{A}$, then $p^* = p$
+				\item otherwise:
+				\begin{align*}
+					(A \to B)^* &= \ !A^* \li B^*\\
+					(A \times B)^* &= \ A^* \& B^*\\
+					(A + B)^* &= \ !A^* \oplus !B^*
+				\end{align*}
+			\end{itemize}
+	and judgements of IL to judgements of ILL:
+		\[
+			(\Gamma \vdash A)^* = \lint{\Gamma^*} \vdash A^*
+		\]
+	\end{block}
+\end{frame}
+
+\begin{frame}{Embedding Example}
+	\small
+	Proving the intuitionistic judgement $A, A\to B \vdash A\times B$ in ILL:
+	\begin{align*}
+		(A, A\to B \vdash A\times B)^* & = 
+		\visible<2->{ \lint{A^*}, \lint{(A\to B)^*} \vdash (A\times B)^*}\\
+		\visible<3->{& = \lint{A}, \lint{!A^*\li B^*} \vdash A^* \& B^*}\\
+		\visible<4->{& = \lint{A}, \lint{!A \li B} \vdash A \& B}
+	\end{align*}
+	\vfill
+	
+	\visible<5->{
+	\[
+		\infer[\visible<6->{\& I}]{\lint{A}, \lint{!A\li B} \vdash A \& B}{
+		\visible<6->{
+			\infer[\visible<7->{W}]{\lint{A}, \lint{!A\to B}\vdash A}{
+			\visible<7->{
+				\infer[\lint{Id}]{\lint{A} \vdash A}{}
+			}}
+			&
+			\infer[\visible<8->{Ex}]{\lint{A},\lint{!A\li B} \vdash B}{
+			\visible<8->{
+				\infer[\visible<9->{\li E}]{\lint{!A\li B}, \lint{A} \vdash B}{
+				\visible<9->{
+					\infer[\visible<10->{\lint{Id}}]{\lint{!A\li B}\vdash !A\li B}{}
+					&
+					\infer[\visible<11->{!I}]{\lint{A} \vdash !A}{
+					\visible<11->{
+						\infer[\lint{Id}]{\lint{A} \vdash A}{}
+					}}
+				}}
+			}}
+		}}
+	\]
+	}
+\end{frame}
+
+\begin{frame}{ILL $\stackrel{CH}{\equiv}$ Simply typed linear $\lambda$-calculus}
+	\begin{block}{Linear $\lambda$-calculus}
+		\begin{itemize}
+			\item No vacuous abstractions: abstracted variables must be used in the function body
+			\item All variables occur exactly once
+		\end{itemize}
+	\end{block}
+
+\end{frame}
+
+\begin{frame}{The simply typed linear $\lambda$-calculus}
+	% no vacuous abstraction
+	% exactly one occurrence in fun body
+	\begin{align*}
+		\mathcal{T} :=& \ 
+					\visible<2->{\mathcal{V}}
+					\visible<3->{\ | \ !\mathcal{T} \ | \ \term{case }\mathcal{T}\term{ of }!\mathcal{T}\to \mathcal{T}}
+					\visible<4->{\ | \ \lambda\lin{\mathcal{T}}.\mathcal{T} \ | \ \mathcal{T}\lin{\mathcal{T}}}\\
+					\visible<5->{& \ | \ \lin{\mathcal{T},\mathcal{T}} \ | \ \term{case }\mathcal{T}\term{ of }\lin{\mathcal{T},\mathcal{T}}\to \mathcal{T}}\\
+					\visible<6->{& \ | \ \lin{\lin{\mathcal{T}, \mathcal{T}}}
+					\ | \ \term{fst}\lin{\mathcal{T}} \ | \ \term{snd}{\lin{\mathcal{T}}}
+					}\\
+					\visible<7->{& \ | \ \term{inl}\lin{\mathcal{T}} \ | \ \term{inr}\lin{\mathcal{T}} \\ & \ | \ \term{case }\mathcal{T}\term{ of inl}\lin{\mathcal{T}}\to\mathcal{T};\term{inr}\lin{\mathcal{T}}\to \mathcal{T}}
+	\end{align*}
+	\vfill
+	\small
+	
+	\alt<1>{}{
+	\alt<2>{
+		\[
+		\vcenter{\infer[\lin{Id}]{\lin{\term{x}: A} \vdash\term{x}: A}{}}  
+		\quad
+		 \vcenter{\infer[\lint{Id}]{\lint{\term{x}: A} \vdash \term{x}:A}{}}
+		\]
+	}{
+	\alt<3>{
+		\[
+			\vcenter{\infer[!I]{\lint{\Gamma} \vdash !\term{t}: !A}{\lint{\Gamma} \vdash \term{t}:A}}
+			\quad
+			\vcenter{\infer[!E]{\Gamma,\Delta \vdash \term{case s of }!x\to u: B}{
+				\Gamma \vdash \term{s}: !A
+				&
+				\Delta, \lint{\term{x}: A} \vdash \term{u}: B
+			}}
+		\]
+	}{
+	\alt<4>{
+		\[
+			\vcenter{\infer[\li I]{\Gamma \vdash \lambda\term{x.y}: A\li B}{\Gamma, \lin{\term{x}: A} \vdash \term{y}: B}}
+			\quad
+			\vcenter{\infer[\li E]{\Gamma, \Delta \vdash \term{f}\lin{\term{x}}\footnote{Or: \term{f x}}: B}{
+				\Gamma \vdash \term{f}: A\li B
+				&
+				\Delta \vdash \term{x}: A
+			}}
+		\]
+	}{
+	\alt<5>{
+		\[
+			\vcenter{\infer[\otimes I]{\Gamma \vdash \lin{\term{t}, \term{u}}: A\lotimes B}{
+				\Gamma \vdash \term{t}: A
+				&
+				\Delta \vdash \term{u}: B
+			}}
+			\quad
+			\vcenter{\infer[\otimes E]{\Gamma, \Delta \vdash \term{case s of }\lin{\term{x}, \term{y}}\to \term{v}: C}{
+				\Gamma \vdash \term{s}: A \lotimes B
+				&
+				\Delta, \lin{\term{x}: A}, \lin{\term{y}: B} \vdash \term{v}: C
+			}}
+		\]
+	}{
+	\alt<6>{
+		\[
+			\vcenter{\infer[\& I]{\Gamma \vdash \lin{\lin{\term{t}, \term{u}}}: A\&B}{
+				\Gamma \vdash \term{t}: A
+				&
+				\Gamma \vdash \term{u}: B
+			}}
+			\quad
+			\vcenter{\infer[fst]{\Gamma \vdash \term{fst}\lin{\term{s}}: A}{
+				\Gamma \vdash s: A\&B
+			}}
+			\quad
+			\vcenter{\infer[snd]{\Gamma \vdash \term{snd}\lin{\term{s}}: B}{
+				\Gamma \vdash s: A\&B
+			}}
+		\]
+	}{
+		\[
+			\vcenter{\infer[\oplus I_1]{\Gamma \vdash \term{inl}\lin{\term{x}}: A\loplus B}{
+				\Gamma \vdash \term{x}: A
+			}}
+			\quad
+			\vcenter{\infer[\oplus I_2]{\Gamma \vdash \term{inr}\lin{\term{x}}: A\loplus B}{
+				\Gamma \vdash \term{x}: B
+			}}
+		\]
+		
+		\[
+			\vcenter{\infer[\oplus E]{\Gamma, \Delta \vdash \term{case s of inl}\lin{\term{x}}\to \term{u}; \term{inr}\lin{\term{y}}\to\term{w}: C}{
+				\Gamma \vdash \term{s}: A\loplus B
+				&
+				\Delta, \lin{\term{x}: A} \vdash \term{u}: C
+				&
+				\Delta, \lin{\term{y}: B} \vdash \term{w}: C
+			}}
+		\]
+	}}}}}}
+\end{frame}
+
+\begin{frame}{Proof Normalization \& Term Reduction ($!$)}
+	\small 
+	
+	\[
+		\begin{array}{ccc}
+		\infer[\textcolor{red}{! E}]{\lint{\Gamma}, \Delta \vdash B}{
+			\infer[\textcolor{red}{!I}]{\lint{\Gamma} \vdash \term{!t}: !A}{
+				\infer*[]{\Gamma \vdash \term{t}: A}{}			
+			}
+			&
+			\infer={\Gamma, \lint{\term{x}: A} \vdash \term{u}: B}{
+				\infer*[]{\lint{\term{x}: A} \vdash \term{x}: A}{
+					\lint{\term{x}: A} \vdash \term{x}: A
+					&
+					\dots
+				}
+			}
+		}
+		&
+		\Longrightarrow
+		&
+		\infer={\lint{\Gamma}, \Delta \vdash \term{u}: B}{
+			\infer*{\lint{\Gamma}, \dots, \Delta \vdash \term{u}: B}{
+				\infer*{\lint{\Gamma} \vdash \term{t}: A}{}
+			}
+		}
+		\end{array}
+	\]	
+	
+	\alert{
+	\[
+		\term{case !t of !x}\to\term{u} \Longrightarrow \term{u[t/x]}
+	\]
+	}
+\end{frame}
+
+\begin{frame}{Proof Normalization \& Term Reduction ($\&$)}
+	\small 
+	
+	\[
+		\begin{array}[t]{@{}ccc}
+			\infer[\textcolor{red}{\&E_1}]{\Gamma \vdash \term{fst}\lin{~\lin{\lin{\term{t,u}}}~}: A}{
+				\infer[\textcolor{red}{\&I}]{\Gamma \vdash \lin{\lin{\term{t,u}}}: A\& B}{
+				\infer*{\Gamma \vdash \term{t}: A}{}
+				&
+				\infer*{\Gamma \vdash \term{u}: B}{}
+				}
+			}		
+			&
+			\Rightarrow
+			&
+			\infer*{\Gamma \vdash \term{t}: A}{}
+		\end{array}
+	\]	
+	
+	\alert{
+	\[
+		\term{fst}\lin{~\lin{\lin{\term{t,u}}}~} \Longrightarrow \term{t}
+	\]
+	}
+\end{frame}
+
+\end{document}
