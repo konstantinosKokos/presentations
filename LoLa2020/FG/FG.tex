@@ -112,17 +112,23 @@
 
 \begin{frame}{The landscape beyond CFL}
 	\small 
-	
+
+	\begin{minipage}{0.65\textwidth}
 	The class of \alert{mildly context-sensitive languages}:
 	\begin{itemize}
 		\item contains context-free languages
 		\item capture a finite number of cross-serial dependencies, i.e languages of the form: $\mathcal{L} = \{w^k | \ w \in \Sigma^*\}$ for some $k$
 		\item maintains polynomial parsing time (CFGs have $\mathcal{O}(n^3)$)
 		\item is characterized by constant growth: word length increase is linear-bound
-	\end{itemize}
+	\end{itemize}	
+	\end{minipage}%
+	\begin{minipage}{0.35\textwidth}
+	\begin{figure}
+	\includegraphics[width=1\textwidth]{mcs.pdf}	
+	\end{figure}
+	\end{minipage}
 	\vfill
 	
-	Among the animals in the zoo: TAG, CCG, HG, LIG, (well-nested) k-MCFG, (simple) RCG, MG, \dots
 \end{frame}
 
 \begin{frame}{Abstract Categorial Grammars}
