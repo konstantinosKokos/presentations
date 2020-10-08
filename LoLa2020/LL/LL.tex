@@ -364,11 +364,11 @@
 				\Gamma \vdash \term{u}: B
 			}}
 			\quad
-			\vcenter{\infer[fst]{\Gamma \vdash \term{fst}\lin{\term{s}}: A}{
+			\vcenter{\infer[\&E_1]{\Gamma \vdash \term{fst}\lin{\term{s}}: A}{
 				\Gamma \vdash s: A\&B
 			}}
 			\quad
-			\vcenter{\infer[snd]{\Gamma \vdash \term{snd}\lin{\term{s}}: B}{
+			\vcenter{\infer[\&E_2]{\Gamma \vdash \term{snd}\lin{\term{s}}: B}{
 				\Gamma \vdash s: A\&B
 			}}
 		\]

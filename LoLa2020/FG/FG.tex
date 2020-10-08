@@ -275,7 +275,7 @@
 	\tiny
 	\[
 		\infer[\li E]{ 
-			\vdash ( \mathrm{R}_1  ( \mathrm{R}_2 \mathrm{R}_3) ) ( \mathrm{R}_2  ( \mathrm{R}_2  \mathrm{R}_3 )): S}{
+			 ( \mathrm{R}_1  ( \mathrm{R}_2 \mathrm{R}_3) ) ( \mathrm{R}_2  ( \mathrm{R}_2  \mathrm{R}_3 )): S}{
 			\infer[\li E]{ \mathrm{R}_1  (\mathrm{R}_2 \mathrm{R}_3): S\li S}{
 				{\mathrm{R}_1: S\li S\li S}
 				&
@@ -369,8 +369,8 @@ u&=( \mathrm{R}_1   ( \mathrm{R}_2 \mathrm{R}_3) ) \ ( \mathrm{R}_2  ( \mathrm{R
 	& \Sigma_1 = \{A, S\} \quad\quad \ \tau_1 = \{\mathrm{R}_1 \mapsto A\li S,\ \mathrm{R}_2 \mapsto A\li A,\ \mathrm{R}_3 \mapsto A \} \\
 	& \Sigma_2 = \{*\}, \quad\quad\quad \tau_2 = \{\texttt{a}, \texttt{b}, \texttt{c}, \texttt{d} \mapsto \texttt{str} \}\\
 	& \eta = \{S \mapsto \texttt{str}, A \mapsto \texttt{str}^{(2)} \} \\
-	& \theta = \{\mathrm{R}_1 \mapsto \lambda \rho .\left( \rho\ \lambda xy.\left(x+y\right) \right): \texttt{str}^{(2)} \li \texttt{str}, \\
-	& \quad\quad \ \mathrm{R}_2 \mapsto \lambda \rho q. \left( \rho \ \lambda xy.\left( q \ \left( a+x+b \right) \ \left( c+y+d \right) \right) \right): \texttt{str}^{(2)}\li \texttt{str}^{(2)},\\
+	& \theta = \{\mathrm{R}_1 \mapsto \lambda \rho .\left( \rho\ \lambda xy.\left(x \cdot y\right) \right): \texttt{str}^{(2)} \li \texttt{str}, \\
+	& \quad\quad \ \mathrm{R}_2 \mapsto \lambda \rho q. \left( \rho \ \lambda xy.\left( q \ \left( a \cdot x  \cdot b \right) \ \left( c\cdot y \cdot d \right) \right) \right): \texttt{str}^{(2)}\li \texttt{str}^{(2)},\\
 	& \quad\quad \ \mathrm{R}_3 \mapsto \lambda t.(t\  \epsilon\ \epsilon): \texttt{str}^{(2)}
 	\}
 	\end{align*}
@@ -380,22 +380,22 @@ u&=( \mathrm{R}_1   ( \mathrm{R}_2 \mathrm{R}_3) ) \ ( \mathrm{R}_2  ( \mathrm{R
 	Convincing ourselves about $\theta$
 	\begin{align*} 
 		\left( ``logic", ``language" \right) &\rightsquigarrow \lambda t.(t \ ``logic" \ ``language") \\
-		\theta(\mathrm{R}_1) & = \lambda \rho .\left( \rho\ \lambda xy.\left(x+y\right) \right)
+		\theta(\mathrm{R}_1) & = \lambda \rho .\left( \rho\ \lambda xy.\left(x \cdot y\right) \right)
 	\end{align*}
 	\pause	
 	
 	\footnotesize
 	\begin{align*}
 	\theta(\mathrm{R}_1) \ \left( ``logic", ``language" \right) 
-	&= \lambda \rho .\left( \rho\ \lambda xy.\left(x+y\right) \right) \ \lambda t.(t \ ``logic" \ ``language") \\ 
+	&= \lambda \rho .\left( \rho\ \lambda xy.\left(x \cdot y\right) \right) \ \lambda t.(t \ ``logic" \ ``language") \\ 
 	\visible<3->{
-	&\stackrel{\beta}{\rightsquigarrow}	\lambda t.(t \ ``logic" \ ``language") \ \lambda xy.(x+y) \\
+	&\stackrel{\beta}{\rightsquigarrow}	\lambda t.(t \ ``logic" \ ``language") \ \lambda xy.(x \cdot y) \\
 	\visible<4->{
-	&\stackrel{\beta}{\rightsquigarrow} \lambda xy.(x+y) \ ``logic" \ ``language" \\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda xy.(x \cdot y) \ ``logic" \ ``language" \\
 	\visible<5->{
-	&\stackrel{\beta}{\rightsquigarrow} \lambda y.(``logic" + y) \ ``language" \\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda y.(``logic" \cdot y) \ ``language" \\
 	\visible<6->{
-	&\stackrel{\beta}{\rightsquigarrow} ``logic" + ``language"
+	&\stackrel{\beta}{\rightsquigarrow} ``logic" \cdot  ``language"
 	}}}}
 	\end{align*}
 \end{frame}
@@ -413,7 +413,7 @@ u&=( \mathrm{R}_1   ( \mathrm{R}_2 \mathrm{R}_3) ) \ ( \mathrm{R}_2  ( \mathrm{R
 	
 	\tiny
 	\[
-		\infer[\li E]{\vdash \mathrm{R}_1\left(\mathrm{R}_2 \left(\mathrm{R}_2 \mathrm{R}_3 \right) \right): S}{
+		\infer[\li E]{\mathrm{R}_1\left(\mathrm{R}_2 \left(\mathrm{R}_2 \mathrm{R}_3 \right) \right): S}{
 			{\mathrm{R}_1: A\li S}
 			&
 			\infer[\li E]{\mathrm{R}_2\left(\mathrm{R}_2 \mathrm{R}_3 \right): A}{
@@ -432,15 +432,15 @@ u&=( \mathrm{R}_1   ( \mathrm{R}_2 \mathrm{R}_3) ) \ ( \mathrm{R}_2  ( \mathrm{R
 	
 	\footnotesize
 	\begin{align*}
-		\theta(\mathrm{R}_2) \theta(\mathrm{R}_3) &= \lambda pq.(p \ \lambda xy.(q \ (\texttt{a}+x+\texttt{b}) \ (\texttt{c}+y+\texttt{d}))) \ \lambda t.(t \ \epsilon \ \epsilon)\\
-	&\stackrel{\beta}{\rightsquigarrow} \lambda q.(\lambda t.(t \ \epsilon \ \epsilon) \ \lambda xy.(q \ (\texttt{a}+x+\texttt{b}) \ (\texttt{c}+y+\texttt{d}))) \\
-	&\stackrel{\beta}{\rightsquigarrow} \lambda q.(\lambda xy.(q \ (\texttt{a}+x+\texttt{b}) \ (\texttt{c}+y+\texttt{d})) \ \epsilon \ \epsilon)\\
-	&\stackrel{\beta}{\rightsquigarrow} \lambda q.(q \ (\texttt{a}+\epsilon+\texttt{b}) \ (\texttt{c}+\epsilon+\texttt{d})) \stackrel{\beta}{\rightsquigarrow} \lambda q.(q \ \texttt{ab} \ \texttt{cd}) \\
+		\theta(\mathrm{R}_2) \theta(\mathrm{R}_3) &= \lambda pq.(p \ \lambda xy.(q \ (\texttt{a}\cdot x\cdot \texttt{b}) \ (\texttt{c}\cdot y\cdot \texttt{d}))) \ \lambda t.(t \ \epsilon \ \epsilon)\\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda q.(\lambda t.(t \ \epsilon \ \epsilon) \ \lambda xy.(q \ (\texttt{a}\cdot x\cdot \texttt{b}) \ (\texttt{c}\cdot y\cdot \texttt{d}))) \\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda q.(\lambda xy.(q \ (\texttt{a}\cdot x\cdot \texttt{b}) \ (\texttt{c}\cdot y\cdot \texttt{d})) \ \epsilon \ \epsilon)\\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda q.(q \ (\texttt{a}\cdot \epsilon\cdot \texttt{b}) \ (\texttt{c}\cdot \epsilon\cdot \texttt{d})) \stackrel{\beta}{\rightsquigarrow} \lambda q.(q \ \texttt{ab} \ \texttt{cd}) \\
 		\visible<2->{
-		\theta(\mathrm{R}_2) (\theta(\mathrm{R}_2) \theta(\mathrm{R}_3)) &= \lambda fg.(f \ \lambda xy.(g \ \texttt{a}+x+\texttt{b}) \ (\texttt{c}+y+\texttt{d}))) \ \lambda q.(q \ \texttt{ab} \ \texttt{cd})\\
-	&\stackrel{\beta}{\rightsquigarrow} \lambda g.(\lambda q.(q\  \texttt{ab} \ \texttt{cd}) \ \lambda xy.(g \ (\texttt{a}+x+\texttt{b}) \ (\texttt{c}+y+\texttt{d})))\\
-	&\stackrel{\beta}{\rightsquigarrow} \lambda g.(\lambda xy.(g \ (\texttt{a}+x+\texttt{b}) \ (\texttt{c}+y+\texttt{d})) \ \texttt{ab} \ \texttt{cd}) \\
-	&\stackrel{\beta}{\rightsquigarrow} \lambda g.(g \ (\texttt{a}+\texttt{ab}+\texttt{b}) \ (\texttt{c}+\texttt{cd}+\texttt{d})) 	\stackrel{\beta}{\rightsquigarrow} \lambda g.(g \ \texttt{aabb} \ \texttt{ccdd})
+		\theta(\mathrm{R}_2) (\theta(\mathrm{R}_2) \theta(\mathrm{R}_3)) &= \lambda fg.(f \ \lambda xy.(g \ \texttt{a}\cdot x\cdot \texttt{b}) \ (\texttt{c}\cdot y\cdot \texttt{d}))) \ \lambda q.(q \ \texttt{ab} \ \texttt{cd})\\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda g.(\lambda q.(q\  \texttt{ab} \ \texttt{cd}) \ \lambda xy.(g \ (\texttt{a}\cdot x\cdot \texttt{b}) \ (\texttt{c}\cdot y\cdot \texttt{d})))\\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda g.(\lambda xy.(g \ (\texttt{a}\cdot x\cdot \texttt{b}) \ (\texttt{c}\cdot y\cdot \texttt{d})) \ \texttt{ab} \ \texttt{cd}) \\
+	&\stackrel{\beta}{\rightsquigarrow} \lambda g.(g \ (\texttt{a}\cdot \texttt{ab}\cdot \texttt{b}) \ (\texttt{c}\cdot \texttt{cd}\cdot \texttt{d})) 	\stackrel{\beta}{\rightsquigarrow} \lambda g.(g \ \texttt{aabb} \ \texttt{ccdd})
 		}
 	\end{align*}
 	\vfill 
