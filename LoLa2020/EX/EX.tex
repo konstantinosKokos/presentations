@@ -14,6 +14,13 @@
 \usetikzlibrary{arrows.meta,positioning,matrix}
 \usetikzlibrary{shapes.multipart, calc}
 \usepackage{tikz-qtree}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
 
 \newcommand{\term}[1]{\ensuremath{\mathtt{#1}}}
 \newcommand{\li}{\!\multimap\!}
@@ -60,7 +67,7 @@
 
 \end{frame}
 
-\begin{frame}{Towards Type-Driven \& Neural Textual Representations}
+\begin{frame}{Neural Type-Driven Representations}
 \small
 The agenda:
 \begin{itemize}
@@ -142,13 +149,13 @@ The agenda:
 \alt<2->{
 	Lexicon $\mathcal{L}$ assigning words types from: $\visible<3->{A \ 
 							\visible<4->{ | \ \Diamond^d T \li T' \ 
-							\visible<5->{ | \ \Box^d \left( T \li T\right) }}}$
+							\visible<5->{ | \ \Box^d \left( T \li T'\right) }}}$
 	
 	\vfill
 
 	\begin{minipage}[t]{0.9\textwidth}
 		\begin{tabularx}{0.9\textwidth}{rlcrl}
-		\visible<3->{I, animals, ducks & : $np$} & & \visible<4->{fly, swim & : $\Diamond^{su}np \li s$}\\
+		\visible<3->{animals, ducks & : $np$} & & \visible<4->{fly, swim & : $\Diamond^{su}np \li s$}\\
 		\visible<4->{like & : $\Diamond^{obj}np \li \Diamond^{su}np \li s$} & & \visible<5->{gracefully & : $\Box^{mod}\left(s \li s \right)$}\\
 		\visible<6->{that & \multicolumn{4}{l}{: $\Diamond^{body}\left(\Diamond^{su} np \li s\right) \li \Box^{mod}\left(np\li np \right)$}}\\
 		\end{tabularx}
@@ -173,7 +180,7 @@ The agenda:
 				}
 			\]
 			\[
-				\term{fly\ (ducks)^{su}}
+				\term{fly} \ \vartriangle^{su}\term{ducks}
 			\]
 		}{
 		\alt<5>{
@@ -190,7 +197,7 @@ The agenda:
 				}
 			\]
 			\[
-				\term{(gracefully)_{mod}\ (\term{fly}\ (ducks)^{su})}
+				\blacktriangledown^{mod}\term{gracefully} \ (\term{fly} \ \vartriangle^{su}\term{ducks})
 			\]
 		}{
 		\alt<6>{
@@ -205,14 +212,14 @@ The agenda:
 							\infer[\mathcal{L}]{\Diamond^{body}\left(\Diamond^{su} np \li s\right) \li \Box^{mod}\left(np\li np \right)}{\text{that}}
 							&
 							\infer[\Diamond^{body} I]{\langle \text{swim}\rangle^{body} \vdash \Diamond^{body}\left(\Diamond^{su} np \li s \right)}{
-								\infer[\mathcal{L}]{\Diamond^{su}np\li s}{\text{swim}}
+								\infer*[]{\text{swim} \vdash \Diamond^{su}np\li s}{}
 							}
 						}
 					}
 				}
 			\]
 			\[
-				\term{\left( that\ {(swim)}^{body} \right)_{mod}\ animals}
+				\blacktriangledown^{mod}\left(\term{that} \ \vartriangle^{body}\!\lambda y.(\term{swim}\ \term{y})\right)
 			\]
 		}}}}{}
 	\end{minipage}
@@ -229,16 +236,25 @@ The agenda:
 		\mathcal{T} := A \ | \  T \li T' \ | \ \Diamond^d  T \ | \ \Box^d T \qquad A \in \mathcal{A}, T \in \mathcal{T}
 	\]
 	\vfill	
-	
-	Rules:
+
+	\begin{block}{Rules}
 	\begin{align*}
-		\infer[\li E]{\Gamma, \Delta \vdash \term{f\ x}: B}{\Gamma \vdash \term{f}: A \li B & \Delta \vdash \term{x}: A}
+		\infer[\li E]{\Gamma, \Delta \vdash \term{s\ t}: B}{\Gamma \vdash \term{s}: A \li B & \Delta \vdash \term{t}: A}
 		&\qquad
-		\infer[\li I]{\Gamma \vdash \term{\lambda x.y}: A \li B}{\Gamma, \term{x}: A \vdash \term{y}: B} \\
-		\infer[\Diamond^d I]{\langle \Gamma \rangle^{d} \vdash \term{x^d}: \Diamond^d A}{\Gamma \vdash \term{x}: A}
+		\infer[\li I]{\Gamma \vdash \term{\lambda x.s}: A \li B}{\Gamma, \term{x}: A \vdash \term{s}: B} \\
+		\infer[\Diamond^d I]{\langle \Gamma \rangle^{d} \vdash \vartriangle^d \term{t}: \Diamond^d A}{\Gamma \vdash \term{t}: A}
 		&\qquad
-		\infer[\Box^d E]{\langle \Gamma \rangle^{d} \vdash \term{x_d}: A}{\Gamma \vdash \term{x}: \Box^d A}
+		\infer[\Diamond^d E]{X[Y] \vdash \term{t}[\triangledown^d \term{s}/\term{x}]: B}{
+			Y \vdash \term{s}: \Diamond^d A
+			&
+			X[\langle \term{x}: A \rangle^d] \vdash \term{t}: B} \\
+		\infer[\Box^d I]{X \vdash \blacktriangle^d \term{s}: \Box^d A}{\langle X \rangle^d \vdash \term{s}: A}
+		&
+		\qquad
+		\infer[\Box^d E]{\langle X \rangle^d \vdash \blacktriangledown^d \term{s}: A}{X \vdash \term{s}: \Box^d A}
+%		\infer[\Box^d E]{\langle \Gamma \rangle^{d} \vdash \term{x_d}: A}{\Gamma \vdash \term{x}: \Box^d A}
 	\end{align*}
+	\end{block}
 }
 \end{frame}
 
@@ -252,9 +268,11 @@ The agenda:
 	\item Surface syntax matters little to semantics
 	\end{itemize}
 \end{block}
+
+\pause
 \begin{block}{Why $\Diamond, \raisebox{1.5pt}{\ensuremath{\Box}}$?}
 	\begin{itemize}
-	\item Easier to interpret
+	\item More interpretation options
 	\item Subsume dependency parsing
 	\item More informative for semantics 
 	\item Modalities can regulate non-logical parsing
@@ -641,17 +659,19 @@ The agenda:
 	\begin{align*}
 		\infer[]{\Gamma \vdash \term{M\tau}: \sigma[\tau/ \alpha]}{\Gamma \vdash \term{M}: \forall \alpha.\sigma}
 		&
-		\infer[]{\Gamma \vdash \term{\Lambda \alpha.M}: \forall \alpha.\sigma}{\Gamma \vdash \term{M}: \sigma}
+		\qquad
+		\textcolor{gray}{
+		\infer[]{\Gamma \vdash \term{\Lambda \alpha.M}: \forall \alpha.\sigma}{\Gamma \vdash \term{M}: \sigma}}
 	\end{align*}
 	
 	\pause
 	In that universe, modifiers and coordinators are polymorphic types:
 	\[
-		\text{w} := \term{\Lambda \alpha.\lambda a.(({w})^{mod}\ a )} :\forall \alpha.\Box^{mod}\left(\alpha \li \alpha\right)
+		\text{mod} := \term{\Lambda \alpha.w} :\forall \alpha.\Box^{mod}\left(\alpha \li \alpha\right)
 	\]
 	and
 	\[
-		\text{w} := \term{\Lambda \alpha.\lambda xy.((\term{w}\ (x)^{cnj})\ (y)^{cnj})} : \forall \alpha.\Diamond^{cnj}\alpha \li \Diamond^{cnj}\alpha \li \alpha
+		\text{crd} := \term{\Lambda \alpha.w} : \forall \alpha.\Diamond^{cnj}\alpha \li \Diamond^{cnj}\alpha \li \alpha
 	\]
 \end{frame}
 
@@ -789,39 +809,112 @@ The agenda:
 	\alt<2>{(1) convert types to binary trees and assign polarities}
 	{\alt<3>{(2) assign identifying indices}{
 	\alt<8>{the resulting structure is a \textit{proof net}}{
-	\alt<4->{(3) traverse upwards, identifying pos/neg atoms and propagating indices\\
+	\alt<4->{(3) traverse upwards, identifying pos/neg atoms and propagating indices
 	}}{}}}
-	
-%	\scriptsize
-%		\begin{itemize}
-%			\item init an empty map $\mathbb{N} \to \mathbb{N}$
-%			\visible<2->{
-%			\item assign a unique identifying index to each atom in the graph's fringe}
-%			\visible<4->{
-%			\item traversing up, identify argument indices with siblings and result indices with parents}
-%		\end{itemize}
-%	\vfill
-%	\end{minipage}
-%	\[
-%		\visible<5->{6:8
-%		\visible<6->{,~3:7}
-%		\visible<7->{,~2:1,~3:4}
-%		}
-%	\]
+	\visible<4-7>{
+	\[
+	\{2 \mapsto \alt<5->{1}{?}, 4 \mapsto \alt<6->{8}{?}, 5\mapsto \alt<7->{3}{?}, 7\mapsto \alt<5->{9}{?}\}
+	\]
+	}
 \end{frame}
 
+\begin{frame}{From proofs to terms}
+	\centering
+	\scriptsize
+	\begin{tikzpicture}[
+	every text node part/.style={align=center},
+%	every node/.style={transform shape},
+	scale=0.85,
+	block/.style={rectangle, inner sep=0pt, minimum width=10pt, minimum height=13pt},
+	level distance=30pt,
+	every leaf node/.style={inner sep=0pt, inner xsep=0pt, outer sep=0pt,distance from root =150pt},
+	sibling distance=0.5pt,
+	grow=down
+	]
 	
-%\begin{frame}{From graphs to proofs}	
-%	\small
-%	\begin{tikzpicture}
-%	\node (eenden)			at (0, 0)		{\proofspace{\text{eenden}}};
-%	\node (eenden_np)		at (0, 2em)		{$\posat{np}_1$};
-%	
-%	\node (kwakken)			at (5em, 0em)	{\proofspace{\text{kwakken}}};
-%	\node (kwakken_su)		at (5em, 2em)	{$\proofspace{\Diamond^{su}}$};
-%	\node (kwakken_np)		at (3em, 5em)	{$\negat{np}_2$};
-%	\node (kwannen_s)		at (7em, 5em)	{$\posat{s_m}_3$};
-%	\end{tikzpicture}
-%\end{frame}
-%
+	\node[block] (r)			at (7.5, -5.25) 		{$\posat{n}\red{9}$};
+	% atoms indexed
+	\node[block]	(hn)			at (5.5, -6.25)		{$\negat{n}\red{7}$};
+	\node[block]	(hnp)		at (6.5, -6.25)		{$\posat{np}\red{8}$};
+	\node[block] (insm1)		at (3.1, -5.5)		{$\negat{s_m}\red{5}$};
+	\node[block] (insm2)		at (3.9, -5.5)		{$\posat{s_m}\red{6}$};
+	\node[block] (kwakkennp) at (-0.5, -2.75) 	{$\negat{np}\red{2}$};
+	\node[block] (kwakkens) 	at (0.5, -2.75) 		{$\posat{s_m}\red{3}$};
+	\node[block] (innp)		at (2.5, -4.5)		{$\negat{np}\red{4}$};
+	\node[block] (eenden) 	at (-3, -1.75)		{$\posat{np}\red{1}$};
+
+		
+	\node[block] (kwakkensu) at (0, -1.75) 		{$\overset{su}{\Diamond}$};
+	\draw (kwakkensu) edge (kwakkennp);
+	\draw (kwakkensu) edge (kwakkens);
+
+	\node[block] (inobj)		at (3, -3.5)			{$\overset{obj}{\Diamond}$};
+	\node[block] (inmod)		at (3.5, -4.5)		{$\overset{mod}{\Box}$};
+	\draw (inobj)	edge (innp);
+	\draw (inobj)	edge (inmod);
+	\draw (inmod)	edge (insm1);
+	\draw (inmod)	edge (insm2);
+	\node[block]	(h)			at (6, -5.25)		{$\overset{det}{\Box}$};
+	\draw (h) edge (hn);
+	\draw (h) edge (hnp);
+	
+
+
+	\node[block] (smain) 	at (0, 0) 			{$s_m\red{6}$};	
+	\draw (kwakkens) -- (0.5, -6.5) -- (3.1, -6.5) -- (insm1);
+	\draw (insm2)	edge[->] (3.9, -8);
+		
+	\	\node[block] (ihr)		at (3, -1.75) 		{\type{\overset{mod}{\Box}(s_m\red{5}\li s_m\red{6})}{black}};
+	\draw (hnp) -- (6.5, -7) -- (2.5, -7) -- (innp);
+
+	\node[block] (hr)		at (6, -3.5) 		{\type{np\red{8}}{black}};
+	\draw (hn) -- (5.5, -7.5) -- (7.5, -7.5) -- (r);
+	\draw (eenden) -- (-3, -3.5) -- (-0.5, -3.5) -- (kwakkennp);
+	
+	
+	\draw (smain) 	edge[-]		node[left] 	{\etext{su}} 	(eenden);
+	\draw (smain) 	edge[-]		node[left] 	{\etext{hd}} 	(kwakken);
+	\draw (smain) 	edge[-]		node[right] {\etext{mod}} 	(ihr);
+	
+	\draw (ihr)	 	edge[-]		node[left] 	{\etext{hd}} 		(in);
+	\draw (ihr)	 	edge[-]		node[right] {\etext{obj}} 		(hr);
+	
+	\draw(hr)		edge[-]		node[left] 	{\etext{det}}		(h);
+	\draw(hr)		edge[-]		node[right] {\etext{nhd}}		(r);
+	\end{tikzpicture}
+	
+	\[
+		\visible<6->{\blacktriangledown^{mod} \left(}
+			\W{in} 
+			\visible<2->{\vartriangle^{obj}\!\!
+			\left( 
+				\visible<4->{
+				\blacktriangledown^{det}}
+				\visible<3->{\W{het}}\
+				\visible<5->{\W{riet}}
+				}
+			\right)
+		\visible<6->{\right)}\ 
+		\visible<7->{\left(\W{kwakken}}
+		\visible<8->{\vartriangle^{su}\!\!\W{eenden}}
+		\visible<7->{\right)}
+	\]
+\end{frame}
+
+\begin{frame}{DIY}
+	\small
+	\begin{itemize}
+	\item download \href{https://surfdrive.surf.nl/files/index.php/s/xCnHPZR2ahkR4dK}{data}
+	\item clone \href{https://github.com/konstantinosKokos/lassy-tlg-extraction/}{this} \\
+	or: \\
+	{\tiny
+	\texttt{
+	python -m pip install git+https://github.com/konstantinosKokos/lassy-tlg-extraction@0.3.dev0\#egg=LassyExtraction}}
+	\item do stuff
+	\item ???
+	\item profit
+	\end{itemize}
+
+\end{frame}
+
 \end{document}

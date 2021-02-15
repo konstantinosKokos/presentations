@@ -12,6 +12,7 @@
 \usepackage{wasysym}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,matrix}
+\usepackage{soul}
 
 \newcommand{\term}[1]{\texttt{#1}}
 \newcommand{\li}{\!\multimap\!}
@@ -53,9 +54,8 @@
 			\end{center}
 			This is perfect in mathematics, but wrong in real life, since real implication is causal.
 			A causal implication cannot be iterated since the conditions are modified after its use; this process of modification of the premises is known in physics as reaction.
-			For instance, if $A$ is to spend \$1 on a pack of a cigarettes and $B$ is to get them, you lose \$1 in this process, and you cannot do it a second time. 
-			The reaction here was that \$1 went out of your pocket.}
-		''
+			For instance, if $A$ is to spend \$1 on a pack of a \st{cigarettes} \textcolor{red}{candies} and $B$ is to get them, you lose \$1 in this process, and you cannot do it a second time. 
+			The reaction here was that \$1 went out of your pocket.}''
 		}
 		{}
 	}
@@ -65,6 +65,7 @@
 		Linear propositions $\mathcal{P}$ are defined as:
 		\[
 		\mathcal{P} := \mathcal{C}  \ | \ \mathcal{P}_1 \li \mathcal{P}_2 \ | \ \mathcal{P}_1 \lotimes \mathcal{P}_2 \
+		| \ \mathcal{P}_1 \& \mathcal{P}_2 \ 
 		| \ \mathcal{P}_1 \loplus \mathcal{P}_2 \ | \ !\mathcal{P}
 		\]
 	\vfill
@@ -104,7 +105,7 @@
 		\vcenter{\infer[\lin{Id}]{\lin{A} \vdash A}{}}  \quad \vcenter{\infer[\lint{Id}]{\lint{A} \vdash A}{}}
 		\]
 		\begin{flushright}
-			$\Gamma, \Delta, \Theta, \dots$ will now denote \alert{sequences of assumptions}
+			$\Gamma, \Delta, \Theta, \dots$ will now denote \alert{sequences of assumptions}\\
 		\end{flushright}
 	\end{block}
 	\pause
@@ -227,61 +228,66 @@
 	\]
 \end{frame}
 
-
 \begin{frame}{Embedding}
-	\begin{block}{IL in LL}
+	\small
+	\begin{block}{IL to  ILL}
 	Let $*$ an operator sending formulas of IL to formulas of ILL, such that:
 			\begin{itemize}
 				\item if $p \in \mathcal{A}$, then $p^* = p$
 				\item otherwise:
+				\vspace{-25pt}
 				\begin{align*}
 					(A \to B)^* &= \ !A^* \li B^*\\
 					(A \times B)^* &= \ A^* \& B^*\\
 					(A + B)^* &= \ !A^* \oplus !B^*
 				\end{align*}
 			\end{itemize}
+	\vspace{-10pt}
 	and judgements of IL to judgements of ILL:
+	\vspace{-5pt}
 		\[
 			(\Gamma \vdash A)^* = \lint{\Gamma^*} \vdash A^*
 		\]
 	\end{block}
+	
+	\visible<2->{
+	Proving the intuitionistic judgement $A, A\to B \vdash A\times B$ in ILL:
+	\begin{align*}
+		(A, A\to B \vdash A\times B)^* & = 
+		\visible<3->{ \lint{A^*}, \lint{(A\to B)^*} \vdash (A\times B)^*}\\
+		\visible<4->{& = \lint{A}, \lint{!A^*\li B^*} \vdash A^* \& B^*}\\
+		\visible<5->{& = \lint{A}, \lint{!A \li B} \vdash A \& B}
+	\end{align*}
+	}
+	
 \end{frame}
 
 \begin{frame}{Embedding Example}
 	\small
-	Proving the intuitionistic judgement $A, A\to B \vdash A\times B$ in ILL:
-	\begin{align*}
-		(A, A\to B \vdash A\times B)^* & = 
-		\visible<2->{ \lint{A^*}, \lint{(A\to B)^*} \vdash (A\times B)^*}\\
-		\visible<3->{& = \lint{A}, \lint{!A^*\li B^*} \vdash A^* \& B^*}\\
-		\visible<4->{& = \lint{A}, \lint{!A \li B} \vdash A \& B}
-	\end{align*}
-	\vfill
 	
-	\visible<5->{
 	\[
-		\infer[\visible<6->{\& I}]{\lint{A}, \lint{!A\li B} \vdash A \& B}{
-		\visible<6->{
-			\infer[\visible<7->{W}]{\lint{A}, \lint{!A\to B}\vdash A}{
-			\visible<7->{
-				\infer[\lint{Id}]{\lint{A} \vdash A}{}
-			}}
+		\infer[\visible<2->{\& I}]{\lint{A}, \lint{!A\li B} \vdash A \& B}{
+		\visible<2->{
+			\infer[\visible<3->{W}]{\lint{A}, \lint{!A\to B}\vdash A}{
+				\visible<3->{
+				\infer[\visible<4->{\lint{Id}}]{\lint{A} \vdash A}{}
+				}
+			}
 			&
-			\infer[\visible<8->{Ex}]{\lint{A},\lint{!A\li B} \vdash B}{
-			\visible<8->{
-				\infer[\visible<9->{\li E}]{\lint{!A\li B}, \lint{A} \vdash B}{
-				\visible<9->{
-					\infer[\visible<10->{\lint{Id}}]{\lint{!A\li B}\vdash !A\li B}{}
+			\infer[\visible<5->{Ex}]{\lint{A},\lint{!A\li B} \vdash B}{
+			\visible<5->{
+				\infer[\visible<6->{\li E}]{\lint{!A\li B}, \lint{A} \vdash B}{
+				\visible<6->{
+					\infer[\visible<7->{\lint{Id}}]{\lint{!A\li B}\vdash !A\li B}{}
 					&
-					\infer[\visible<11->{!I}]{\lint{A} \vdash !A}{
-					\visible<11->{
-						\infer[\lint{Id}]{\lint{A} \vdash A}{}
+					\infer[\visible<8->{!I}]{\lint{A} \vdash !A}{
+					\visible<8->{
+						\infer[\visible<9->{\lint{Id}}]{\lint{A} \vdash A}{}
 					}}
 				}}
 			}}
 		}}
 	\]
-	}
 \end{frame}
 
 \begin{frame}{ILL $\stackrel{CH}{\equiv}$ Simply typed linear $\lambda$-calculus}
@@ -295,18 +301,22 @@
 \end{frame}
 
 \begin{frame}{The simply typed linear $\lambda$-calculus}
+	\begin{flushright}
+		$\mathcal{V} = \{x,y,z,\dots\}$\\
+		$\mathcal{T} = \{s,t,u,v,w,\dots\}$
+	\end{flushright}
 	% no vacuous abstraction
 	% exactly one occurrence in fun body
 	\begin{align*}
 		\mathcal{T} :=& \ 
 					\visible<2->{\mathcal{V}}
-					\visible<3->{\ | \ !\mathcal{T} \ | \ \term{case }\mathcal{T}\term{ of }!\mathcal{T}\to \mathcal{T}}
-					\visible<4->{\ | \ \lambda\lin{\mathcal{T}}.\mathcal{T} \ | \ \mathcal{T}\lin{\mathcal{T}}}\\
-					\visible<5->{& \ | \ \lin{\mathcal{T},\mathcal{T}} \ | \ \term{case }\mathcal{T}\term{ of }\lin{\mathcal{T},\mathcal{T}}\to \mathcal{T}}\\
-					\visible<6->{& \ | \ \lin{\lin{\mathcal{T}, \mathcal{T}}}
+					\visible<3->{\ | \ !\mathcal{T} \ | \ \term{case }\mathcal{T}_1\term{ of }!\mathcal{V}\to \mathcal{T}_2}
+					\visible<4->{\ | \ \lambda\lin{\mathcal{V}}.\mathcal{T} \ | \ \mathcal{T}_1\lin{\mathcal{T}_2}}\\
+					\visible<5->{& \ | \ \lin{\mathcal{T}_1,\mathcal{T}_2} \ | \ \term{case }\mathcal{T}_1\term{ of }\lin{\mathcal{V}_1,\mathcal{V}_2}\to \mathcal{T}_2}\\
+					\visible<6->{& \ | \ \lin{\lin{\mathcal{T}_1, \mathcal{T}_2}}
 					\ | \ \term{fst}\lin{\mathcal{T}} \ | \ \term{snd}{\lin{\mathcal{T}}}
 					}\\
-					\visible<7->{& \ | \ \term{inl}\lin{\mathcal{T}} \ | \ \term{inr}\lin{\mathcal{T}} \\ & \ | \ \term{case }\mathcal{T}\term{ of inl}\lin{\mathcal{T}}\to\mathcal{T};\term{inr}\lin{\mathcal{T}}\to \mathcal{T}}
+					\visible<7->{& \ | \ \term{inl}\lin{\mathcal{T}} \ | \ \term{inr}\lin{\mathcal{T}} \\ & \ | \ \term{case }\mathcal{T}_1\term{ of inl}\lin{\mathcal{V}_1}\to\mathcal{T}_2;\term{inr}\lin{\mathcal{V}_2}\to \mathcal{T}_3}
 	\end{align*}
 	\vfill
 	\small
@@ -323,45 +333,45 @@
 		\[
 			\vcenter{\infer[!I]{\lint{\Gamma} \vdash !\term{t}: !A}{\lint{\Gamma} \vdash \term{t}:A}}
 			\quad
-			\vcenter{\infer[!E]{\Gamma,\Delta \vdash \term{case s of }!x\to u: B}{
+			\vcenter{\infer[!E]{\Gamma,\Delta \vdash \term{case s of }!x\to t: B}{
 				\Gamma \vdash \term{s}: !A
 				&
-				\Delta, \lint{\term{x}: A} \vdash \term{u}: B
+				\Delta, \lint{\term{x}: A} \vdash \term{t}: B
 			}}
 		\]
 	}{
 	\alt<4>{
 		\[
-			\vcenter{\infer[\li I]{\Gamma \vdash \lambda\term{x.y}: A\li B}{\Gamma, \lin{\term{x}: A} \vdash \term{y}: B}}
+			\vcenter{\infer[\li I]{\Gamma \vdash \lambda\term{x.s}: A\li B}{\Gamma, \lin{\term{x}: A} \vdash \term{s}: B}}
 			\quad
-			\vcenter{\infer[\li E]{\Gamma, \Delta \vdash \term{f}\lin{\term{x}}\footnote{Or: \term{f x}}: B}{
-				\Gamma \vdash \term{f}: A\li B
+			\vcenter{\infer[\li E]{\Gamma, \Delta \vdash \term{s}\lin{\term{t}}\footnote{Or: \term{s t}}: B}{
+				\Gamma \vdash \term{s}: A\li B
 				&
-				\Delta \vdash \term{x}: A
+				\Delta \vdash \term{t}: A
 			}}
 		\]
 	}{
 	\alt<5>{
 		\[
-			\vcenter{\infer[\otimes I]{\Gamma \vdash \lin{\term{t}, \term{u}}: A\lotimes B}{
-				\Gamma \vdash \term{t}: A
+			\vcenter{\infer[\otimes I]{\Gamma \vdash \lin{\term{s}, \term{t}}: A\lotimes B}{
+				\Gamma \vdash \term{s}: A
 				&
-				\Delta \vdash \term{u}: B
+				\Delta \vdash \term{t}: B
 			}}
 			\quad
-			\vcenter{\infer[\otimes E]{\Gamma, \Delta \vdash \term{case s of }\lin{\term{x}, \term{y}}\to \term{v}: C}{
+			\vcenter{\infer[\otimes E]{\Gamma, \Delta \vdash \term{case s of }\lin{\term{x}, \term{y}}\to \term{t}: C}{
 				\Gamma \vdash \term{s}: A \lotimes B
 				&
-				\Delta, \lin{\term{x}: A}, \lin{\term{y}: B} \vdash \term{v}: C
+				\Delta, \lin{\term{x}: A}, \lin{\term{y}: B} \vdash \term{t}: C
 			}}
 		\]
 	}{
 	\alt<6>{
 		\[
-			\vcenter{\infer[\& I]{\Gamma \vdash \lin{\lin{\term{t}, \term{u}}}: A\&B}{
-				\Gamma \vdash \term{t}: A
+			\vcenter{\infer[\& I]{\Gamma \vdash \lin{\lin{\term{s}, \term{t}}}: A\&B}{
+				\Gamma \vdash \term{s}: A
 				&
-				\Gamma \vdash \term{u}: B
+				\Gamma \vdash \term{t}: B
 			}}
 			\quad
 			\vcenter{\infer[\&E_1]{\Gamma \vdash \term{fst}\lin{\term{s}}: A}{
@@ -374,22 +384,22 @@
 		\]
 	}{
 		\[
-			\vcenter{\infer[\oplus I_1]{\Gamma \vdash \term{inl}\lin{\term{x}}: A\loplus B}{
-				\Gamma \vdash \term{x}: A
+			\vcenter{\infer[\oplus I_1]{\Gamma \vdash \term{inl}\lin{\term{s}}: A\loplus B}{
+				\Gamma \vdash \term{s}: A
 			}}
 			\quad
-			\vcenter{\infer[\oplus I_2]{\Gamma \vdash \term{inr}\lin{\term{x}}: A\loplus B}{
-				\Gamma \vdash \term{x}: B
+			\vcenter{\infer[\oplus I_2]{\Gamma \vdash \term{inr}\lin{\term{s}}: A\loplus B}{
+				\Gamma \vdash \term{s}: B
 			}}
 		\]
 		
 		\[
-			\vcenter{\infer[\oplus E]{\Gamma, \Delta \vdash \term{case s of inl}\lin{\term{x}}\to \term{u}; \term{inr}\lin{\term{y}}\to\term{w}: C}{
+			\vcenter{\infer[\oplus E]{\Gamma, \Delta \vdash \term{case s of inl}\lin{\term{x}}\to \term{t}; \term{inr}\lin{\term{y}}\to\term{u}: C}{
 				\Gamma \vdash \term{s}: A\loplus B
 				&
-				\Delta, \lin{\term{x}: A} \vdash \term{u}: C
+				\Delta, \lin{\term{x}: A} \vdash \term{t}: C
 				&
-				\Delta, \lin{\term{y}: B} \vdash \term{w}: C
+				\Delta, \lin{\term{y}: B} \vdash \term{u}: C
 			}}
 		\]
 	}}}}}}
@@ -402,12 +412,12 @@
 		\begin{array}{ccc}
 		\infer[\textcolor{red}{! E}]{\lint{\Gamma}, \Delta \vdash B}{
 			\infer[\textcolor{red}{!I}]{\lint{\Gamma} \vdash \term{!t}: !A}{
-				\infer*[]{\Gamma \vdash \term{t}: A}{}			
+				\infer*[]{\lint{\Gamma} \vdash \term{t}: A}{}			
 			}
 			&
-			\infer={\Gamma, \lint{\term{x}: A} \vdash \term{u}: B}{
-				\infer*[]{\lint{\term{x}: A} \vdash \term{x}: A}{
-					\lint{\term{x}: A} \vdash \term{x}: A
+			\infer={\Delta, \lint{\term{x}: A} \vdash \term{u}: B}{
+				\infer*[]{\Delta, \lint{\term{x'}: A}, \dots \vdash \term{u}: B}{
+					\lint{\term{x'}: A} \vdash \term{x'}: A
 					&
 					\dots
 				}

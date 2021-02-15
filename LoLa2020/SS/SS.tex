@@ -63,7 +63,7 @@
 	\small
 	\begin{tabularx}{0.99\textwidth}{@{}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{}}
 		\text{syntactic calculus} & $\xrightarrow{\makebox[0.33in]{$h_1$}}$ & \text{semantic calculus} & $\xrightarrow{\makebox[0.33in]{$h_2$}}$ & \text{lexical meaning}\\
-				NL / L / .. & & MILL${}_{\li, \lotimes}$ /.. & & IL${}_{\to, \times}$ \\ 
+				NL / L / .. & & MILL${}_{\li, \otimes}$ /.. & & IL${}_{\to, \times}$ \\ 
 		\\
 		\textit{surface form} & & \textit{meaning} & & \textit{meaning} \\
 		& &	{\footnotesize(computational)} & & {\footnotesize(lexical)}
@@ -85,12 +85,12 @@
 	\alert{Minimal term syntax for NL}
 	\[
 	\begin{array}{@{}c@{\quad}c@{}}
-	\vcenter{\infer[/ E]{(\Gamma, \Delta) \vdash \term{f} \triangleleft \term{x}: B}{\Gamma \vdash \term{f}: B/A & \Delta \vdash \term{x}: A}} &
-	\vcenter{\infer[\backslash E]{(\Gamma, \Delta) \vdash \term{x} \triangleright \term{f}: B}{\Gamma \vdash \term{x}: B & \Delta \vdash \term{f}: A \backslash B}}	\vspace{10pt} \\
-	\vcenter{\infer[/ I]{\Gamma \vdash \lambda \term{x} {}^r.\term{f}: B/A}{
-		\Gamma, \term{x}: A \vdash \term{f}: B}}
+	\vcenter{\infer[/ E]{(\Gamma, \Delta) \vdash \term{s} \triangleleft \term{t}: B}{\Gamma \vdash \term{s}: B/A & \Delta \vdash \term{t}: A}} &
+	\vcenter{\infer[\backslash E]{(\Gamma, \Delta) \vdash \term{s} \triangleright \term{t}: B}{\Gamma \vdash \term{s}: B & \Delta \vdash \term{t}: A \backslash B}}	\vspace{10pt} \\
+	\vcenter{\infer[/ I]{\Gamma \vdash \lambda \term{x} {}^r.\term{s}: B/A}{
+		\Gamma, \term{x}: A \vdash \term{s}: B}}
 	&
-	\vcenter{\infer[\backslash I]{\Gamma \vdash \lambda \term{x} {}^l.\term{f}: A \backslash B}{\term{x}: A, \Gamma \vdash \term{f}: B}} \\
+	\vcenter{\infer[\backslash I]{\Gamma \vdash \lambda \term{x} {}^l.\term{s}: A \backslash B}{\term{x}: A, \Gamma \vdash \term{s}: B}} \\
 	\end{array}
 	\]
 	
@@ -144,7 +144,7 @@
 	\small
 	\alert{Truth-conditional semantics}\\
 	consist of two \textit{semantic primitives}: $e$ (for entities) and $t$ (for truth-values)\\
-	with $\li$ as the type-forming operator, shorthand $xy$ for $x\li y$\footnote{left-associative}
+	with $\li$ as the type-forming operator, shorthand $xy$ for $x\li y$\footnote{right-associative}
 	\vfill	
 	
 	\pause
@@ -214,7 +214,7 @@
 			\end{flushleft}
 			\begin{flushright}
 			\vspace{-10pt}
-			$\lambda \vec{x}w\vec{y}.(f \ \vec{x} \ (\lambda z. (z \ w)) \vec{y}): \vec{A} \li B \li \vec{C} \li D$
+			$\lambda \vec{x}w\vec{y}.(f \ \vec{x} \ (\lambda z. (z \ w))\ \vec{y}): \vec{A} \li B \li \vec{C} \li E$
 			\end{flushright}
 			}
 	\end{itemize}
@@ -235,7 +235,7 @@
 	\end{center}\vfill
 	
 	\visible<3->{
-	\alt<7->{
+	\alt<6->{
 	\begin{center}
 		\alert{Argument Raising}
 	\end{center}
@@ -269,7 +269,7 @@
 	\visible<5->{
 	\alert{hates}: $(np\backslash s)/np$\\
 	$\trans{(np\backslash s)/np} = eet 
-	\visible<8->{\stackrel{ar}{\Longrightarrow} \alert{
+	\visible<7->{\stackrel{ar0}{\Longrightarrow} \alert{
 		\lambda wy.(w \ \lambda z.(\term{hates} \ z \ y))}: ((et)t)et$}}
 	\vfill
 \end{frame}
@@ -296,7 +296,7 @@
 					[.{\footnotesize ${\lambda wy.(w \ \lambda z.(\term{hates} \ z \ y))}^{((et)t)et}$}
 						\node(sh){$\term{hates}^{eet}$};
 					]
-					[.{$\forall^{(et)t}$};
+					[.{$\forall^{(et)t}$}
 						\node(set){$\forall^e$};
 					]
 				]
@@ -384,6 +384,7 @@
 				}
 			\right)
 			\\
+			\visible<9->{
 			&\stackrel{\beta}{\rightsquigarrow}  
 			\lambda k_2.\left(
 				\textcolor{red}{
@@ -401,7 +402,8 @@
 				\term{Joseph}
 				}
 			\right)
-			\\
+			\\}
+			\visible<10->{
 			& \stackrel{\beta}{\rightsquigarrow}
 			\lambda k_2.\left(
 				% hates everybody
@@ -411,15 +413,16 @@
 					k_2 \ (m_2 \ \term{Joseph}
 				\right)
 			\right)
-			\\
+			\\}
+			\visible<11->{
 			& =\lambda k_2.\left(
 				\textcolor{red}{
 				% hates everybody
 				\lambda k_1.\left(
 					\forall  \
-					\lambda m_1.\left(
+					\lambda n_1.\left(
 						k_1 \ \left(
-							\term{hates} \ m_1
+							\term{hates} \ n_1
 						\right)
 					\right)
 				\right)
@@ -431,10 +434,11 @@
 				\right)
 				}
 			\right)
-			\\
+			\\}
+			\visible<12->{
 			& \stackrel{\beta}{\rightsquigarrow}\lambda k_2.\left(
 				\forall  \
-				\lambda m_1.\left(
+				\lambda n_1.\left(
 					\textcolor{red}{
 					\lambda m_2.\left(
 						k_2 \ \left(m_2 \ \term{Joseph} \right)
@@ -442,34 +446,35 @@
 					}
 					\
 					\textcolor{gray}{\left(
-						\term{hates} \ m_1
+						\term{hates} \ n_1
 					\right)
 					}
 				\right)
 			\right)
-			\\
+			\\}
+			\visible<13->{
 			& \stackrel{\beta}{\rightsquigarrow}\lambda k_2.\left(
 				\forall  \
-				\lambda m_1.\left(
+				\lambda n_1.\left(
 					k_2 \ \left(
-							\term{hates} \ m_1
+							\term{hates} \ n_1
 						\
 						\term{Joseph} 
 					\right)
 				\right)
-			\right) \xrightarrow{\mathrm{eval}} \forall \lambda m_1.\left(\term{hates} \ m_1 \ \term{Joseph}\right)
+			\right) \xrightarrow{\mathrm{eval}} \forall \lambda n_1.\left(\term{hates} \ n_1 \ \term{Joseph}\right)
 			\\
-			}
+			}}
 		}{
 		\visible<3->{
 		\barkr{(\text{h} \triangleleft \text{e})} &= 
-		\lambda k_1.(\barkr{\text{hates}} \ \lambda n_1.(\barkr{\text{everybody}} \ \lambda m_1.(k_1 \ (m_1 \ n_1))))\\
+		\lambda k_1.(\barkr{\text{hates}} \ \lambda m_1.(\barkr{\text{everybody}} \ \lambda n_1.(k_1 \ (m_1 \ n_1))))\\
 		\visible<4->{
-		& = \lambda k_1.(\textcolor{red}{\lambda k_0.(k_0 \ \term{hates})} \ \textcolor{gray}{\lambda n_1.(\forall \ \lambda m_1.(k_1 \ (m_1 \ n_1)))})\\
+		& = \lambda k_1.(\textcolor{red}{\lambda k_0.(k_0 \ \term{hates})} \ \textcolor{gray}{\lambda m_1.(\forall \ \lambda n_1.(k_1 \ (m_1 \ n_1)))})\\
 		\visible<5->{
-		& \stackrel{\beta}{\rightsquigarrow} \lambda k_1.(\textcolor{red}{\lambda n_1.(\forall \ \lambda m_1.(k_1 \ (m_1 \ n_1)))} \ \textcolor{gray}{\term{hates}})\\
+		& \stackrel{\beta}{\rightsquigarrow} \lambda k_1.(\textcolor{red}{\lambda m_1.(\forall \ \lambda n_1.(k_1 \ (m_1 \ n_1)))} \ \textcolor{gray}{\term{hates}})\\
 		\visible<6->{
-		& \stackrel{\beta}{\rightsquigarrow} \lambda k_1.(\forall \ \lambda m_1.(k_1 \ (\term{hates} \ m_1))))
+		& \stackrel{\beta}{\rightsquigarrow} \lambda k_1.(\forall \ \lambda n_1.(k_1 \ (\term{hates} \ n_1))))
 		}}}}}
 	\end{align*}
 	}
@@ -488,44 +493,67 @@
 	\alert{Lexical Translation}\\
 	{\footnotesize
 	\begin{tabularx}{0.99\textwidth}{@{}C@{}C@{}C@{}}
-	Source & $\trans{.}$ & Target\\
+	Source & Value $\trans{.}$ & Target\\
 	\toprule
 	 Joseph :: $np$ & $e$ & $\lambda k.(k \ \term{Joseph}):: (et)t$\\
-	 hates :: $(np\backslash s)/np$ &\alt<3->{$e\left(\left(e\left(tt\right)t\right) t\right)t$}{$?$} & \alt<4->{$? :: \left( \left( e\left(\left(e\left(tt\right)t\right) t\right)t \right)t\right)t$}{$?$} \\
+	 hates :: $(np\backslash s)/np$ &\alt<7->{$e\left(\left(e\left(tt\right)t\right) t\right)t$}{$?$} & \alt<9->{$? :: \left( \left( e\left(\left(e\left(tt\right)t\right) t\right)t \right)t\right)t$}{$?$} \\
 	 everybody :: $np$ & $e$ & $\forall :: (et)t$
 	\end{tabularx}
 	}
 	\end{center}\vfill
 	
-	\pause
-	\alt<5->{
+	\alt<10->{
 	\alert{Term Assignment}\\
 	\begin{minipage}{0.55\textwidth}
 	\footnotesize
 	\[
+	\textcolor{red}{
 	\underbrace{\left(
+		\textcolor{black}{
+		\textcolor{blue}{
 		\left( 
+		\textcolor{black}{
 			\overbrace{e}^x 
-			\underbrace{\left( 
+			\textcolor{green}{\underbrace{\left(
+			\textcolor{black}{
+				\textcolor{purple}{
 				\left(
+				\textcolor{black}{
 				\overbrace{e}^{y} 
-				\overbrace{\left(tt\right)}^{\tau}t\right) t\right)
-			}_{h}t 
-		\right)t
-	\right)}_{f}t
+				\overbrace{\left(tt\right)}^{\tau}t}\right)} t}\right)
+			}_{h}}t
+		}\right)}t}
+	\right)}_{f}}t
 	\]	
 	\end{minipage}%
 	\begin{minipage}{0.5\textwidth}
 	\footnotesize
 	\[
-		\visible<6->{\lambda f.\left(f \ \lambda xh.\left(h \ \lambda y\tau.\left(\tau \ \left(\term{hates}\ x\ y\right)\right)\right)\right)}
+	\visible<11->{\lambda f.
+		\left( f \ 
+		\visible<12->{
+			\lambda xh.\left( h \
+			\visible<13->{
+				\lambda y\tau.\left( \tau \
+				\visible<14->{
+				\left(\term{hates}\ x\ y\right)}
+				\right)
+			}
+			\right)
+		}
+		\right)
+	}
+%		\visible<6->{\lambda f.\left(f \ \lambda xh.\left(h \ \lambda y\tau.\left(\tau \ \left(\term{hates}\ x\ y\right)\right)\right)\right)}
 	\]
 	\end{minipage}
 	}{
 	\begin{align*}
-		\trans{np \backslash s} & = \trans{np} \li (\trans{s} \li \bot) \li \bot = e \li (t\li t) \li t = e\left(tt\right)t\\
-		\visible<3->{\trans{(np \backslash s)/np} &= \trans{np} \li (\trans{np\backslash s} \li \bot) \li \bot = e\left(\left(e\left(tt\right)t\right) t\right)t\\}
-		\visible<4->{\overline{(np\backslash s)/np} &= \left( \left( e\left(\left(e\left(tt\right)t\right) t\right)t \right)t\right)t}
+		\visible<2->{
+		\trans{np \backslash s} & = \visible<3->{\trans{np} \li (\trans{s} \li \bot) \li \bot = \visible<4->{ e \li (t\li t) \li t = e\left(tt\right)t\\}}}
+		\visible<5->{\trans{(np \backslash s)/np} &=
+		\visible<6->{\trans{np} \li (\trans{np\backslash s} \li \bot) \li \bot \visible<7->{= e\left(\left(e\left(tt\right)t\right) t\right)t\\}}}
+		\visible<8->{\overline{(np\backslash s)/np} &=
+		\visible<9->{ \left( \left( e\left(\left(e\left(tt\right)t\right) t\right)t \right)t\right)t}}
 	\end{align*}
 	}
 \end{frame}
@@ -554,7 +582,7 @@
 	
 	\footnotesize
 	\begin{align*}
-	\alt<6->{
+	\alt<4->{
 	\hspace{-20pt}
 		\overline{\text{J}\triangleright (\text{h} \triangleleft \text{e})} & = 
 		\lambda k_2.\left(\overline{\text{h} \triangleleft \text{e}} \ \lambda m_2.\left(\textcolor{red}{\lambda k_3.\left(k_3 \ \term{Joseph}\right)} \ \textcolor{gray}{\lambda n_2.\left(m_2 \ n_2 \ k_2\right)}\right)\right) \\
@@ -605,6 +633,7 @@
 				\right)
 			\right) \xrightarrow{eval} \forall \ \lambda n.\left( \term{hates} \ n \ \term{Joseph} \right)
 	}{
+	\visible<3->{
 		\overline{\text{h} \triangleleft \text{e}} &= 
 		\lambda k.\left(
 			\textcolor{red}{
@@ -644,7 +673,7 @@
 					\right)				
 				\right)
 			\right)
-	}
+	}}
 	\end{align*}
 \end{frame}
 

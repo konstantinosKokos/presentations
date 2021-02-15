@@ -25,6 +25,26 @@
 \date{}
 \maketitle
 
+\begin{frame}{A proof}
+Given that $\sqrt{2}$ is irrational, prove that there exists irrational numbers $a$ and $b$ such that $a^b$ is rational.
+\pause
+\begin{itemize}
+	\item let $c=\sqrt{2}^{\sqrt{2}}$
+	\pause
+	\item if $c$ is rational, then we have $a=b=\sqrt{2}$ and we are done
+	\pause
+	\item if $c$ is irrational, let $a=c$ and $b=\sqrt{2}$,\\
+	 then $a^b={\sqrt{2}^{\sqrt{2}}}^{\sqrt{2}} = \sqrt{2}^2=2$ and we are done
+	\end{itemize}
+	\vfill
+	\pause
+	
+	\begin{center}
+	\dots
+	what are $a$ and $b$?
+	\end{center}
+\end{frame}
+
 \begin{frame}{Intuitionism}
 
 \begin{minipage}[t]{0.3\textwidth}
@@ -43,7 +63,7 @@
 	\end{block}
 \end{minipage}
 \vfill
-
+\pause
 
 \begin{minipage}[t]{0.7\textwidth}
 	\begin{block}{Intuitionistic Logic}
@@ -75,6 +95,7 @@
 			}
 	\end{itemize}
 	\vfill
+	\pause
 	
 	\alert{IL}:
 	\begin{itemize}
@@ -83,6 +104,7 @@
 	\end{itemize}
 	\vfill
 	
+	\pause
 	\begin{block}{Consequence}
 		IL is a \alert{weaker} logic, disallowing proof by contradiction
 	\end{block}	
@@ -132,6 +154,7 @@
 		We will denote assumptions by $\Gamma, \Delta, \Theta, \dots$
 	\end{flushright}
 	
+	\pause
 	\begin{block}{Judgement}
 		A \textit{judgement} $\mathcal{J}$ is a statement $\mathcal{A} \vdash \mathcal{P}$
 	\end{block}
@@ -155,6 +178,7 @@
 		}
 	\]
 	\end{block}
+	\pause
 	
 	\begin{flushright}
 		\small
@@ -224,23 +248,24 @@
 \begin{frame}{Structural Rules}
 	The $,$ of IL assumptions is \textit{commutative}:
 	\[
-		\infer[\text{Exchange}]{\Gamma, \Delta \vdash A}{\Delta, \Gamma \vdash A}
+		\infer=[\text{Exchange}]{\Gamma, B, A, \Delta \vdash A}{\Gamma,A, B, \Delta \vdash A}
 	\]
 	\vfill
+	\pause
 	
 	IL propositions are free to \textit{discard} and \textit{replicate}:
 	\[
 	\begin{array}{ccc}
-		\infer[\text{Contraction}]{\Gamma, A \vdash B}{\Gamma, A, A \vdash B}
+		\infer=[\text{Contraction}]{\Gamma, A \vdash B}{\Gamma, A, A \vdash B}
 	&
 	&
-		\infer[\text{Weakening}]{\Gamma, A \vdash B}{\Gamma \vdash B}
+		\infer=[\text{Weakening}]{\Gamma, A \vdash B}{\Gamma \vdash B}
 	\end{array}
 	\]
 \end{frame}
 
 
-\begin{frame}{Example: Identity Function}
+\begin{frame}{Proof Example: Identity Function}
 	\small
 	\[
 		\infer[\visible<2->{\to I}]{ \ \vdash A \to A}{
@@ -251,29 +276,7 @@
 	\]
 \end{frame}
 
-
-\begin{frame}{Example: Tuple Reversal}
-	\small
-	\[
-		\infer[\visible<2->{\times E}]{A\times B \vdash B\times A}{
-		\visible<2->{
-			\infer[\visible<3->{Ax}]{A \times B \vdash A \times B}{}
-			& 
-			\infer[\visible<4->{Ex}]{A, B \vdash B\times A}{
-			\visible<4->{
-				\infer[\visible<5->{\times I}]{B, A \vdash B\times A}{
-				\visible<5->{
-					\infer[Ax]{B \vdash B}{}
-					&
-					\infer[Ax]{A \vdash A}{}
-				}}
-			}}
-		}}
-	\]
-
-\end{frame}
-
-\begin{frame}{Example: Function Composition}
+\begin{frame}{Proof Example: Function Composition}
 	\small
 	\[
 		\infer[\visible<2->{\to I}]{A\to B, B\to C \vdash A\to C}{
@@ -306,47 +309,7 @@
 	\]
 \end{frame}
 
-
-%\begin{frame}{Example: Tuple Reversal}
-%	\small
-%	\[
-%		\infer[\visible<2->{\text{C}}]{A\times B \vdash B \times A}{
-%		\visible<2->{
-%			\infer[\visible<3->{\times I}]{A\times B, A\times B \vdash B\times A}{
-%			\visible<3->{
-%				\infer[\visible<4->{\times E}]{A\times B \vdash B}{
-%				\visible<4->{
-%					\infer[Ax]{A\times B \vdash A \times B}{}
-%					&
-%					\infer[\visible<5->{\text{Ex}}]{A, B \vdash B}{
-%					\visible<5->{
-%						\infer[\visible<6->{\text{\small W}}]{B, A \vdash B}{
-%						\visible<6->{
-%							\infer[Ax]{B \vdash B}{}
-%						}
-%						}
-%					}
-%					}
-%				}
-%				}
-%				&
-%				\infer[\visible<7->{\times E}]{A\times B \vdash A}{
-%				\visible<7->{
-%					\infer[Ax]{A\times B \vdash A \times B}{}
-%					&
-%					\infer[\text{W}]{A, B \vdash A}{
-%						\infer[Ax]{A \vdash A}{}
-%					}
-%				}
-%				}
-%			}
-%			}
-%		}
-%		}
-%	\]
-%\end{frame}
-
-\begin{frame}{Example: Currying}
+\begin{frame}{Proof Example: Currying}
 	\small
 	\[
 		\infer[\visible<2->{\to I}]{(A \times B) \to C \vdash A \to B \to C}{
@@ -372,6 +335,28 @@
 		}
 	\]
 \end{frame}
+
+\begin{frame}{Proof Example: Tuple Reversal}
+	\small
+	\[
+		\infer[\visible<2->{\times E}]{A\times B \vdash B\times A}{
+		\visible<2->{
+			\infer[\visible<3->{Ax}]{A \times B \vdash A \times B}{}
+			& 
+			\infer[\visible<4->{Ex}]{A, B \vdash B\times A}{
+			\visible<4->{
+				\infer[\visible<5->{\times I}]{B, A \vdash B\times A}{
+				\visible<5->{
+					\infer[Ax]{B \vdash B}{}
+					&
+					\infer[Ax]{A \vdash A}{}
+				}}
+			}}
+		}}
+	\]
+
+\end{frame}
+
 
 \begin{frame}{Proof Normalization}
 	A single judgement may have many distinct proofs:
@@ -444,7 +429,7 @@
 	\footnotesize
 	\centering
 	\begin{tabularx}{0.825\textwidth}{@{}CC}
-	\textbf{Logic} & \textbf{Programming}\\	
+	\textbf{Logic} & \textbf{Computer Science}\\	
 	\toprule
 	Proposition & Type \\
 	Proof & Algorithm \\
@@ -466,7 +451,7 @@
 \begin{frame}{Terms of the simply typed $\lambda$-calculus}
 	\small
 	
-	Each proposition($\equiv$ \textit{type}) $\mathcal{P}$ is assigned a unique \textit{term} (name) $\mathcal{T}$:
+	Each instance of a proposition($\equiv$ \textit{type}) $\mathcal{P}$ is assigned a unique \textit{term} (name) $\mathcal{T}$:
 	\[
 		\mathcal{T}: \mathcal{P}
 	\]
@@ -492,14 +477,14 @@
 	\begin{align*}
 		\mathcal{T} :=& \ 
 					\visible<2->{\mathcal{V}}
-					\visible<3->{\ | \ \mathcal{T}(\mathcal{T})} 
-					\visible<4->{\ | \ \lambda\mathcal{T}.\mathcal{T}
+					\visible<3->{\ | \ \mathcal{T}_1(\mathcal{T}_2)} 
+					\visible<4->{\ | \ \lambda\mathcal{T}_1.\mathcal{T}_2
 					& \textit{\small Implication-Only}} \\
-					\visible<5->{& \ | \ (\mathcal{T}, \mathcal{T})}
-					\visible<6->{ \ | \ \term{case $\mathcal{T}$ of $(\mathcal{T}, \mathcal{T}) \to \mathcal{T}$}
+					\visible<5->{& \ | \ (\mathcal{T}_1, \mathcal{T}_2)}
+					\visible<6->{ \ | \ \term{case $\mathcal{T}_1$ of $(\mathcal{T}_2, \mathcal{T}_3) \to \mathcal{T}_4$}
 					& \textit{\small /w Product}} \\
-					\visible<7->{& \ | \ \term{inl}(\mathcal{T}) \ | \ \term{inr}(\mathcal{T})} \\
-					\visible<8->{& \ | \ \term{case s of inl(x)} \to \term{w; inr(y)} \to \term{z}
+					\visible<7->{& \ | \ \term{inl}(\mathcal{T}_1) \ | \ \term{inr}(\mathcal{T}_2)} \\
+					\visible<8->{& \ | \ \term{case $\mathcal{T}_1$ of inl($\mathcal{T}_2$)} \to \term{$\mathcal{T}_3$; inr($\mathcal{T}_4$)} \to \term{$\mathcal{T}_5$}
 					& \textit{\small /w Co-product}}
 	\end{align*}
 
@@ -614,6 +599,7 @@
 	\[
 		\infer[\text{Weakening}]{\Gamma, \term{x}:A \vdash \term{u}:B}{\Gamma \vdash \term{u}:B}
 	\]
+	\vfill	
 \end{frame}
 
 \begin{frame}{Example: Identity Function Revisited}
@@ -662,19 +648,21 @@
 		\[
 			\lambda x.f \ x \stackrel{\eta}{\equiv} f \ \text{($x$ does not occur in $f$)}
 		\]
-		\item \alert{$\beta$-reduction} Removing any applicable abstraction
+		\item \alert{$\beta$-reduction} Removing an applicable abstraction
 		\[
-			(\lambda x.g)(y) \Longrightarrow g[x/y]
+			(\lambda x.g)(y) \Longrightarrow g[y/x]
 		\]
 	\end{itemize}
+	\pause
 	
-	\begin{block}{Proof Normalization $\equiv$ Term Reduction}
+	\begin{block}{Proof Normalization $\equiv$ Term Reduction $\equiv$ Computation}
 		\begin{itemize}
 			\item Church-Rosser: order of term reduction rules is irrevelant
 			\item Subject Reduction: term reduction rules on well-typed terms produce well-typed terms
 		\end{itemize}
 	\end{block}
 \end{frame}
+
 
 \begin{frame}{Proof Normalization \& Term Reduction ($\to$)}
 	\small 
@@ -718,6 +706,63 @@
 
 \end{frame}
 
+\begin{frame}{Example}
+\footnotesize
+
+\alt<6>{
+	\alert{normalized}:
+	\[
+		\infer[\to E]{\term{g}: B\to C, \term{f}: A\to B, \term{y}: A \vdash \term{g (f y)}: C}{
+			\infer[Ax]{\term{g}: B\to C \vdash \term{g}: B\to C}{}
+			&
+			\infer[\to E]{\term{f}: A\to B, \term{y}: A \vdash \term{f y}: B}{
+				\infer[Ax]{\term{f}: A\to B \vdash \term{f}: A\to B}{}
+				&
+				\infer[Ax]{\term{y}: A \vdash \term{y}: A}{}
+			}
+		}
+	\]
+}{
+	\[
+		\begin{array}{cc}
+			\hspace{-25pt}\infer[\alt<5->{\textcolor{red}{\to I}}{\to I}]{\term{f}: A\to B, \term{g}: B\to C \vdash \lambda\term{x.g (f x)}: A\to C}{
+				\infer[Ex]{\term{f}: A\to B, \term{g}: B\to C, \term{x}: A \vdash \term{g (f x)}: C}{
+					\infer[\to E]{\term{g}: B\to C, \term{x}: A, \term{f}: A\to B \vdash \term{g (f x)}: C}{
+						\infer[Ax]{\term{g}: B\to C \vdash \term{g}: B\to C}{}
+						&
+						\hspace{-20pt}\infer[Ex]{\term{x}: A, \term{f}: A\to B \vdash \term{f x}: B}{
+							\infer[\to E]{\term{f}: A\to B, \term{x}: A \vdash \term{f x}: B}{
+								\infer[Ax]{\term{f}: A\to B \vdash \term{f}: A\to B}{}
+								&
+								\infer[Ax]{\term{x}: A \vdash \term{x}: A}{}
+							}
+						}
+					}
+				}
+			}
+			&
+			\hspace{-30pt}\infer[Ax]{\term{y}: A \vdash \term{y}: A}{}
+		\end{array}
+	\]
+\pause
+\vspace{-10pt}
+\[
+	\infer[\alt<5->{\textcolor{red}{\to E}}{\to E}]{\qquad\qquad \term{f}: A\to B, \term{g}: B\to C, \term{y}: A \vdash \left(\lambda\term{x.f (g x)}\right) \term{ y}: C \qquad\qquad\qquad}{}
+\]
+\vfill
+}
+\pause
+
+\invisible<6->{
+\small
+\alert{term reduction}: ($\lambda$\term{x.g~(f~x)}) y $\stackrel{\beta}{\rightsquigarrow}$ \visible<4->{\term{g (f y)}}
+
+\visible<5->{\alert{proof reduction}: elimination followed by introduction}
+}
+
+\end{frame}
+
+
 \begin{frame}{Proof Normalization \& Term Reduction ($\times$)}
 	\small 
 	\[
@@ -729,7 +774,7 @@
 				\infer*[]{\Delta \vdash \term{u}: B}{}
 			}
 			&
-			\infer=[]{\Theta, A, B \vdash C}{
+			\infer=[]{\Theta, \term{x}: A, \term{y}: B \vdash C}{
 				\infer*[]{\Theta, A, \dots, B, \dots \vdash \term{v}: C}{
 				\infer[]{\term{x}: A \vdash \term{x}: A}{}
 				& 
@@ -819,7 +864,7 @@
 		\]
 		\item[$\lambda\Pi$]	Types can depend on terms
 		\[
-			\infer[]{\Gamma \vdash \Pi\term{x.A.B}: *}{\Gamma, \term{x}: A \vdash \term{B}: *}
+			\infer[]{\Gamma \vdash (\Pi\term{x:A.B}): *}{\Gamma, \term{x}: A \vdash \term{B}: *}
 		\]
 		\item[$\lambda\underline\omega$] Types can depend on types
 		\[
