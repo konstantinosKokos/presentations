@@ -1,0 +1,966 @@
+% \documentclass[aspectratio=169]{beamer} % handout removes dynamic effects
+\documentclass[aspectratio=169,handout]{beamer}
+\usecolortheme{spruce}
+\usetheme{X}
+
+\usepackage{soul}
+\usepackage{tabularx}
+\usepackage{stmaryrd}
+\usepackage{proof}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{emoji} % requires LuaLaTex compiler, is it worthy?
+\usepackage[outline]{contour}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{amssymb}
+\usepackage{xpatch}
+
+\usepackage{naturaltableau}
+
+\usepackage[backend=biber,style=authortitle,hyperref=false]{biblatex}
+\bibliography{../clin-abstract/bibliography.bib}
+%\AtEveryCitekey{\clearname{address}\clearfield{url}\clearfield{location}}
+\AtEveryCitekey{\iffootnote{\smaller[2]\color{pred}}{}}
+\renewcommand\thefootnote{\textcolor{pred}{\arabic{footnote}}}
+\xapptobibmacro{cite}{\setunit{\nametitledelim}\printfield{year}}{}{}
+
+% reset footnote counter for every frame
+\AtBeginEnvironment{frame}{\setcounter{footnote}{0}}
+
+\newif\ifshowall % use for working on single frame
+% \showallfalse
+\showalltrue
+
+% cell coloring for heatmap
+\newcommand{\hmc}[1]{\textbf{\cellcolor{black!#1}\ifnum #1>50\color{white}\fi{#1}}}
+
+\newcommand{\bluetxt}[1]{\textcolor{blue}{#1}}
+\definecolor{oranje}{rgb}{1.0, 0.49, 0.0}
+\newcommand{\oranjetxt}[1]{\contour{blue}{\textcolor{oranje}{#1}}}
+\newcommand{\transl}[1]{\text{\emph{#1}}}
+\newcommand{\disj}{\,|\,}
+\newcommand{\hide}[1]{}
+\newcommand{\hlt}[1]{\textcolor{red}{#1}}
+
+\newcommand{\depBI}[1]{#1^{\scriptscriptstyle\Box}\,}
+\newcommand{\depBE}[1]{#1_{\scriptscriptstyle\Box}\,}
+\newcommand{\depDI}[1]{#1^{\scriptscriptstyle\diamondsuit}\,}
+\newcommand{\depDE}[1]{#1_{\scriptscriptstyle\diamondsuit}\,}
+
+\newcommand{\type}[1]{\ensuremath\mathtt{#1}}
+\newcommand{\np}{\type{np}}
+\newcommand{\n}{\type{n}}
+\newcommand{\pr}{\type{pr}}
+\newcommand{\pp}{\type{pp}}
+\newcommand{\ppart}{\type{part}}
+\newcommand{\smain}{\type{s_{main}}}
+\newcommand{\ssub}{\type{s_{sub}}}
+\newcommand{\pron}{\type{pron}}
+\newcommand{\s}{\type{s}}
+\newcommand{\ahi}{\type{ahi}}
+\newcommand{\ti}{\type{ti}}
+\newcommand{\ww}{\type{ww}}
+\newcommand{\bw}{\type{bw}}
+
+\newcommand{\ensLP}{LangPro\,2$\times$2}
+\newcommand{\li}{\!\multimap\!}
+\newcommand{\term}[1]{#1}
+\newcommand{\mill}{ILL${}_{\multimap,\diamondsuit,\Box}$}
+\newcommand{\ps}{\vphantom{()}}
+\usepackage{tikz}
+% Tikz configuration/libraries/macros
+\usetikzlibrary{arrows,matrix,graphs,shapes,decorations,automata,backgrounds,petri,positioning,calc,decorations.pathmorphing,external,shapes.multipart}
+\usetikzlibrary{decorations.pathreplacing}
+\tikzstyle{underbrace style}=[decorate,decoration={brace,raise=7mm,amplitude=5pt,mirror}]
+\tikzstyle{underbrace text style}=[below, pos=.5, yshift=-8mm]
+
+\newcommand{\blocktitle}[1]{\normalsize\textcolor{pred}{#1}}
+\newcommand{\posimpl}{\overset{+}{\multimap}}
+\newcommand{\negimpl}{\overset{-}{\multimap}}
+\newcommand{\posat}[1]{\overset{+}{#1\proofspace}}
+\newcommand{\negat}[1]{\overset{-}{#1\proofspace}}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+
+
+\begin{document}
+
+% \renewcommand\@makefntext[1]{%
+%   \setstretch{1.0}
+%   \iftoggle{brkText}
+%     {\normalfont[\@thefnmark]\enspace #1}
+%     {\mkbibsuperscript{\normalfont\@thefnmark}\enspace #1}%
+%   \global\togglefalse{brkText}}
+
+
+\title[]{Logic-based NLI for Dutch}
+\author{
+    Lasha Abzianidze \and 
+    Konstantinos Kogkalidis
+	}
+\institute{
+     Utrecht Institute of Linguistics OTS, Utrecht University}
+\date[]{
+09-07-2021 $@$ CLIN
+}
+
+{%
+\setbeamertemplate{headline}{}
+\frame{\titlepage}
+}
+
+
+\section{Overview}
+
+
+%████████████████████████████████
+\begin{frame}{Logic-based approach to NLI}
+
+\begin{center}
+\begin{tikzpicture}[node distance=4mm and 15mm,
+tool/.style={color=white, rectangle, rounded corners=1mm, font=\scriptsize\bfseries, fill=black!70},
+kb/.style={rectangle, font=\small, color=white, fill=black!90, draw=black},
+data/.style={color=black!50!green, font=\footnotesize, minimum width=40mm},
+toolspec/.style={color=white,font=\footnotesize,color=black!50!green,align=left,node distance=1mm and 1mm}
+]
+\node (raw) [data] 
+{\alt<2->{\oranjetxt{SICK}-\emoji{flag-netherlands}\footcite{wijnholds-moortgat-2021-sick}}{Raw sentences}};
+\node (parser)  [below=of raw, tool, minimum width=50mm] 
+{\alt<2->{
+\oranjetxt{Alpino \&
+Neural Proof Nets}
+}{Syntactic parser}};
+\node (synt)  [below=of parser, data]  
+{\alt<2->{\oranjetxt{$\lambda^{\multimap, \diamondsuit, \Box}$ terms}}{Syntactic structures}};
+\node (rules) [below=of synt, tool] {
+\alt<2->{\oranjetxt{Semantic morphism}}{
+Conversion rules}};
+\node (log)  [below=of rules, data]  
+{\alt<2->{\oranjetxt{$\lambda^{\to}$ terms}}{Logical Forms}};
+\node (wn)  [right=37mm of log, tool, minimum width=40mm] 
+{
+\footnotesize
+\alt<2->{\oranjetxt{\textsmaller[1]{Open Dutch WordNet}}}{
+Knowledge base}};
+\node (tp)  [below right=7mm and 5mm of log, tool, minimum width=25mm] 
+{
+\alt<2->{\oranjetxt{LangPro}}{Theorem prover}};
+\node (out)  [below=of tp, data] {
+\alt<2->{\oranjetxt{\{N, E, C\}}}{
+Relation label}};
+
+\draw[->] (raw) -- (parser);
+\draw[->] (parser) -- (synt);
+\draw[->] (synt) -- (rules);
+\draw[->] (rules) -- (log);
+\draw[->] (log.south) -- (tp);
+\draw[->] (wn.south) -- (tp);
+\draw[->] (tp) -- (out);
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+
+\section{Syntax}
+
+%\subsection{The linear $\lambda$-calculus}
+\ifshowall
+%████████████████████████████████
+\begin{frame}{The linear $\lambda$-calculus}
+    % 1. explain technicalities:
+    %   a. types, give vocal examples of atomic vs complex, higher-order
+    %   b. terms, how parsing is proving in the logic, and how logics are 1-1 with λ-calculi
+    %   c. say that the actual parses uses an extended vocabulary of types & terms to capture dependency structure but ignore for now
+    % 2. give motivations:
+    %   a. these representations are already reminiscent of LLF which we use for inference
+    %   b. explain that the interpretation domain is arbitrary, allowing a smooth transition to semantics of any kind
+    % 3. introduce next slide -- if we get a proof we get a term, but how do we represent a proof?
+    Words are assigned ILL \textbf{types}, inductively defined as:
+    $
+        \mathcal{T} := a \ | \ t_1 \li t_2 \ 
+        \textcolor{gray}{| \ \Box^\alpha t \ | \ \diamondsuit^\delta t}
+    $
+    
+    where
+    \begin{itemize}
+    \item $a$ an atom, from a finite set $\mathcal{A}$:\\ 
+    \quad\small{
+        {$\np$, $\smain$, $\ssub$, $\pron$, \dots}
+        }
+    \item $t_1 \li t_2$ a linear function that \textbf{consumes} $t_1$ to produce $t_2$\\
+        \quad\small{
+            $\np \li \smain$, $\np \li (\np \li \smain)$,
+            $(\np \li \ssub) \li (\np \li \np)$, \dots
+        }
+    \end{itemize}\vfill
+    
+    \pause
+    Syntactic derivations $\equiv$ \textbf{proofs} $\overset{chc}{\equiv}$ functional programs:\\
+    \hfill
+    $
+    \tau := c^{t} \ |
+    \ \left( s^{t_1\multimap t_2}~ u^{t_1}\right)^{t_2} \ |
+    \ \left( \lambda x^{t_1}.s^{t_2} \right)^{t_1 \multimap t_2} \ 
+    \textcolor{gray}{
+        | \ \depBE{\alpha} \tau \ | \ \depBI{\alpha} \tau \ | \ \depDE{\delta} \tau \ | \ \depDI{\delta} \tau
+    }
+    $\hfill 
+    
+    \vfill\pause
+    \center{\emph{Dit is een voorbeeld}}
+    \vspace{-10pt}
+    \[
+    \synt{is}^{\np\li~\pron~\li~\smain}~
+        \left(
+            \synt{een}^{\n\li~\np}
+            ~
+            \synt{voorbeeld}^{\n}
+        \right)
+        ~
+        \synt{dit}^{\pron}
+    \]    
+    
+    
+\end{frame}
+
+
+%████████████████████████████████
+\begin{frame}{Proof Nets}
+    %   1. explain technicalities
+    %       a) what is a formula unfolding, a proof frame, a proof net?
+    %       b) why are proof nets a better alternative to other proof calculi?
+    \alt<6->{
+        \textbf{Proof net}\\
+        a polarized forest (\textbf{proof frame}) and a bijection between \textcolor{cyan}{$+$} and \textcolor{red}{$-$} (axiom links)
+    }{
+        Types are \textbf{trees}, with nodes inductively \textbf{polarized}:
+        \hfill \textcolor{cyan}{$+$} we \textbf{have} \hfill \alert{$-$} we \textbf{seek} \hfill ~
+    }
+    
+    \vfill
+    
+    \pause
+    \small\begin{center}
+    \begin{tikzpicture}
+        % words
+        \node (a)                   at (0em, 0em)               {een};
+        \node (very)                at (5em, 0em)               {heel};
+        \node (easy)                at (10em, 0em)              {eenvoudig};
+        \node (example)             at (15em, 0em)              {vorbeeld};
+        
+        % trees
+        \node (a_tensor)            at (0em, 2em)               
+            {\alt<3->{\textcolor{cyan}{$\li$}}{$\li$}};
+        \node (a_n)                 at (-1em, 4em)              
+            {\alt<4->{\textcolor{red}{\ps{$n$}}}{\ps{$n$}}};
+        \node (a_np)                at (1em, 4em)               
+            {\alt<4->{\textcolor{cyan}{\ps{$np$}}}{\ps{$np$}}};
+        
+        \node (very_tensor1)        at (5em, 2em)               
+            {\alt<3->{\textcolor{cyan}{$\li$}}{$\li$}};
+        \node (very_tensor2)        at (6.5em, 4em)             
+            {\alt<4->{\textcolor{cyan}{$\li$}}{$\li$}}; 
+        \node (very_cot)            at (3.5em, 4em)             
+            {\alt<4->{\textcolor{red}{$\li$}}{$\li$}};
+        \node (very_n1)             at (2.75em, 6em)            
+            {\alt<5->{\textcolor{cyan}{\ps{$n$}}}{\ps{$n$}}};
+        \node (very_n2)             at (4.25em, 6em)
+            {\alt<5->{\textcolor{red}{\ps{$n$}}}{\ps{$n$}}};
+        \node (very_n3)             at (5.75em, 6em)
+            {\alt<5->{\textcolor{red}{\ps{$n$}}}{\ps{$n$}}};
+        \node (very_n4)             at (7.25em, 6em)
+            {\alt<5->{\textcolor{cyan}{\ps{$n$}}}{\ps{$n$}}};
+        
+        \node (easy_tensor)         at (10em, 2em)              
+            {\alt<3->{\textcolor{cyan}{$\li$}}{$\li$}};
+        \node (easy_n1)             at (9em, 4em)               
+            {\alt<4->{\textcolor{red}{\ps{$n$}}}{\ps{$n$}}};
+        \node (easy_n2)             at (11em, 4em)              
+            {\alt<4->{\textcolor{cyan}{\ps{$n$}}}{\ps{$n$}}};
+        
+        \node (ex_n)                at (15em, 2em)
+            {\alt<3->{\textcolor{cyan}{$n$}}{$n$}};
+        
+        % internal links -- static
+        \draw (a_n)         --      (a_tensor)          --          (a_np);
+        \draw (very_cot)    --      (very_tensor1)      --          (very_tensor2);
+        \draw (very_n1)     --      (very_cot)          --          (very_n2);
+        \draw (very_n3)     --      (very_tensor2)      --          (very_n4);
+        \draw (easy_n1)     --      (easy_tensor)       --          (easy_n2);
+        
+        % axiom links 
+        \visible<7->{
+        \draw[->] (easy_n2)     --      ($(easy_n2) + (0em, 5em)$)      -|      (very_n2);
+        \draw[->] (very_n1)     --      ($(very_n1) + (0em, 4em)$)      -|      (easy_n1);
+        }
+        \visible<8->{
+        \draw[->] (ex_n)        --      ($(ex_n) + (0em, 6em)$)         -|      (very_n3);
+        }
+        \visible<9->{
+        \draw[->] (very_n4)     --      ($(very_n4) + (0em, 5em)$)      -|      (a_n);
+        \draw[->] (a_np)        --      ($(a_np) + (0em, 3em)$);
+        }
+    \end{tikzpicture}
+    
+    \[
+        \visible<9->{\texttt{een}~(}
+        \visible<7->{
+        % \texttt{very}~\left(\lambda x.\texttt{easy}~x\right)}~
+        \texttt{heel}~ \texttt{eenvoudig}}~
+        \visible<8->{\texttt{vorbeeld}}
+        \visible<9->{)}
+    \]
+    \end{center}
+\end{frame}
+
+
+%\subsection{Obtaining proof nets}
+%████████████████████████████████
+\begin{frame}
+{Neural Proof Nets\footcite{npn}: from sentences to $\lambda$-terms}
+    \begin{block}{\textbf{Supertagging}}
+        From sentences to proof frames with \textit{seq2seq} transduction
+    \end{block}
+    \visible<10->{
+    \begin{block}{\textbf{Proving}}
+        From proof frames to axiom links with \textit{Sinkhorn-Knopp}
+    \end{block}
+    }
+
+    
+    \small
+    \begin{minipage}{0.7\textwidth}
+        \begin{center}
+        \begin{tikzpicture}
+            % words
+            \node (a)                   at (0em, 0em)               {een};
+            \node (very)                at (5em, 0em)               {heel};
+            \node (easy)                at (10em, 0em)              {eenvoudig};
+            \node (example)             at (15em, 0em)              {vorbeeld};
+            
+            % trees
+            \visible<2->{
+                \node (a_tensor)            at (0em, 2em)               {\textcolor{cyan}{\ps{$\li$}}};}
+            \visible<3->{
+                \node (a_n)                 at (-1em, 4em)              {\textcolor{red}{\ps{$n_1$}}};}
+            \visible<4->{
+                \node (a_np)                at (1em, 4em)               {\textcolor{cyan}{\ps{$np_2$}}};
+            }
+            \visible<5->{
+                \node (very_tensor1)        at (5em, 2em)               {\textcolor{cyan}{\ps{$\li$}}};
+            }
+            \visible<9->{
+                \node (very_tensor2)        at (6.5em, 4em)             {\textcolor{cyan}{{\ps{$\li$}}}};
+            }
+            \visible<6->{
+                \node (very_cot)            at (3.5em, 4em)             {\textcolor{red}{{\ps{$\li$}}}};
+            }
+            \visible<7->{
+                \node (very_n1)             at (2.75em, 6em)            {\textcolor{cyan}{\ps{$n_3$}}};
+            }
+            \visible<8->{
+                \node (very_n2)             at (4.25em, 6em)            {\textcolor{red}{\ps{$n_4$}}};
+            }
+            \visible<9->{
+                \node (very_n3)             at (5.75em, 6em)            {\textcolor{red}{\ps{$n_5$}}};
+            }
+            \visible<9->{
+                \node (very_n4)             at (7.25em, 6em)            {\textcolor{cyan}{\ps{$n_6$}}};
+            }
+            
+            \visible<9->{
+            \node (easy_tensor)         at (10em, 2em)              {\textcolor{cyan}{\ps{$\li$}}};
+            \node (easy_n1)             at (9em, 4em)               {\textcolor{red}{\ps{$n_7$}}};
+            \node (easy_n2)             at (11em, 4em)              {\textcolor{cyan}{\ps{$n_8$}}};
+            
+            \node (ex_n)                at (15em, 2em)              {\textcolor{cyan}{\ps{$n_9$}}};
+            }
+            
+            % internal links -- dynamic
+            \visible<2->{
+                \draw (a_n)         --      (a_tensor)          --          (a_np);
+            }
+            \visible<5->{
+                \draw (very_cot)    --      (very_tensor1)      --          (very_tensor2);
+            }
+            \visible<6->{
+                \draw (very_n1)     --      (very_cot)          --          (very_n2);
+            }
+            \visible<9->{
+                \draw (very_n3)     --      (very_tensor2)      --          (very_n4);
+            }
+            \visible<9->{
+                \draw (easy_n1)     --      (easy_tensor)       --          (easy_n2);
+            }
+        \end{tikzpicture}
+        \end{center}
+    \end{minipage}%
+    \begin{minipage}{0.3\textwidth}
+        \visible<11->{
+        \alt<12->{
+        \begin{tikzpicture}[scale=0.4]
+            \fill[gray!10] (3, 0) rectangle +(1,1); %
+            \fill[gray!80] (3, 1) rectangle +(1,1);
+            \fill[gray!5] (3, 2) rectangle +(1,1); %
+            \fill[gray!5] (3, 3) rectangle +(1,1); %
+            \fill[gray!10] (2, 0) rectangle +(1,1); %
+            \fill[gray!5] (2, 1) rectangle +(1,1); %
+            \fill[gray!70] (2, 2) rectangle +(1,1);
+            \fill[gray!15] (2, 3) rectangle +(1,1); %
+            \fill[gray!5] (1, 0) rectangle +(1,1); %
+            \fill[gray!5] (1, 1) rectangle +(1,1); %
+            \fill[gray!00] (1, 2) rectangle +(1,1); %
+            \fill[gray!90] (1, 3) rectangle +(1,1);
+            \fill[gray!70] (0, 0) rectangle +(1,1);
+            \fill[gray!15] (0, 1) rectangle +(1,1); %
+            \fill[gray!5] (0, 2) rectangle +(1,1); %
+            \fill[gray!10] (0, 3) rectangle +(1,1); %
+            \node[left]     at (0, 0.5) {\textcolor{red}{$n_7$}};
+            \node[left]     at (0, 1.5) {\textcolor{red}{$n_5$}};
+            \node[left]     at (0, 2.5) {\textcolor{red}{$n_4$}};
+            \node[left]     at (0, 3.5) {\textcolor{red}{$n_1$}};
+            \node[above]    at (0.5, 4) {\textcolor{cyan}{$n_3$}};
+            \node[above]    at (1.5, 4) {\textcolor{cyan}{$n_6$}};
+            \node[above]    at (2.5, 4) {\textcolor{cyan}{$n_8$}};
+            \node[above]    at (3.5, 4) {\textcolor{cyan}{$n_9$}};
+            \draw (0, 0) grid (4,4);
+        \end{tikzpicture}}{
+        \begin{tikzpicture}[scale=0.4]
+            \fill[gray!20] (3, 0) rectangle +(1,1); %
+            \fill[gray!60] (3, 1) rectangle +(1,1);
+            \fill[gray!10] (3, 2) rectangle +(1,1); %
+            \fill[gray!10] (3, 3) rectangle +(1,1); %
+            \fill[gray!20] (2, 0) rectangle +(1,1); %
+            \fill[gray!10] (2, 1) rectangle +(1,1); %
+            \fill[gray!40] (2, 2) rectangle +(1,1);
+            \fill[gray!30] (2, 3) rectangle +(1,1); %
+            \fill[gray!10] (1, 0) rectangle +(1,1); %
+            \fill[gray!10] (1, 1) rectangle +(1,1); %
+            \fill[gray!00] (1, 2) rectangle +(1,1); %
+            \fill[gray!80] (1, 3) rectangle +(1,1);
+            \fill[gray!40] (0, 0) rectangle +(1,1);
+            \fill[gray!30] (0, 1) rectangle +(1,1); %
+            \fill[gray!10] (0, 2) rectangle +(1,1); %
+            \fill[gray!20] (0, 3) rectangle +(1,1); %
+            \node[left]     at (0, 0.5) {\textcolor{red}{$n_7$}};
+            \node[left]     at (0, 1.5) {\textcolor{red}{$n_5$}};
+            \node[left]     at (0, 2.5) {\textcolor{red}{$n_4$}};
+            \node[left]     at (0, 3.5) {\textcolor{red}{$n_1$}};
+            \node[above]    at (0.5, 4) {\textcolor{cyan}{$n_3$}};
+            \node[above]    at (1.5, 4) {\textcolor{cyan}{$n_6$}};
+            \node[above]    at (2.5, 4) {\textcolor{cyan}{$n_8$}};
+            \node[above]    at (3.5, 4) {\textcolor{cyan}{$n_9$}};
+            \draw (0, 0) grid (4,4);
+        \end{tikzpicture}}
+        }
+        \end{minipage}
+\end{frame}
+
+%████████████████████████████████
+\begin{frame}{Other ingredients: Alpino \& ODWN}
+
+Alpino\footcite{alpino}:
+\begin{itemize}
+    \item Stochastic Attribute Value Grammar (HPSG) for Dutch
+    \item Builds dependency structures
+    \item Output converted to ILL$_{\li,\diamondsuit,\Box}$
+\end{itemize}
+\vfill
+
+Open Dutch WordNet\footcite{ODWN:2016}:%{\smaller[3]\fullcite{ODWN:2016}}
+\begin{itemize}
+    \item Princeton-style, subset of Cornetto
+    \item 52k synsets
+    \item Synonymy, hypernymy, antonymy, similarity \& derivation
+\end{itemize}
+
+
+\end{frame}
+
+
+\section{Natural Tableau}
+
+%████████████████████████████████
+\begin{frame}
+{Natural Tableau: 
+proving\footcite{abzianidze-2015-tableau}
+\visible<11->{and \alert{learning}\footcite{abzianidze-2020-learning}}}
+
+\vspace{-6mm}
+\begin{minipage}{0.38\pagewidth}
+    \smaller
+    LangPro:
+    \begin{itemize}
+        \item Operates on semantic $\lambda_\to$ terms
+        \item[] \quad (as semantic \textit{tableaus})
+        \item Generic to ent/cont
+        \item<2-> Proof by refutation
+        \item<3-> Meaning decomposition
+        \item<12-> Learning as abduction:\\
+        $\synt{hedgehog} \subs \synt{small~animal}$
+    \end{itemize}
+\end{minipage}%
+\begin{minipage}{0.66\pagewidth}
+\hspace{-20pt}
+\scalebox{.7}{\begin{forest}
+baseline,for tree={align=center, parent anchor=south, child anchor=north, l sep=5mm, s sep=18mm}
+[{\lab{1}~$\synt{a}~\synt{hedgehog}~(\lambda x.\,\synt{a}~\synt{boy}~(\lambda y.\,\synt{by}~y~\synt{cradle}~x)) : \T$}\\
+ {\lab{2}~$\synt{a}~\synt{person}~(\lambda x.\,\alt<11->{\alert{\synt{a}~(\synt{small}~\synt{animal})}}{\synt{an}~\synt{animal}}~(\lambda y.\,\synt{hold}~y~x) : \F$}\toppad{4mm},
+ visible on=<2->
+ [{\lab{3}~$\alt<12->{\bluetxt{\synt{hedgehog}}}{\synt{hedgehog}} : [h] : \T$}\\
+  {\lab{4}~$\synt{a}~\synt{boy}~(\lambda y.\,\synt{by}~y~\synt{cradle}~h) : \T$}\toppad{4mm},
+  	labelA={\ndList{1}},
+  	%labB={0mm}{\footnotesize}{\ndList{2,$p$}}
+  	visible on=<3->
+  [{\lab{5}~$\synt{boy} : [b] : \T$}\\
+  {\lab{6}~$\synt{by}~b~\synt{cradle} : [h] : \T$}\toppad{4mm},
+  labelA={\ndList{4}},
+  visible on=<4->
+  [{\lab{7}~$\synt{cradle} : [h,b] : \T$},
+    labelA={\ndList{6}},
+    %labB={0mm}{\footnotesize}{\ndList{2,$b$}},
+    node options={label={[label distance=2pt, font=\footnotesize, visible on=<6->]-90:{\ndList{2,$b$}}}},
+    visible on=<5->
+      [{\lab{8}~$\synt{person} : [b] : \F$},
+      visible on=<6->
+      [{$\btimes$},
+      	  labelA={\ndList{5,8}},
+      	  visible on=<7->
+      ]
+      ]
+      [{\lab{9}~$\alt<11->{\alert{\synt{a}~(\synt{small}~\synt{animal})}}{\synt{an}~\synt{animal}}~(\lambda y.\,\synt{hold}~y~b) : \F$},
+         %labB={0mm}{\footnotesize}{\ndList{9,$h$}},
+         node options={label={[label distance=2pt, font=\footnotesize, visible on=<8->]-90:{\ndList{9,$h$}}}},
+         visible on=<6->
+      [{\lab{10}~$\alt<11->{\alert{\synt{small}~\synt{animal}}}{\synt{animal}} : [h] : \F$},
+        visible on=<8->
+         [{\alt<11->{\alert{\textsc{open}}}{$\btimes$}},
+          labelA={\ndList{3,10}},
+          visible on=<9->
+         ]
+      ]  
+      [{\lab{11}~$\synt{hold} : [h,b] : \F$},
+        visible on=<8->
+        [{$\btimes$},
+          labelA={\ndList{7,11}},
+          visible on=<10->
+        ]
+      ] 
+      ]
+  ]      
+  ]      
+ ]       
+]
+\end{forest}}
+\vspace{-10mm}
+\end{minipage}
+
+\end{frame}
+
+\fi
+
+
+
+%████████
+\section{Findings}
+
+%████████████████████████████████
+\begin{frame}{Experiments \& Results}
+
+
+
+\centerline{\scalebox{.9}{
+\begin{tabular}[t]{@{} r@{~/~} l  c  c@{}}
+\toprule
+Parser&\textsc{pos} tagger 
+    & \visible<1->{Test acc.\%} 
+    & \visible<2->{($-$\small{abduction})} \\\midrule
+Alpino&Alpino
+    & \visible<1->{75.9} 
+    & \visible<2->{{\smaller[1](-1.8)}} \\
+Alpino&spaCy
+    & \visible<1->{77.6} 
+    & \visible<2->{{\smaller[1](-1.7)}} \\
+NPN&Alpino
+    & \visible<1->{74.3} 
+    & \visible<2->{{\smaller[1](-1.5)}} \\
+NPN&spaCy
+    & \visible<1->{76.4} 
+    & \visible<2->{{\smaller[1](-1.4)}} \\
+    \midrule
+\multicolumn{2}{l}{\kern-2mm\textbf{\oranjetxt{\ensLP}}} 
+    & \visible<1->{\textbf{78.7}} 
+    & \visible<2->{{\smaller[1](-1.6)}} \\
+\bottomrule
+\end{tabular}}
+\hspace{5mm}
+\raisebox{-10.5mm}{\visible<3->{
+    \scalebox{.9}{\begin{tabular}[t]{l|r|r|r|}
+    \textbf{\oranjetxt{LP\,2$\times$2}\,\%} & E & C & N \\\hline
+    Entail. & \hmc{15} & \hmc{ 0} & \hmc{14} \\\hline
+    Contra. & \hmc{ 0}  & \hmc{10} & \hmc{ 5} \\\hline
+    Neutral & \hmc{ 1}  & \hmc{ 1} & \hmc{55} \\\hline
+\end{tabular}}}}
+}
+\bigskip
+
+\visible<4->{
+tl;dr:
+\begin{itemize}
+\item Consistent performance across combinations
+\item Ensemble outperforms individuals
+\item Abduction works well!
+% \item NPN slightly inferior to Alpino (..why?)
+\end{itemize}
+}
+    
+\end{frame}
+
+
+%\subsection{Comparison}
+%████████████████████████████████
+\begin{frame}{Does it beat BERT? \emoji{upside-down-face}
+\visible<3->{ \dots sometimes \emoji{smiling-face-with-sunglasses}}}
+\vspace{-7mm}
+
+% \begin{center}
+% \scalebox{.9}{
+% \begin{tabular}[t]{@{}l@{~~~} l l l@{}}%\toprule
+% Models
+% & All %\visible<2->{\smaller[1]{$\pm\Delta$}} 
+% & Ent %\visible<3->{\smaller[1]{$\pm\Delta$}} 
+% & Cont %\visible<4->{\smaller[1]{ $\pm\Delta$}}
+% \\\midrule
+% \ensLP & 78.7 & 50.6 & 66.3
+% \\\arrayrulecolor{gray!50}\midrule[.5pt]\arrayrulecolor{black}
+% \textbf{BERTje}\footcite{bertje} 
+% &   82.0 %\visible<2->{\smaller[1]{$-0.3$}}
+% &	86.2 %\visible<3->{\smaller[1]{$+2.0$}}
+% &	86.7\\ %\visible<4->{\smaller[1]{$+0.8$}}\\
+% mBERT\footcite{bert} 
+% &   79.9 %\visible<2->{\smaller[1]{$+0.7$}}
+% &	79.0 %\visible<3->{\smaller[1]{$+4.7$}}
+% &	81.9\\ %\visible<4->{\smaller[1]{$+3.1$}}\\
+% RobBert\footcite{delobelle2020robbert} 
+% &   81.7 %\visible<2->{\smaller[1]{$+0.9$}}
+% &	76.9 %\visible<3->{\smaller[1]{$+6.4$}}
+% &	85.3\\ %\visible<4->{\smaller[1]{$+1.1$}}\\
+% \bottomrule
+% \end{tabular}}\\
+% \end{center}
+
+\begin{center}
+\scalebox{.9}{
+\begin{tabular}[t]{@{}l@{~~~} c c@{}}%\toprule
+Models
+& test acc.\%  & \smaller[1]{$\pm\Delta$ LangPro's E\&C}
+\\\midrule
+\ensLP & 78.7 & $-$
+\\\arrayrulecolor{gray!50}\midrule[.5pt]\arrayrulecolor{black}
+\textbf{BERTje}\footcite{bertje} 
+&   82.0 & \smaller[1]{$-0.3$}\\
+mBERT\footcite{bert} 
+&   79.9 & \smaller[1]{$+0.7$}\\
+RobBert\footcite{delobelle2020robbert} 
+&   81.7 & \smaller[1]{$+0.9$}\\
+\bottomrule
+\end{tabular}}
+%
+%
+\visible<2->{
+\raisebox{-1mm}{\scalebox{.57}{
+\begin{tabular}[t]{r r}
+    \begin{tabular}[t]{r|r|r|r|}
+        \textbf{\oranjetxt{LP\,2$\times$2}\,\%} & E & C & N \\\hline
+        E & \hmc{15}  & \hmc{ 0} & \hmc{14} \\\cline{2-4}
+        C & \hmc{ 0}  & \hmc{10} & \hmc{ 5} \\\cline{2-4}
+        N & \hmc{ 1}  & \hmc{ 1} & \hmc{55} \\\cline{2-4}
+    \end{tabular}
+&  
+    \begin{tabular}[t]{r|r|r|r|}
+        \textbf{BERTje\,\%} & E & C & N \\\hline
+        E & \hmc{25}  & \hmc{ 0} & \hmc{ 4} \\\cline{2-4}
+        C & \hmc{ 1}  & \hmc{13} & \hmc{ 1} \\\cline{2-4}
+        N & \hmc{10}  & \hmc{ 3} & \hmc{45} \\\cline{2-4}
+    \end{tabular}\bigskip
+\\
+    \begin{tabular}[t]{r|r|r|r|}
+        \textbf{mBERT\,\%} & E & C & N \\\hline
+        E & \hmc{23}  & \hmc{ 0} & \hmc{ 6} \\\cline{2-4}
+        C & \hmc{ 1}  & \hmc{12} & \hmc{ 2} \\\cline{2-4}
+        N & \hmc{ 9}  & \hmc{ 2} & \hmc{45} \\\cline{2-4}
+    \end{tabular}
+&  
+    \begin{tabular}[t]{r|r|r|r|}
+        \textbf{RobBert\,\%} & E & C & N \\\hline
+        E & \hmc{22}  & \hmc{ 0} & \hmc{ 7} \\\cline{2-4}
+        C & \hmc{ 1}  & \hmc{12} & \hmc{ 2} \\\cline{2-4}
+        N & \hmc{ 7}  & \hmc{ 2} & \hmc{47} \\\cline{2-4}
+    \end{tabular}
+\\
+\end{tabular}
+}}}
+%
+\end{center}
+
+\visible<3->{
+\begin{tabular}{l@{\hspace{7mm}} l}
+\textsmaller[1]{
+\nlip{1556}{Entailment}
+{Een man draagt een \alert{boom}}
+{Een man draagt een \alert{plant}}}
+&
+\textsmaller[1]{
+\nlip{175}{Entailment}
+{Een familie kijkt naar een kleine jongen die een honkbal \alert{raakt}}
+{Een jongen \alert{slaat} een honkbal}}
+\\[7mm]
+\textsmaller[1]{
+\nlip{4092}{Contradiction}
+{De persoon tekent \alert{niet}}
+{Een man tekent een foto}}
+&
+\textsmaller[1]{
+\nlip{6356}{Contradiction}
+{Een vrouw in een rode jurk is een instrument aan het \alert{opbergen}}
+{Een vrouw in een rode jurk \alert{bespeelt} een instrument}}
+\end{tabular}
+}
+
+% All 13 E&C problems which were solved only by Langpr0
+% 168	A child is hitting a baseball	A child is missing a baseball	3.8	CONTRADICTION
+% 175	A family is watching a little boy who is hitting a baseball	A boy is hitting a baseball	4.2	ENTAILMENT
+% 177	A family is watching a little boy who is hitting a baseball	A child is hitting a baseball	4.1	ENTAILMENT
+% 798	Two people are in the snow not wearing clothes, which provides camouflage. 	Two people are in the snow, wearing clothes that provide camouflage	3.8	CONTRADICTION
+% 1158	A woman is removing ingredients from a bowl	A woman is adding ingredients to a bowl	3.3	CONTRADICTION
+% 1556	A man is carrying a tree	A man is carrying a plant	4.3	ENTAILMENT
+% 3606	A monkey is riding a bike	A monkey is riding a bicycle	4.9	ENTAILMENT
+% 4092	The person is not drawing	A man is drawing a picture	3.5	CONTRADICTION
+% 4470	A man is kicking a soccer ball	A man is kicking a ball	4.8	ENTAILMENT
+% 4925	Someone is putting ingredients into a wok	Someone is putting ingredients into a pan	4.5	ENTAILMENT
+% 5140	A man is having fun with water	A man is playing with water	4.5	ENTAILMENT
+% 6356	A woman in a red dress is putting away an instrument	A woman in a red dress is playing an instrument	3.7	CONTRADICTION
+% 9480	A black dog and a white dog are wrestling on the ground	Two dogs are fighting	4.2	ENTAILMENT
+
+
+\end{frame}
+
+
+%████████████████████████████████
+\begin{frame}{SICK NL}
+
+More challenging than the original:
+\begin{itemize}
+    \item[1] Phrase shifts from MT\\
+    \begin{tabular}{ccc}
+         \emph{drawing a picture} & $\mapsto$ &  
+         \oranjetxt{\emph{een tekening maakt}} \textbar{} \oranjetxt{\emph{tekent een foto}}\\
+         \emph{dirt bike race} & $\mapsto$ & \oranjetxt{\emph{crossmotorwedstrijd}} \textbar{} \oranjetxt{\emph{crossmotorrace}}
+    \end{tabular} 
+    \item[2]<2-> Good translations, bad labels? \\
+    \begin{tabular}{ccc}
+    \textsmaller[1]{\nlip{3181}{Neutral?}
+    {A man is trekking in the woods}
+    {The man is not hiking in the woods}} 
+    & $\mapsto$ &
+    \textsmaller[1]{\nlip{3181}{\alert{Neutral}}
+    {\oranjetxt{Een man is aan het wandelen in het bos}}
+    {\oranjetxt{De man is niet aan het wandelen in het bos}}}
+    \end{tabular}
+\end{itemize}
+\vfill
+
+\visible<3->{
+..but contains useful lexical relations:
+    \begin{itemize}\itemsep0mm
+    \item[] \synt{\oranjetxt{pizza}}\subs\synt{\oranjetxt{voedsel}}/\!\transl{food}
+    \item[] \synt{\oranjetxt{lopen}} $\equiv$ \synt{\oranjetxt{rennen}}
+    \item[] $\ldots$
+    \end{itemize}
+}
+\end{frame}
+
+\section{Conclusion}
+%████████████████████████████████
+\begin{frame}{Conclusion \& Future work}
+
+\begin{itemize}
+    \item[\emoji{check-mark}] Lots of $\lambda$ambdas
+    \item[\emoji{check-mark}] First multilingual application of LangPro
+    \item[\emoji{check-mark}] First ``real-world'' use of NPN
+    \item[\emoji{check-mark}] Explainable reasoning for Dutch
+\end{itemize}   
+
+\vfill
+
+\visible<2->{
+\begin{itemize}
+    \item[\emoji{memo}] Qualitative comparison of (more) parsers
+    \item[\emoji{memo}] Experiment with more languages
+    \item[\emoji{memo}] Neural tableaus? 
+\end{itemize}
+}
+\end{frame}
+
+%████████████████████████████████
+\appendix
+\section{Backup sldies}
+% BACKUP SLIDES
+%████████████████████████████████
+\begin{frame}{Syntactic $\lambda$-terms to $\lambda$-logical forms}
+
+$\synt{play}^{\diamondsuit^{\text{su}}\np\multimap\smain}
+\left(
+    \depDI{\text{su}}
+    \left(
+        \left(
+            \depBE{\text{det}}~\synt{a}^{\Box^\text{det}(\n \multimap \np)}
+        \right)
+        \synt{boy}^\n
+    \right)
+\right)$
+\hfill $\leadsto ~ 
+\synt{play}^{\np,\s}
+    \left(
+        \synt{a}^{\n,\np} ~ \synt{boy}^\n
+    \right)
+$\vfill
+
+$\synt{large}^{\np,\np}~\big(\synt{brown}^{\np,\np}~(\synt{a}^{\n,\np}~\synt{dog}^{\n})\big)$
+\hfill $\leadsto ~ 
+\synt{a}^{\n,\np}~\big(\synt{large}^{\hlt{\n,\n}}~(\synt{brown}^{\hlt{\n,\n}}~\synt{dog}^{\n})\big)
+$\vfill
+
+$\synt{and}~\big(\abst{x} \synt{brown}  (x~\synt{dog})\big) \big(\abst{y} \synt{black}  (y~\synt{dog})\big)~\synt{no}$\\\medskip
+\hfill $\leadsto ~ 
+\synt{and}^{\hlt{\np,\np,\np}}~\big(\hlt{\synt{no}}~(\hlt{\synt{brown}}~\synt{dog})\big)~\big(\hlt{\synt{no}}~(\hlt{\synt{black}}~\synt{dog})\big)
+$\vfill
+
+$
+\synt{cut}^{\pp,\n,\np,\s}~(\synt{in}^{\n,\pp}~\synt{slice}_\n)~\synt{meat}_\n$
+\hfill $\leadsto ~ 
+\synt{cut}^{\pp,\hlt{\np},\np,\s}~(\synt{in}^{\hlt{\np},\pp}~\hlt{\{}\synt{slice}^\n\hlt{\}^\np})~\hlt{\{}\synt{meat}^{\n}\hlt{\}^\np}
+\label{r:n_to_np}
+$
+\bigskip
+
+\begin{itemize}
+\item Map POS tags and shift to slightly \emph{Generalized} POS tags: UPOS \& Penn
+\item Use only these syntactic categories: $\n, \np_x, \s_x, \pp, \pr$
+\item Function words $\mapsto$ canonical terms (excl. prepositions)\kern-30mm
+\end{itemize}
+    
+\end{frame}
+
+
+%████████████████████████████████
+\begin{frame}{\hspace{85mm}Natural Tableau for Dutch \emoji{flag-netherlands}}
+
+\begin{minipage}[t]{80mm}
+\vspace{-15.3mm}
+\scalebox{.62}{\begin{forest}
+baseline,for tree={align=center, parent anchor=south, child anchor=north, inner sep=0pt, l sep=3mm, s sep=30mm}
+[{$
+          \oranjetxt{\sysm{vrolijk}}
+          \left(\oranjetxt{\sysm{een}}~\oranjetxt{\sysm{jongen}}
+            \left(\abst{x}\oranjetxt{\sysm{een}}~\oranjetxt{\sysm{piano}}
+              \left(\abst{y} \oranjetxt{\sysm{spelen}} ~ y ~ x \right)\right)\right): \T$}\\
+         {\lab{1}~$\sysm{happily}
+          \left(\sysm{a}~\sysm{boy}
+            \left(\abst{x}\sysm{a}~\sysm{piano}
+              \left(\abst{y} \sysm{play} ~ y ~ x \right)\right)\right): \T$}\\
+ {$
+    \oranjetxt{\sysm{een}}~\oranjetxt{\sysm{piano}} 
+      \left(\oranjetxt{\sysm{worden}}
+        \left(\abst{y}\oranjetxt{\sysm{een}}~\oranjetxt{\sysm{persoon}}
+          \left(\abst{x}\oranjetxt{\sysm{door}} ~ x ~ \oranjetxt{\sysm{bespelen}} ~ y \right)\right)\right) : \F$}\toppad{4mm}\\
+    {\lab{2}~$\sysm{a}~\sysm{piano} 
+      \left(\sysm{be}
+        \left(\abst{y}\sysm{a}~\sysm{person}
+          \left(\abst{x}\sysm{by} ~ x ~ \sysm{play} ~ y \right)\right)\right) : \F$}
+ [{\lab{3}~$
+          \sysm{een}~\sysm{jongen}
+            \left(\abst{x}\sysm{een}~\sysm{piano}
+              \left(\abst{y} \sysm{spelen} ~ y ~ x \right)\right) : \T$},
+  labelA={\ndList{1}},
+ [{\lab{4}~$\sysm{jongen} : [j] : \T$}\\
+  {\lab{5}~$
+    \sysm{een}~\sysm{piano}
+      \left(\abst{y} \sysm{spelen} ~ y ~ j \right) : \T$}\toppad{4mm},
+  	labelA={\ndList{3}},
+  	%labB={0mm}{\footnotesize}{\ndList{2,$p$}}
+  [{\lab{6}~$\sysm{piano} : [p] : \T$}\\
+   {\lab{7}~$
+      \sysm{spelen} ~: [p, j] : \T$}\toppad{4mm},
+   labelA={\ndList{5}},
+   [{\lab{8}~$
+        \sysm{worden}
+        \left(\abst{y}\sysm{een}~\sysm{persoon}
+          \left(\abst{x}\sysm{door} ~ x ~ \sysm{bespelen} ~ y \right)\right) : [p] :\F$},
+    labelA={\ndList{2,6}},
+    [{\lab{9}~$
+        \abst{y}\sysm{een}~\sysm{persoon}
+          \left(\abst{x}\sysm{door} ~ x ~ \sysm{bespelen} ~ y \right) : [p] :\F$},
+     labelA={\ndList{8}},
+     [{\lab{10}~$
+        \sysm{een}~\sysm{persoon}
+          \left(\abst{x}\sysm{door} ~ x ~ \sysm{bespelen} ~ p \right) :\F$},
+      labelA={\ndList{9}}, labB={0mm}{\footnotesize}{\ndList{10,$j$}}
+      [{\lab{11}~$
+        \sysm{persoon} : [j] : \F$},
+       [{$\btimes$},
+           labelA={\ndList{4,11}} 
+       ]
+      ]
+      [{\lab{12}~$
+        \abst{x}\sysm{door} ~ x ~ \sysm{bespelen} ~ p : [j] :\F$},
+       [{\lab{13}~$
+        \sysm{door} ~ j ~ \sysm{bespelen} ~ p : \F$}, labelA={\ndList{12}}
+        [{\lab{14}~$
+         \sysm{bespelen} [p, j] : \F$}, labelA={\ndList{13}}
+         [{$\btimes$}, labelA={\ndList{7,14}} 
+         ]
+        ]
+       ]
+      ]
+     ]
+    ]
+   ]      
+  ]      
+ ] 
+ ]
+]
+\end{forest}}
+\end{minipage}
+%
+%
+%
+\begin{minipage}[t]{50mm}
+\vspace{15mm}
+\textsmaller[1]{
+\nlip{1771}{Entailment}
+{\oranjetxt{Een jongen speelt vrolijk piano}}
+{\oranjetxt{Een piano wordt bespeeld door een persoon}}
+}
+
+\textsmaller[1]{
+\nlip{1771}{Entailment}
+{A boy is happily playing the piano}
+{A piano is being played by a person}
+}
+\end{minipage}
+
+\end{frame}
+
+%████████
+
+
+\end{document}

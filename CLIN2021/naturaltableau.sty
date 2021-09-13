@@ -1,0 +1,68 @@
+
+\usepackage{forest} 
+\usepackage{tcolorbox} % for colored boxes
+\usepackage{relsize}
+
+%███ Tableau node IDs
+% \newtcbox{\lab}[1][white]{on line, arc=1.5pt, colframe=black!30, colback=#1, %before upper={\rule[-3pt]{0pt}{10pt}}, boxrule=1pt, boxsep=0pt, left=1.5pt, right=1.5pt, top=1.5pt, bottom=1.5pt}
+%\newcommand{\lab}[1]{\relsize{-1}\fbox{#1}}
+\newcommand{\lab}[1]{\colorbox{black!15}{#1}}
+
+\newcommand{\synt}[1]{\textbf{\textsmaller[1]{#1}}}
+\newcommand{\sysm}[1]{\textbf{\textsmaller[1]{#1}}}
+\newcommand{\abst}[1]{\lambda #1.\,}
+\newcommand{\toppad}[1]{\rule{0pt}{#1}}
+\newcommand{\botpad}[1]{\rule[#1]{0pt}{0pt}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\btimes}{{\scalebox{1.15}{$\times$}\kern-1.5pt}}
+\newcommand{\ndList}[1]{\scalebox{.85}{[#1]}}
+\newcommand{\subs}{\sqsubseteq}
+
+% for styles in forest
+\forestset{
+  labA/.style n args=3{edge label/.expanded={node [midway, auto=#1, font=\unexpanded{#2}]{\unexpanded{#3}}},
+  },
+  labB/.style n args=3{label={[label distance=#1, font=\unexpanded{#2}]-90:{\unexpanded{#3}}},
+  },
+  labelA/.style ={edge label/.expanded={node [midway, auto=right, font=\unexpanded{\footnotesize}]{\unexpanded{#1}}},
+  },
+  labelB/.style ={label={[label distance=3pt, font=\unexpanded{\footnotesize}]-90:{\unexpanded{#1}}},
+  }
+}
+
+%███████████████████████████████████████████████
+%███ Beamer overlays ans tyle with tikz pictures
+\tikzset{%
+  invisible/.style={opacity=0,text opacity=0},
+  visible on/.style={alt=#1{}{invisible}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+  transparent/.style={opacity=0.1,text opacity=0.1},
+  opaque on/.style={alt=#1{}{transparent}},
+  alerted/.style={color=alerttextdefaultfg},
+  alert on/.style={alt=#1{alerted}{}},
+}
+
+%███ Beamer overlays and style inside forest
+\forestset{%
+  visible on/.style={%
+    for tree={%
+      /tikz/visible on={#1},
+      edge={/tikz/visible on={#1}}}},
+  opaque on/.style={%
+    for tree={%
+      /tikz/opaque on={#1},
+      edge={/tikz/opaque on={#1}}}},
+  alerted on/.style={%
+    for tree={%
+      /tikz/alerted on={#1},
+      edge={/tikz/alerted on={#1}}}},
+}
+
+\newcommand{\nlip}[4]{%
+\begin{tabular}{@{}l@{}}
+\fbox{#1} ~ \textbf{#2}\\#3\\\hline #4
+\end{tabular}}
