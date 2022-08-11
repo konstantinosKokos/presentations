@@ -81,25 +81,56 @@
 }
 }
 
+{
+\setbeamercolor{background canvas}{bg=black}
+\begin{frame}[plain]{}
+\noindent
+\centering
+\larger[5]
+\vfill
+\textcolor{pink}{\DejaSans{☮ Certified}\\
+\smaller[3]
+no military applications/funding}
+\end{frame}
+}
+
+\begin{frame}{The agenda}
+	\smaller
+	\begin{itemize}
+		\item exploring \AE thel
+		\item parsing with graph learning machinery
+	\end{itemize}
+\end{frame}
+
 
 \section{Recap: Grammar}
 
 \begin{frame}{Types}
 	\smaller	
 	
-		ILL$_{\li}$ plus $\Diamond, \Box$ modalities for \textit{dependency domain demarkation}.
+		ILL$_{\li}$ plus $\diamondsuit, \Box$ modalities for \textit{dependency domain demarkation}.
 	\vfill
 		
-	Types inductively defined by:
+	$\mathbb{T}$ inductively defined as:
 	\[
-		\mathbb{T} := A \ | \  T \li T \ | \ \Diamond^d  T \ | \ \Box^d T \qquad A \in \mathbb{A}, T \in \mathbb{T}
+		\mathbb{T} := A \ 
+					\uncover<2->{| \  T \li T \ 
+					\uncover<3->{| \ \diamondsuit^d  T \ 
+					\uncover<4->{| \ \Box^d T
+					}}}
+					\qquad A \in \mathbb{A}, T \in \mathbb{T}
 	\]
 	\vfill	
 
 	\begin{itemize}
-		\item[$\li$]		-- linear function builder
-		\item[$\Diamond$] 	-- reserved for "necessary arguments", i.e. complements
-		\item[$\Box$]		-- reserved for "optional functors", i.e. adjuncts
+		\item[$\mathbb{A}$] 				-- closed set of base types
+		\uncover<2->{
+		\item[$\li$]						-- linear function builder
+		\uncover<3->{
+		\item[$\diamondsuit$] 				-- reserved for "necessary arguments", i.e. complements
+		\uncover<4->{
+		\item[$\Box$]						-- reserved for "optional functors", i.e. adjuncts
+		}}}
 	\end{itemize}
 \end{frame}
 
@@ -126,7 +157,7 @@
 	\visible<2->{
 	\\
 	\multicolumn{2}{l}{{\DejaSans ☺} \smaller ~ simple dependency demarkation}\\
-	$\infer[\Diamond^d I]{\langle \Gamma \rangle^{d} \vdash \vartriangle^d \term{t}: \Diamond^d T}{\Gamma \vdash \term{t}: T}$
+	$\infer[\diamondsuit^d I]{\langle \Gamma \rangle^{d} \vdash \vartriangle^d \term{t}: \diamondsuit^d T}{\Gamma \vdash \term{t}: T}$
 	&
 	$\infer[\Box^d E]{\langle \Gamma \rangle^d \vdash \blacktriangledown^d \term{s}: T}{\Gamma \vdash \term{s}: \Box^d T}$
 	\\
@@ -142,18 +173,18 @@
 	\multicolumn{2}{l}{{\DejaSans 😱} \smaller ~ cosmic horror from the great beyond}\\
 	$\infer[\Box^d I]{\Gamma \vdash \blacktriangle^d \term{s}: \Box^d T}{\langle \Gamma \rangle^d \vdash \term{s}: T}$
 	&
-	$\infer[\Diamond^d E]{\Gamma[\Delta] \vdash \term{t}[\term{x} \mapsto \triangledown^d \term{s}]: T_2}{
+	$\infer[\diamondsuit^d E]{\Gamma[\Delta] \vdash \term{t}[\term{x} \mapsto \triangledown^d \term{s}]: T_2}{
 			\Gamma[\langle \term{x}: T_1 \rangle^d] \vdash \term{t}: T_2			
 			&\quad
-			\Delta \vdash \term{s}: \Diamond^d T_1}$
+			\Delta \vdash \term{s}: \diamondsuit^d T_1}$
 	\\
 	}}}
 	\end{tabularx}}
 \end{frame}
 
 
-\begin{frame}{Example}
-alt-tab!
+\begin{frame}{Today's Example}
+	alt-tab
 \end{frame}
 
 
@@ -200,25 +231,25 @@ subtree polarity (\textit{preserved} to the right, \textit{inverted} to the left
 	\centering
 	\begin{tikzpicture}
 		\visible<3->{\node 		(b0)				at (0, 0)				{\dgat{13-}{$\multimap$}};
-		\visible<4->{\node 		(rc)				at (-0.66, 0.75)		{\drat{14-}{$\diamondsuit^{relcl}$}};
+		\visible<4->{\node 		(rc)				at (-0.66, 0.75)		{\drat{18-}{$\diamondsuit^{relcl}$}};
 		\draw (b0) -- (rc);
-		\visible<5->{\node 		(b1)				at (-0.66, 1.5)			{\drat{15-}{$\multimap$}};
+		\visible<5->{\node 		(b1)				at (-0.66, 1.5)			{\drat{19-}{$\multimap$}};
 		\draw (rc) -- (b1);
-		\visible<6->{\node 		(!x)				at (-1, 2.25)			{\dgat{16-}{$!^{x}$}};
-		\alt<20->{
+		\visible<6->{\node 		(!x)				at (-1, 2.25)			{\dgat{21-}{$!^{x}$}};
+		\alt<21->{
 			\draw[dashed] (b1) -- (!x);
 		}{
 			\draw (b1) -- (!x);
 		}
-		\visible<7->{\node 		(!m)				at (-1, 3)				{\dgat{17-}{$!^{mod}$}};
+		\visible<7->{\node 		(!m)				at (-1, 3)				{\dgat{22-}{$!^{mod}$}};
 		\draw (!x) -- (!m);
-		\visible<8->{\node 		(b2)				at (-1, 3.75)			{\dgat{18-}{$\multimap$}};
+		\visible<8->{\node 		(b2)				at (-1, 3.75)			{\dgat{23-}{$\multimap$}};
 		\draw (!m) -- (b2);
-		\visible<9->{\node 		(pp0)				at (-1.5, 4.5)			{\drat{19-}{$ppart$}};
+		\visible<9->{\node 		(pp0)				at (-1.5, 4.5)			{\drat{24-}{$ppart$}};
 		\draw (b2) -- (pp0);
-		\visible<10->{\node 	(pp1)				at (-0.5, 4.5)			{\dgat{19-}{$ppart$}};
+		\visible<10->{\node 	(pp1)				at (-0.5, 4.5)			{\dgat{24-}{$ppart$}};
 		\draw (b2) -- (pp1);
-		\visible<11->{\node		(ssub)				at (-0.33, 2.3)			{\hnorm \drat{16-}{$ssub$}};
+		\visible<11->{\node		(ssub)				at (-0.33, 2.3)			{\hnorm \drat{20-}{$ssub$}};
 		\draw (b1) -- (ssub);
 		\visible<12->{
 		\node 					(bm)				at (0.66, 0.75)			{\dgat{14-}{$\Box^{mod}$}};
@@ -227,7 +258,7 @@ subtree polarity (\textit{preserved} to the right, \textit{inverted} to the left
 		\draw (bm) -- (b3);
 		\node					(np1)				at (0.33, 2.25)			{\drat{16-}{$np$}};
 		\draw (b3) -- (np1);
-		\node					(np2)				at (0.99, 2.25)			{\dgat{16-}{$np$}};
+		\node					(np2)				at (0.99, 2.25)			{\dgat{17-}{$np$}};
 		\draw (b3) -- (np2);
 		}}}}}}}}}}
 	\end{tikzpicture}
@@ -243,16 +274,16 @@ subtree polarity (\textit{preserved} to the right, \textit{inverted} to the left
 
 	\centering
 	\begin{tikzpicture}
-		\node 					(the)         		at (-0.3, 0)   			{\boxat{37-}{the}};
-		\node 					(t1_det)         	at (-0.3, 0.75)      	{$\boxat{36-}{\dg{\Box^{det}}}$};
-		\node					(t1_b0)				at (-0.3, 1.5)			{$\boxat{35-}{\dg{\multimap}}$};
-		\node					(t1_n)				at (-0.6, 2.25)			{$\boxat{38-}{\dr{n}}$};
-		\node					(t1_np)				at (0, 2.25)			{$\boxat{34-}{\dg{np}}$};
+		\node 					(the)         		at (-0.3, 0)   			{\boxat{38-}{the}};
+		\node 					(t1_det)         	at (-0.3, 0.75)      	{$\boxat{37-}{\dg{\Box^{det}}}$};
+		\node					(t1_b0)				at (-0.3, 1.5)			{$\boxat{36-}{\dg{\multimap}}$};
+		\node					(t1_n)				at (-0.6, 2.25)			{$\boxat{39-}{\dr{n}}$};
+		\node					(t1_np)				at (0, 2.25)			{$\boxat{35-}{\dg{np}}$};
 		\draw (t1_det) -- (t1_b0) -- (t1_n);
 		\draw (t1_b0) -- (t1_np);
 %		--------------------------------------------------------------------------------------------------------
-		\node					(land)				at (1, 0)				{\boxat{40-}{land}};
-		\node					(t2_n)				at (1, 0.75)			{$\boxat{39-}{\dg{n}}$};
+		\node					(land)				at (1, 0)				{\boxat{41-}{land}};
+		\node					(t2_n)				at (1, 0.75)			{$\boxat{40-}{\dg{n}}$};
 %		--------------------------------------------------------------------------------------------------------
 		\node					(where)				at (2.6, 0)				{\boxat{13-}{where}};		
 		\node 					(t3_b0)				at (2.6, 0.75)			{$\boxat{12-}{\dg{\multimap}}$};		
@@ -266,7 +297,7 @@ subtree polarity (\textit{preserved} to the right, \textit{inverted} to the left
 		\node					(t3_ss)				at (2.3, 3.0)			{$\boxat{16-}{\hnorm \dr{ssub}}$};
 		\node					(t3_bm)				at (3.2, 1.5)			{$\boxat{11-}{\dg{\Box^{mod}}}$};
 		\node					(t3_b3)				at (3.2, 2.25)			{$\boxat{10-}{\dg{\multimap}}$};
-		\node					(t3_np1)			at (2.9, 3)				{$\boxat{33-}{\dr{np}}$};
+		\node					(t3_np1)			at (2.9, 3)				{$\boxat{34-}{\dr{np}}$};
 		\node					(t3_np2)			at (3.5, 3)				{$\boxat{9-}{\dg{np}}$};
 		\draw (t3_b0) -- (t3_rc) -- (t3_b1);
 		\draw[dashed] (t3_b1) --  (t3_!x);
@@ -331,11 +362,11 @@ subtree polarity (\textit{preserved} to the right, \textit{inverted} to the left
 			\alt<14->{\vartriangle^{relcl}(\alt<15->{\lambda \mathrm{x_{0}}.(\alt<18->{\alt<19->{\alt<20->{\textsf{was}}{???}~
 			\alt<21->{\vartriangle^{vc}(\alt<24->{\alt<25->{\blacktriangledown ^{mod}\triangledown ^{mod}\alt<26->{\blacktriangledown ^{x}\triangledown ^{x}\alt<27->{\mathrm{x_{0}}}{???}}{(???)}}{???}
 			~\alt<29->{\textsf{murdered}}{???}}{???})}{???}}{???}
-			~\alt<30->{\vartriangle^{su}\alt<32->{\textsf{democracy}}{???}}{???}}{???})}{???})}{???}}{???}
+			~\alt<30->{\vartriangle^{su}\alt<33->{\textsf{democracy}}{???}}{???}}{???})}{???})}{???}}{???}
 	)}{???}
 	~ 
-	\alt<35->{(\alt<36->{\blacktriangledown^{det}\alt<37->{\textsf{the}}{???}}{???}
-	~\alt<40->{\textsf{land}}{???})}{???}}{}	
+	\alt<36->{(\alt<37->{\blacktriangledown^{det}\alt<38->{\textsf{the}}{???}}{???}
+	~\alt<41->{\textsf{land}}{???})}{???}}{}	
 %	\blacktriangledown ^{mod}(\textsf{where}~\vartriangle ^{relcl}\lambda \mathrm{x_{0}}.(\textsf{was}~\vartriangle ^{vc}(\blacktriangledown ^{mod}\triangledown ^{mod}\blacktriangledown ^{x}\triangledown ^{x}\mathrm{x_{0}}~\textsf{murdered})~\vartriangle ^{su}\textsf{democracy}))~
 %	(\blacktriangledown ^{det}\textsf{the}~\textsf{land})
 	}
@@ -364,9 +395,17 @@ written and directed by\\
 \begin{frame}
 \flushright
 \larger
-\textit{``Lets neural shit up''}\\
-\smaller[2]
+\textit{``Lets neural sh!t up''}\\
+\smaller
 -- Alonzo Church, 1973
+
+\vfill
+
+\flushleft
+\smaller[2]
+\visible<2->{
+\textit{disclaimer: not an actual quote}
+}
 \end{frame}
 
 
@@ -402,66 +441,49 @@ proof net traversal
 	\smaller[2]
 	\centering
 	\begin{tikzpicture}
-		\alt<9->{
-		}{
-		\alt<8->{
+		\visible<8>{
 			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 5) 
-			{};
+			(4.2, 5) {};
 		}
-		{		
-		\alt<7->{
+		\visible<7>{
 			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 4.25) 
-			{};
+			(4.2, 4.25) {};
 		}
-		{
-		\alt<6->{
+		\visible<6>{
 			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 3.75) 
-			{};
+			(4.2, 3.75) {};
 		}
-		{
-		\alt<5->{
+		\visible<5>{
 			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 3) 
-			{};
+			(4.2, 3) {};
 		}
-		{
-		\alt<4->{
+		\visible<4>{
 			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 2.25) 
-			{};
-		}{
-		\alt<3->{
+			(4.2, 2.25) {};
+		}
+		\visible<3>{
 			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 1.5) 
-			{};
+			(4.2, 1.5) {};
 		}
-		{
-		\alt<2->
-		{
-		\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
+		\visible<2>{
+			\node[rectangle, inner sep=0pt, minimum width=320pt, minimum height=20pt, rounded corners, ultra thick,draw=black,fill=gray!30]
 			(bert)
 			at
-			(4.2, 0.75) 
-			{};
+			(4.2, 0.75) {};
 		}
-		{
-		}}}}}}}}
-		
+
 		\node 					(the)         		at (-0.3, -1)   		{the};
 		\node 					(t1_det)         	at (-0.3, 0.75)      	{\gqmarkat{3-}{$\Box^{det}$}};
 		\node					(t1_b0)				at (-0.3, 1.5)			{\alt<3->{\gqmarkat{4-}{$\multimap$}}{}};
@@ -540,32 +562,47 @@ proof net traversal
 \vfill
 \end{frame}
 
+\begin{frame}{Not just a gray rectangle!}
+    \smaller 
+    1 decoding step per tree depth; 3 message-passing rounds per step
+    \begin{itemize}
+        \item \textit{contextualize: states $\to$ states}\\
+        \quad \alert{universal transformer encoder w/ relative weights}\\
+        \quad (many-to-many, update states with neighborhood context)
+        \item \textit{predict: state $\to$ nodes}\\
+        \quad \alert{token classification w/ dynamic tree embeddings}\\
+        \quad (one-to-many, predict fringe nodes from current state)
+        \item \textit{feedback: nodes $\to$ state}\\
+        \quad \alert{heterogeneous graph attention}\\
+        \quad (many-to-one, update state with last predicted nodes)
+    \end{itemize} 
+    \vfill
+    \flushright
+    [\href{https://arxiv.org/abs/2203.12235}{Kogkalidis \& Moortgat, ???}]
+\end{frame}
+
 \begin{frame}{Axiom Linking}
 	\smaller
 	
-	\alt<10->{no missing edges! \smiley}{missing edges \frownie}\\
-	\visible<2-9>{
+	\alt<11->{\smiley ~ less missing edges}{\visible<3->{\frownie ~ missing edges!}}
 		{\smaller
 		\begin{itemize}
 			\item[\alert{!}] only consider edges between atoms of the \textit{same} sign and \textit{different} polarity
 			\item[\alert{!}] each atom can only be used \textit{once}
 		\end{itemize}
 		}
-	}
 
 	\smaller
 	\vfill
 	\centering
 	\begin{tikzpicture}		
-%%		--------------------------------------------------------------------------------------------------------
+		\visible<2->{
+			\draw[->] (t1_n) -- ($(t1_n) + (0,1)$) -|  (t2_n);
+			\draw[->] (t3_ss) -- ($(t3_ss) + (0, 0.5)$) -| (t5_ss);
+		}
 
-%		\fill[gray!30]	(5, 5.5) 	rectangle +(0.5,0.5);
-%		\fill[gray!60]	(5, 5) 		rectangle +(0.5,0.5);
-%		\fill[gray!10]	(5.5, 5.5)	rectangle +(0.5,0.5);
-%		\fill[red]		(5.5, 5)	rectangle +(0.5,0.5);
-
-	    \visible<3-9>{
-	   	    \draw[step=0.5] (4.99,4.99) grid (6,6);
+	    \visible<3-10>{
+	   	\draw[step=0.5] (4.99,4.99) grid (6,6);
 	   	\visible<4->{
 	   		\invisible<5->{
 	   		\node[circle, inner sep=1pt, outer sep=0pt,draw=black]		(f1) at (3, 5.75)		{$f$};
@@ -615,7 +652,7 @@ proof net traversal
 	   		\draw[step=0.5] (7.49,4.99) 	grid (8.5, 6);
 	    }
 	    }
-	    \visible<10->{
+	    \visible<11->{
 		\draw[->] (t3_p1) -- ($(t3_p1) + (0,0.5)$) -| (t6_pp);
 		\draw[->] (t5_pp) -- ($(t5_pp) + (0,3.75)$) -| (t3_p2);
 		}
@@ -675,6 +712,26 @@ proof net traversal
 		\node					(t6_pp)				at (8.3, 0.75)			{\dg{$ppart$}};
 %%		--------------------------------------------------------------------------------------------------------
 	\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}{your turn}
+	break the parser!
+\end{frame}
+
+
+\section{Reality Check}
+
+\begin{frame}{Reality check}
+	\smaller[2]
+		\begin{itemize}
+			\item tagger: applicable to any CG (\dg{applied})
+			\uncover<3->{
+			\item parser: adaptable to any flavor of linear logic (\dg{adapted})
+			\uncover<4->{
+			\item proofs: plug your own semantics / apply your own morphisms (\dr{todo})
+			}}
+		\end{itemize}
 \end{frame}
 
 \end{document}
