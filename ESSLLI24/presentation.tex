@@ -1,0 +1,646 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{A}
+\usepackage{fontspec}
+\setromanfont[Ligatures=TeX]{TeX Gyre Pagella}
+
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{emoji}
+\usepackage{relsize}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{wasysym}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{calc,scopes,shapes}
+\usepackage{turnstile}
+\usepackage{soul}
+\usepackage{amsmath}
+\usepackage{proof}
+\setbeamercovered{transparent=05}
+
+\usepackage{adjustbox}
+\setlist[itemize]{label=$\circ$, topsep=0pt, itemsep=0pt}
+\setlist[itemize,2]{label=-,leftmargin=*}
+
+
+\usepackage{eqparbox}
+
+\definecolor{light}{rgb}{0.35,0.35,0.35}
+\definecolor{red}{HTML}{D20000}
+\definecolor{blue}{HTML}{0000CD}
+\definecolor{green}{HTML}{007100}
+
+\title{Dependency as Modality, Parsing as Permutation}
+\subtitle{\textcolor{light}{A Neurosymbolic Perspective on Categorial Grammars}\vspace{1em}}
+\date{\vspace{-1cm}ESSLLI, August 2024, Leuven}
+\author{Konstantinos Kogkalidis}
+
+\newcommand{\li}{\!\multimap\!}
+
+
+\begin{document}
+
+\newcommand{\light}[1]{\textcolor{light}{\smaller #1}}
+
+
+\maketitle
+
+\section{Backstory}
+\begin{frame}{The (Very) Big Picture}
+\smaller
+\qquad
+\begin{minipage}{0.35\textwidth}
+	\vfil
+	\begin{tikzpicture}[scale=1.3]
+		\filldraw[thick, draw=black, fill=black!10] (0,0) circle (2);
+		\draw (0, 1.8) node {CL};
+		\filldraw[thick, draw=black, fill=black!20] (-0.6,-0) circle (1.4);
+		\draw (-0.8, 1.2) node {IL};
+		\filldraw[thick, draw=black, fill=black!20] (0.6, -0) circle (1.4);
+		\draw[thick, draw=black] (-0.6,-0) circle (1.4);
+		\draw (0.8, 1.15) node {LL};
+		\draw[clip] (-0.6,-0) circle (1.4);
+		\fill[black!30] (0.6,-0) circle (1.4);
+		\draw[align=center] (0, 0.8) node {ILL\\ (\alt<2->{\alert{LP}}{LP})};
+		\draw[clip] (0.6,-0) circle (1.4);
+		\filldraw[thick,draw=black,fill=black!40] (0.5, -0.65) circle (0.8);
+		\draw (0.5, -0.3) node {\alt<2->{\alert{L}}{L}};
+		\begin{scope}
+		\draw[clip] (0.5, -0.65) circle (0.8);
+		\filldraw[thick,draw=black,fill=black!50] (-0.5, -0.65) circle (0.8);
+		\end{scope}
+		\draw (0, -0.6) node {NL};
+		\filldraw[thick,draw=black,fill=black!40] (-0.5, -0.65) circle (0.8);
+		\draw[thick] (0.5, -0.65) circle (0.8);
+		\draw (-0.5, -0.3) node {\alt<2->{\textcolor{red}{NLP}}{NLP}};
+		\draw[clip] (0.5, -0.65) circle (0.8);
+		\filldraw[thick,draw=black,fill=black!50] (-0.5, -0.65) circle (0.8);
+		\draw (0, -0.6) node {\alt<2->{\alert{NL}}{NL}};
+	\end{tikzpicture}
+\end{minipage}\qquad%
+\begin{minipage}{0.3\textwidth}
+	\begin{tabular}{@{}ll@{}}
+		\textbf{CL} & (folklore)\\
+		\textbf{IL} & no double negation elim, no excluded middle\\
+		\multicolumn{2}{@{}r@{}}{\light{Heyting, 1930s}}\\
+		\textbf{LL} & no erasure, no duplication\\
+		\multicolumn{2}{@{}r@{}}{\light{Girard, 1987}}\\
+		\textbf{L} & non-commutative ILL\\
+		\multicolumn{2}{@{}r@{}}{\light{Lambek, \alt<2->{1958}{\alert{1958}}}}\\
+		\textbf{NL} & non-associative L\\
+		\multicolumn{2}{@{}r@{}}{\light{Lambek, \alt<2->{1961}{\alert{1961}}}}\\
+		\textbf{NLP} & non-associative ILL\\
+		\multicolumn{2}{@{}r@{}}{\light{Abrusci, 1990; van Benthem, 1991}}\\
+	\end{tabular}
+	\vfill
+\end{minipage}
+\vfill
+
+\visible<2->{
+\centering
+\textbf{(N)L(P)}: \textit{Grammar Logics}
+}
+\end{frame}
+
+\begin{frame}{The (Slightly Less) Big Picture}
+	\begin{center}
+	\textbf{LLC}\\
+	\light{the (well-typed) categorial perspective}
+
+	\vfill
+	
+	\begin{tabular}{@{}ccc@{}}
+			\toprule
+			\textbf{Language}			& \textbf{Logic}			& \textbf{Computation}\\
+			\toprule
+			grammar						& substructural logic 		& $\lambda$-calculus\\
+			grammatical category			& proposition				& type\\
+			phrasal composition			& inference rule 			& computation step\\
+			grammaticality				& derivability				& type inhabitation\\[0.5em]
+			\multicolumn{3}{@{}c@{}}{\qquad\vdots}\\[0.5em]
+			\visible<2->{
+			\alert{sentence}				& \alert{proof}				& \alert{program}
+			}
+		\end{tabular}\vfill
+	\end{center}	
+\end{frame}
+
+\begin{frame}{How \textcolor{light}{(\smaller idealized)}}
+	\begin{center}\begin{adjustbox}{height=.8\textheight}\begin{tikzpicture}
+		[t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt}, 
+		 node distance=10pt,
+		 b/.style={draw=black,rectangle,fill opacity=0.95,fill=gray!02,very thick},
+		 c/.style={smooth cycle,tension=2,very thick,draw=red},
+		 tb/.style={anchor=north west,minimum height=40pt,minimum width=3pt,text width=270pt,inner sep=0pt}
+		 ]
+		\node[t] (s)				at (6.5, 0) {\light{(your sentence goes here)}};
+		\node[t] (w1) 			at (0, 0) {$w_1$};
+		\node[t] (wdots)			at (2, 0) {\dots};		
+		\node[t] (wn) 			at (4, 0) {$w_n$};
+		
+		\uncover<2->{
+		\node[t] (t1)			at (0, -3) {$t_1 \ | \ \textcolor{black!80}{t'_1 \ | \ ...}$};
+		\node[t] (tdots)			at (2, -3) 	  {\dots};
+		\node[t] (tn)			at (4, -3) {$t_n \ | \ \textcolor{black!80}{t'_n \ | \ ...}$};
+		\draw[->,thick] (w1) -- ($(t1.north) + (0, 0.1)$);
+		\draw[->,thick] (wn) -- ($(tn.north) + (0, 0.1)$);
+
+		\alt<8->{
+			\node[b, minimum width=150pt,minimum height=20pt,label={[anchor=center]center:\textbf{\alert{Lexicon}}},draw=red] (lex) at (2, -1.5) {};
+		}
+		{
+			\node[b, minimum width=150pt,minimum height=20pt,label={[anchor=center]center:\textbf{Lexicon}}] (lex) at (2, -1.5) {};
+		}
+		
+		
+		\uncover<3->{				 	
+		\draw [very thick,decorate,decoration={brace,aspect=0.2,amplitude=10pt,mirror}] (-0.75,-3.3) -- (4.75,-3.3) 
+				node[black,xshift=-125pt,yshift=-0.7cm,circle,draw=black,inner sep=1pt] {\Large$\times$};
+		\node[t] (c1)			at (3.75, -5) {$w_1: t_1, w_2: t_2, \ \dots \ w_n: t_n \vdash \textbf{?}$};
+		\node[t] (c2)			at (3.75, -6) {\textcolor{black!80}{$w_1: t'_1, w_2: t_2, \ \dots \ w_n: t_n \vdash \textbf{?}$}};
+		\node[t] (c3)			at (3.75, -7) {\textcolor{black!60}{$w_1: t''_1, w_2: t_2, \ \dots \ w_n: t_n \vdash \textbf{?}$}};
+		\node[t] (c4)			at (3.75, -8) {\textcolor{black!40}{\vdots}};
+		
+		\draw[->, thick, rounded corners,black!10,dotted] (0.325, -4.3) -- ++ (0, -3.8) -- ++ (0.75, 0);
+		\draw[->, thick, rounded corners,black!40] (0.325, -4.3) -- ++ (0, -2.8) -- ++ (0.75, 0) node[above left] {\small$\Gamma_3$};
+		\draw[->, thick, rounded corners,black!70] (0.325, -4.3) -- ++ (0, -1.8) -- ++ (0.75, 0) node[above left] {\small$\Gamma_2$};
+		\draw[->, thick, rounded corners] (0.325, -4.3) -- ++ (0, -0.8) -- ++ (0.75, 0) node[above left] {\small$\Gamma_1$};		
+
+		\uncover<4->{
+		\node[t] (p1)			at (10.5, -5) {};
+		\node[t] (p2)			at (10.5, -6) {};
+		\node[t] (p3)			at (10.5, -7) {};
+		\node[t] (p4)			at (10.5, -8) {};
+		
+		\draw[->] (c1) -- (p1);
+		\draw[->,black!70] (c2) -- (p2);
+		\draw[->,black!40] (c3) -- (p3);
+		
+		\node[b, minimum width=60pt, minimum height=120pt,label={[anchor=south west]south west:\begin{tabular}{@{}l@{}}\textbf{Type}\\\textbf{Inference}\end{tabular}}] (pr)
+								at (8, -6.5)	{};		
+
+		\uncover<5->{
+		\draw [very thick,decorate,decoration={brace,aspect=0.5,amplitude=10pt,mirror}] (10.45,-8.25) -- (10.45,-4.65) 
+				node[black,xshift=20pt,yshift=-52pt,circle,draw=black,inner sep=1pt] {\large$\bigcup$};
+		\draw[thick, ->, rounded corners=20,dashed] (11.6, -6.5) -- ++ (1, 0) node[right] {$\{p_1, \alt<7->{\alert{!p_2}}{p_2}, p_4, \alt<7->{\alert{!p_5}}{p_5},\dots \}$};
+		\node[t] (ps)			at (13.75, -7) {\light{(proofs come out here)}};
+		}}}}
+			
+	
+		\visible<6->{
+		\node[tb]				at (7.35, -0.75) {	
+				\begin{itemize}
+					\item[\textbf{!}] \eqmakebox[things][l]{logic strict}
+					    $\leadsto$ \alert{\textbf{undergeneration}}
+					\uncover<7->{
+					\item[\textbf{!}] \eqmakebox[things][l]{logic too lax}
+						$\leadsto$ \alert{\textbf{overgeneration}}
+					\uncover<8->{
+					\item[\textbf{!}] \eqmakebox[things][l]{lexical refinement}
+						$\leadsto$ \textbf{\alert{bigger lexicon}}
+					\uncover<9->{
+					\item[\textbf{!}] \eqmakebox[things][l]{bigger lexicon}
+						$\leadsto$ \textbf{\alert{ambiguity \& sparsity}}
+					\uncover<10->{
+					\item[\textbf{!}] \eqmakebox[things][l]{ambiguity}
+						$\leadsto$ \textbf{\alert{more proof candidates}}
+					\uncover<11->{	  \eqmakebox[things][l]{...}
+						$\leadsto$ \textcolor{red}{\frownie}
+					}}}}}
+				\end{itemize}
+				
+			};
+		}
+		
+		\visible<6->{
+		\node[t]				at (14, -6) {\alert{$p_3$?}};
+		}
+		
+		\visible<9->{
+			\draw [c] plot [smooth cycle, tension=1] coordinates {(-1,-3) (0,-2.65) (1, -3) (0, -3.35)};
+			\draw [c] plot [smooth cycle, tension=1] coordinates {(3,-3) (4,-2.65) (5, -3) (4, -3.35)};
+		}
+		\visible<10->{
+			\draw[c] plot [smooth cycle, tension=1.9,yshift=-20pt] coordinates {(2.85, -7.25) (1.95, -4.) (6, -4.75)};
+			\draw[c] plot [smooth cycle, tension=1.9,yshift=-20pt] coordinates {(2.8, -7.25) (1.9, -4.1) (6.05, -4.7)};
+			\node (X) at (4, -6) {\Huge \alert{${o}^n$}};
+		}
+	\end{tikzpicture}\end{adjustbox}\end{center}
+\end{frame}
+
+\section{Contributions}
+\begin{frame}{(1) Dependency as Modality}
+	\begin{center}
+		\alt<4->{\light{Glorious new parse}}{\alt<2->{\light{Fancy colored rules}}{\light{A boring, old, monochromatic parse}}}
+	\end{center}
+	
+	\vfill
+	\alt<4->{
+	\begin{tikzpicture}
+	\node  at (0, 0) {
+	\smaller
+	$
+		\infer[\backslash E]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}}, \text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash s}{
+			\infer[\textcolor{red}{\diamondsuit^{su} I}]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}} \vdash \textcolor{red}{\diamondsuit^{su}} np}{
+				\infer[\mathcal{L}ex]{\text{this}: np}{}
+			}
+			&
+			\infer[/ E]{\text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{su}}np\backslash s}{
+				\infer[\mathcal{L}ex]{\text{makes} \vdash (\textcolor{red}{\diamondsuit^{su}}np \backslash s)/\textcolor{red}{\diamondsuit^{obj}}np}{}
+				&
+				\infer[\textcolor{red}{\diamondsuit^{obj} I}]{\textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{obj}} np}{
+					\infer[/ E]{\textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \vdash np}{
+						\infer[\textcolor{blue}{\Box^{mod}} E]{\textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}} \vdash np/ np}{
+							\infer[\mathcal{L}ex]{\text{no}: \textcolor{blue}{\Box^{mod}}(np/ np)}{}
+						}
+						&
+						\infer[\mathcal{L}ex]{\text{sense}: np}{}
+					}
+				}
+			}
+		}
+	$
+	};
+	\visible<5->{
+	\node[rectangle, minimum width=400pt, minimum height=100pt,fill=white,fill opacity=0.88] (x) at (0,0.51) {};
+	\node[rectangle, minimum width=10pt, minimum height=10pt, fill=white,fill opacity=0.88] (x) at (3.8, -1.43) {};
+	\node[rectangle, minimum width=20pt, minimum height=10pt, fill=white,fill opacity=0.88] (x) at (0.73, -1.4) {};
+	\visible<6->{
+	\draw (-2.68, -1.7) [bend left=90] edge[->] node[below] {\smaller[2]{\textcolor{red}{su}}} (-4, -1.7);
+	\draw (-2.6, -1.7) [bend right=95] edge[->] node[below, outer sep=0pt] {\smaller[2]{\textcolor{red}{obj}}} (-0.26, -1.7);
+	\draw (-0.34, -1.7) [bend left=30] edge[->] node[below, outer sep=0pt] {\smaller[2]{\textcolor{blue}{mod}}} (-1.6, -1.7);
+	}}
+	\end{tikzpicture}
+	}{
+	\alt<2->{
+		\begin{align*}
+		\infer[\textcolor{red}{\diamondsuit^c I}]{\textcolor{red}{\langle} \Gamma \textcolor{red}{\rangle^{c}} \vdash \textcolor{red}{\diamondsuit^c} A}{\Gamma \vdash A}
+		& &
+		\infer[\textcolor{blue}{\Box^\alpha E}]{\textcolor{blue}{\langle} \Gamma \textcolor{blue}{\rangle^\alpha} \vdash A}{\Gamma \vdash \textcolor{blue}{\Box^\alpha}A}
+		\end{align*}\vfill
+		
+		\begin{itemize}
+			\item[] \textcolor{blue}{$\alpha$} an adjunct \\
+			~\light{a structurally dispensable word/phrase}
+			\item[] \textcolor{red}{$c$} a complement\\
+			~\light{a necessary argument of a syntactic predicate}
+		\end{itemize}
+		\vfill
+		
+		\uncover<3->{
+		\begin{flushright}\light{$\diamondsuit, \Box$ \sim{} refinement\textsuperscript{\textuparrow}}\end{flushright}
+		}
+	}
+	{
+	\smaller
+	\[
+		\infer[\backslash E]{\text{this}, \text{makes}, \text{some}, \text{sense} \vdash s}{
+			\infer[\mathcal{L}ex]{\text{this}: np}{}
+			&
+			\infer[/ E]{\text{makes}, \text{some}, \text{sense} \vdash np\backslash s}{
+				\infer[\mathcal{L}ex]{\text{makes} \vdash(np \backslash s)/np}{}
+				&
+				\infer[/ E]{\text{some}, \text{sense} \vdash np}{
+					\infer[\mathcal{L}ex]{\text{some}: np/ np}{}
+					&
+					\infer[\mathcal{L}ex]{\text{sense}: np}{}
+				}
+			}
+		}
+	\]
+	}}
+ \end{frame}
+
+\begin{frame}{(2) The Neural Lexicon \visible<7->{-- \light{take \# 2}}}
+	\centering
+	\begin{center}\begin{adjustbox}{height=.75\textheight}\begin{tikzpicture}
+		[t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt, inner sep=0pt}, 
+		 node distance=10pt,
+		 c/.style={smooth cycle,tension=2,very thick,draw=black}
+		 ]
+
+	\visible<7->{
+	\begin{scope}[xshift=20pt]
+	\node[t]	 (np2)			at (0.6, -0.4)	{\alt<8,12,13,19,23>{\textcolor{red}{$np$}}{$np$}};
+	\node[t]	 (s2)			at (-0.6, -0.4) 	{\alt<20,24>{\textcolor{red}{$s$}}{$s$}};
+	\node[t] (ss)			at (0.4, 0.40)	{\alt<11,16>{\textcolor{red}{/}}{/}};
+	\node[t] (bs)			at (-0.4, 0.40)	{\alt<17,21>{\textcolor{red}{$\backslash$}}{$\backslash$}};
+	\node[t] (su)			at (-1.1, -1.20)	{\alt<18,22>{\textcolor{red}{$\diamondsuit^{su}$}}{$\diamondsuit^{su}$}};
+	\node[t] (ob)			at (0, -1.20)	{$\diamondsuit^{obj}$};
+	\node[t] (mod2)			at (1.1, -1.20)	{\alt<10,15>{\textcolor{red}{$\Box^{mod}$}}{$\Box^{mod}$}};
+	\end{scope}
+	\draw[c] plot [smooth cycle, tension=1] coordinates {(0.75, 1) (-1, -1.2)  (2.5, -1.2)};
+	}
+	\visible<-6>	{
+	\node[t]	 (np)			at (-0.5, -0.6)	{\alt<3,5>{\textcolor{red}{$np$}}{$np$}};
+	\node[t]	 (mod)			at (1.9, -1.3) 	{\alt<4>{\textcolor{red}{$\Box^{mod}(np/np)$}}{$\Box^{mod}(np/np)$}};
+	\node[t] (v)				at (0.9, 0.5) 	{$(\diamondsuit^{su}np \backslash s)/\diamondsuit^{obj}np$};
+	\draw[c] plot [smooth cycle, tension=1] coordinates {(1.5, 1) (-1.2, -0.2) (1.5, -1.8) (3.2, -0.8)};
+	}
+	
+		
+	\node[minimum width=60pt,minimum height=60pt,fill=black!90,fill opacity=1,label={[anchor=center]center:
+		\textbf{\textcolor{white}{
+		\alt<7->{
+			\begin{tabular}{@{}c@{}}Better\\Black Box\end{tabular}
+		}{
+			Black Box
+		}
+		}}},
+	outer sep=5pt,draw=black!40, ultra thick] (lex) at (1, -4.5) {};
+
+	
+	\visible<2,3,8>{
+	\node[t,text width=30pt]	 (this)			at (-2, -4.5)	{"this"};
+	}
+	\visible<2-6,8->{
+	\draw[->, thick] (this) -- (lex);
+	}
+	\visible<3,5>{
+	\draw[->, thick, red] (lex) -- (np);
+	}
+	\visible<4,9-13>{
+	\node[t,text width=17pt]	 (no)			at (-2, -4.5)	{"no"};
+	}
+	\visible<4>{
+	\draw[->, thick, red] (lex) -- (mod);
+	}
+	\visible<5>{
+	\node[t,text width=30pt]	 (that)			at (-2, -4.5)	{\textcolor{red}{"that"}};
+	\node[t] 								at (-2, -5)		{\light{brand new word!}};
+	}
+	\visible<6>{
+	\node[t] (???)							at (1, -2.5)		{\textcolor{red}{\textbf{???}}};
+	}
+	\visible<6,14->{
+	\node[t,text width=47pt] (rly)			at (-2, -4.5)	{\textcolor{red}{"really"}};
+	}
+	\visible<8,12,13,19,23>{
+	\draw[->, thick, red] (lex) -- (np2);
+	}
+	\visible<10,15>{
+	\draw[->, thick, red] (lex) -- (mod2);
+	}
+	\visible<11,16>{
+	\draw[->, thick, red] (lex) -- (ss);
+	}
+	\visible<17,21>{
+	\draw[->, thick, red] (lex) -- (bs);
+	}
+	\visible<18,22>{
+	\draw[->, thick, red] (lex) -- (su);
+	}
+	\visible<20,24>{
+	\draw[->, thick, red] (lex) -- (s2);
+	}
+	
+	\visible<10-13>{
+	\node[t] (npmod)							at (3, -2.5)		{\textcolor{red}{
+		$\Box^{mod}(
+			\alt<11->{
+				\alt<12->{np}{\_}
+				/
+				\alt<13->{np}{\_}
+			}{\_}
+		)
+		$
+	}};
+	}
+	
+	\visible<15->{
+	\node[t, text width=140pt] (vpmod)							at (4, -2.5)		{\textcolor{red}{
+		$\Box^{mod}\left(
+			\alt<16->{
+				\alt<17->{
+					\left(
+					\alt<18->{
+						\diamondsuit^{su}
+						\alt<19->{np}{\_}
+					}{\_}
+					\backslash
+					\alt<20->{s}{\_}
+					\right)
+				}{\_}
+				/
+				\alt<21->{
+					\left(
+					\alt<22->{
+						\diamondsuit^{su}
+						\alt<23->{np}{\_}
+					}{\_}
+					\backslash
+					\alt<24->{s}{\_}
+					\right)
+				}{\_}
+			}{\_}
+		\right)
+		$
+	}};
+	}
+	
+	\visible<24->{
+	\node[t] (vpmod)							at (4, -3)	{\light{a vp modifier!}};
+	}
+		 
+	\end{tikzpicture}\end{adjustbox}\end{center}
+\end{frame}
+
+\newcommand{\etext}[1]{\scriptsize {\textit{#1}}}
+
+\begin{frame}{(3) \AE thel}
+	\small
+	\centering
+
+	\light{\alt<2->{...to ILL$_{\diamondsuit,\Box}$ proofs}{...from dependency graphs}}
+	\vfill
+	\alt<2->{
+	\scriptsize
+	\[
+		\infer[\li E]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}}, \text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash s}{
+			\infer[\textcolor{red}{\diamondsuit^{su} I}]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}} \vdash \textcolor{red}{\diamondsuit^{su}} np}{
+				\infer[\mathcal{L}ex]{\text{this}: np}{}
+			}
+			&
+			\infer[\li E]{\text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{su}}np\li s}{
+				\infer[\mathcal{L}ex]{\text{makes} \vdash (\textcolor{red}{\diamondsuit^{su}}np \li s)/\textcolor{red}{\diamondsuit^{obj}}np}{}
+				&
+				\infer[\textcolor{red}{\diamondsuit^{obj} I}]{\textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{obj}} np}{
+					\infer[\li E]{\textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \vdash np}{
+						\infer[\textcolor{blue}{\Box^{mod}} E]{\textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}} \vdash np\li np}{
+							\infer[\mathcal{L}ex]{\text{full}: \textcolor{blue}{\Box^{mod}}(np\li np)}{}
+						}
+						&
+						\infer[\mathcal{L}ex]{\text{sense}: np}{}
+					}
+				}
+			}
+		}
+	\]
+	\vfill
+	
+	\uncover<3->{
+	\begin{flushright}
+		\larger
+		\begin{flushright}\light{$\li$~ \sim{} relaxation\textsuperscript{\textdownarrow}}\end{flushright}
+	\end{flushright}
+	}
+	}
+	{
+	\begin{tikzpicture}[
+	every text node part/.style={align=center},
+	every node/.style={transform shape},
+	block/.style={rectangle, inner sep=0pt, minimum width=40pt, minimum height=20pt, align=center},
+	rblck/.style={rectangle, draw=red, inner sep=0pt, minimum width=40pt, minimum height=20pt},
+	bblck/.style={rectangle, draw=blue, inner sep=0pt, minimum width=40pt, minimum height=20pt},
+	oblck/.style={rectangle, draw=olive, inner sep=0pt, minimum width=40pt, minimum height=20pt}	
+	]
+
+	\node[block] (smain) 		at (0, 0) 			{\textsc{s}\textsubscript{main}};
+	\node[block] (this) 			at (-1.75, -1.75)	{\textsc{np}\\ this};
+	\node[block] (makes) 		at (0, -1.75) 		{\textsc{verb}\\ makes};
+	\node[block] (fullsense)		at (1.75, -1.75) 	{\textsc{np}};
+	\node[block] (full)			at (0.75, -3.5) 		{\textsc{adj}\\full};
+	\node[block] (sense)			at (2.25, -3.5) 		{\textsc{np}\\sense};
+
+	
+	\draw (smain)		edge[->,red]		node[left]	{\etext{su}}		(this);
+	\draw (smain) 		edge[->,red]		node[right] 	{\etext{obj}} 	(fullsense);	
+	\draw (smain)		edge[->]			node[left]	{\etext{hd}}		(makes);
+	\draw (fullsense)	edge[->,blue]	node[left] 	{\etext{mod}} 	(full);
+	\draw (fullsense)	edge[->]			node[right] {\etext{hd}} 	(sense);
+	\end{tikzpicture}	
+	}
+\end{frame}
+
+\newcommand{\greenat}[2]{\alt<#1>{\textcolor{green}{#2}}{#2}}
+\newcommand{\redat}[2]{\alt<#1>{\textcolor{red}{#2}}{#2}}
+\newcommand{\grayat}[2]{\alt<#1>{\textcolor{gray!40}{#2}}{#2}}
+\tikzset{idx/.style={black!80}}
+
+
+\begin{frame}{(4) Neural Proof Nets}	
+	\centering
+	\alt<6->{
+		\begin{tikzpicture}
+		[tree/.style={very thick},
+	     ctx/.style={thick, ->, rounded corners},
+	     ctxbi/.style={thick, <->},
+	     t/.style={align=center}]
+	     
+	    \tikzset{every node/.style={outer sep=0pt}}
+		
+			\visible<11->{
+				\begin{scope}[xshift=330pt, yshift=115pt, scale=0.75]f
+					\draw[thick, gray!50] (-2.99, -2.99) grid (-0.01, -0.01);			
+					\node (0) 	at (-3.5, -0.5) {\textcolor{green}{$np_0$}};
+					\node (5) 	at (-3.5, -1.5) {\textcolor{green}{$np_5$}};
+					\node (6) 	at (-3.5, -2.5) {\textcolor{green}{$np_6$}};
+					\node (1) 	at (-2.5, 0.25) {\textcolor{red}{$np_1$}};
+					\node (2) 	at (-1.5, 0.25) {\textcolor{red}{$np_2$}};
+					\node (4) 	at (-0.5, 0.25) {\textcolor{red}{$np_4$}};
+					\node (01)	at (-2.5, -0.5)	{\Large \checkmark};
+					\node (64)	at (-0.5, -2.5)	{\Large \checkmark};
+					\node (52)	at (-1.5, -1.5)	{\Large \checkmark};
+				\end{scope}
+			}	    
+	    
+			\node[t] (w1)			at (0, 0)			{\grayat{10-}{this}};
+			\node[t] (t1_n)			at (0, 1)			{\greenat{7-}{$np_0$}};
+			
+			\node[t] (w2)			at (2, 0)			{\grayat{10-}{makes}};
+			\node[t] (t2_li_1)		at (2, 1)			{\greenat{7-}{\grayat{10-}{$\li$}}};
+			\node[t] (t2_su)			at (1.3, 1.75)		{\redat{7-}{\grayat{10-}{$\diamondsuit^{su}$}}};
+			\node[t] (t2_np_1)		at (1.2, 2.5)		{\redat{7-}{$np_1$}};
+			\node[t] (t2_li_2)		at (2.6, 1.75)		{\greenat{7-}{\grayat{10-}{$\li$}}};
+			\node[t] (t2_obj)		at (2.1, 2.5)		{\redat{7-}{\grayat{10-}{$\diamondsuit^{obj}$}}};
+			\node[t] (t2_np_2)		at (2.1, 3.25)		{\redat{7-}{$np_2$}};
+			\node[t] (t2_s)			at (3.1, 2.5)		{\greenat{7-}{\grayat{10-}{$s_3$}}};
+			\grayat{10-}{
+			\draw[tree] (t2_li_1) -- (t2_su) -- (t2_np_1);
+			\draw[tree] (t2_li_1) -- (t2_li_2) -- (t2_obj) -- (t2_np_2);
+			\draw[tree] (t2_li_2) -- (t2_s);
+			}
+		
+			\node[t] (w3)			at (4.6, 0)			{\grayat{10-}{full}};
+			\node[t] (t3_mod)		at (4.6, 1)			{\greenat{7-}{\grayat{10-}{$\Box^{mod}$}}};
+			\node[t] (t3_li)			at (4.6, 1.75)		{\greenat{7-}{\grayat{10-}{$\li$}}};
+			\node[t]	 (t3_np_1)		at (4.0, 2.5)		{\redat{7-}{$np_4$}};
+			\node[t]	 (t3_np_2)		at (5.2, 2.5)		{\greenat{7-}{$np_5$}};
+			\grayat{10-}{
+			\draw[tree] (t3_mod) -- (t3_li) -- (t3_np_1);
+			\draw[tree] (t3_li) -- (t3_np_2);
+			}
+			
+			\node[t] (w4)			at (6.2, 0)			{\grayat{10-}{sense}};
+			\node[t] (t4_n)			at (6.2, 1)			{\greenat{7-}{$np_6$}};
+			
+			\visible<8->{
+			\node[t] (vd)			at (7.4, 1)			{\grayat{10-}{$\vdash$}};
+			\node[t] (t5_s)			at (8.2, 1)			{\redat{7-}{\grayat{10-}{{$s_7$}}}};
+			}
+			
+			\visible<9->{
+			\draw[->, idx, rounded corners=17] (t1_n) -- ($(t1_n) + (0, 2.5)$) -| (t2_np_1);
+			\draw[->, idx, rounded corners=30] (t4_n) -- ($(t4_n) + (0, 3)$) -| (t3_np_1);
+			\draw[->, idx, rounded corners=35] (t3_np_2) -- ($(t3_np_2) + (0, 2.5)$) -| (t2_np_2);
+			}
+			\visible<9>{
+			\draw[->, idx, rounded corners=47] (t2_s) -- ($(t2_s) + (0, 2)$) -| (t5_s);
+			}
+		\end{tikzpicture}
+	}{
+		\begin{tikzpicture}
+		[tree/.style={very thick},
+	     ctx/.style={thick, ->, rounded corners},
+	     ctxbi/.style={thick, <->},
+	     t/.style={align=center}]
+	     
+	    \tikzset{every node/.style={outer sep=0pt}}
+			\node[t] (t2)			at (-1.75, 1.75)		{$\redat{3}{\diamondsuit^{su}}\redat{4}{np}\redat{2}{~\li~}\diamondsuit^{obj}np\li s$};
+			\node[t] (=)				at (0.4, 1.75)		{$\leadsto$};
+			\visible<2->{
+			\node[t] (t2_li_1)		at (2, 1)			{$\redat{2}{\li}$};
+			\visible<3->{
+			\node[t] (t2_su)			at (1.3, 1.75)		{$\redat{3}{\diamondsuit^{su}}$};
+			\draw[tree] (t2_li_1) -- (t2_su);
+			\visible<4->{
+			\node[t] (t2_np_1)		at (1.2, 2.5)		{$\redat{4}{np}$};
+			\draw[tree] (t2_su) -- (t2_np_1);
+			\visible<5->{
+			\node[t] (t2_li_2)		at (2.6, 1.75)		{$\li$};
+			\node[t] (t2_obj)		at (2.1, 2.5)		{$\diamondsuit^{obj}$};
+			\node[t] (t2_np_2)		at (2.1, 3.25)		{$np$};
+			\node[t] (t2_s)			at (3.1, 2.5)		{$s$};
+			\draw[tree] (t2_li_1) -- (t2_li_2) -- (t2_obj) -- (t2_np_2);
+			\draw[tree] (t2_li_2) -- (t2_s);	
+			}}}}
+		\end{tikzpicture}
+	}
+\end{frame}
+
+\section{Goodbye}
+\begin{frame}{Just out of time \light{(hopefully)}}
+		\begin{itemize}
+			\item parser/resource web API\\
+			\light{parseport.hum.uu.nl/spindle}
+			\uncover<2->{
+			\item Dependency as Modality, Parsing as Permutation\\
+			\light{github.com/konstantinosKokos/phd-thesis}\\
+			\uncover<3->{
+			\item this presentation\\
+			\light{github.com/konstantinosKokos/presentations}
+			}}
+		\end{itemize}\vfill
+		
+		\visible<4->{
+		\centering
+			\begin{tikzpicture}	
+				\node[cloud,cloud puffs=10.8,cloud puff arc=110, aspect=2.6, draw, text width=1.8cm] () at (1.6,1.6) {thank you};
+				\node[circle,draw] () at (0.43, 0.66) {};
+				\node (d) at (0, 0) {\Huge\emoji{duck}};
+			\end{tikzpicture}
+		}
+\end{frame}
+
+\end{document}
