@@ -232,7 +232,7 @@
 \end{frame}
 
 \section{Contributions}
-\begin{frame}{(1) Dependency as Modality}
+\begin{frame}{Dependency as Modality}
 	\begin{center}
 		\alt<4->{\light{Glorious new parse}}{\alt<2->{\light{Fancy colored rules}}{\light{A boring, old, monochromatic parse}}}
 	\end{center}
@@ -243,18 +243,18 @@
 	\node  at (0, 0) {
 	\smaller
 	$
-		\infer[\backslash E]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}}, \text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash s}{
+		\infer[\li E]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}}, \text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash s}{
 			\infer[\textcolor{red}{\diamondsuit^{su} I}]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}} \vdash \textcolor{red}{\diamondsuit^{su}} np}{
 				\infer[\mathcal{L}ex]{\text{this}: np}{}
 			}
 			&
-			\infer[/ E]{\text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{su}}np\backslash s}{
-				\infer[\mathcal{L}ex]{\text{makes} \vdash (\textcolor{red}{\diamondsuit^{su}}np \backslash s)/\textcolor{red}{\diamondsuit^{obj}}np}{}
+			\infer[\li E]{\text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{su}}np\li s}{
+				\infer[\mathcal{L}ex]{\text{makes} \vdash \textcolor{red}{\diamondsuit^{obj}}np\li \textcolor{red}{\diamondsuit^{su}}np \li s}{}
 				&
 				\infer[\textcolor{red}{\diamondsuit^{obj} I}]{\textcolor{red}{\langle} \textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{obj}} np}{
-					\infer[/ E]{\textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \vdash np}{
-						\infer[\textcolor{blue}{\Box^{mod}} E]{\textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}} \vdash np/ np}{
-							\infer[\mathcal{L}ex]{\text{no}: \textcolor{blue}{\Box^{mod}}(np/ np)}{}
+					\infer[\li E]{\textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}}, \text{sense} \vdash np}{
+						\infer[\textcolor{blue}{\Box^{mod}} E]{\textcolor{blue}{\langle} \text{no} \textcolor{blue}{\rangle^{mod}} \vdash np \li np}{
+							\infer[\mathcal{L}ex]{\text{no}: \textcolor{blue}{\Box^{mod}}(np\li np)}{}
 						}
 						&
 						\infer[\mathcal{L}ex]{\text{sense}: np}{}
@@ -266,8 +266,8 @@
 	};
 	\visible<5->{
 	\node[rectangle, minimum width=400pt, minimum height=100pt,fill=white,fill opacity=0.88] (x) at (0,0.51) {};
-	\node[rectangle, minimum width=10pt, minimum height=10pt, fill=white,fill opacity=0.88] (x) at (3.8, -1.43) {};
-	\node[rectangle, minimum width=20pt, minimum height=10pt, fill=white,fill opacity=0.88] (x) at (0.73, -1.4) {};
+	\node[rectangle, minimum width=10pt, minimum height=10pt, fill=white,fill opacity=0.88] (x) at (4.1, -1.43) {};
+	\node[rectangle, minimum width=20pt, minimum height=10pt, fill=white,fill opacity=0.88] (x) at (0.71, -1.4) {};
 	\visible<6->{
 	\draw (-2.68, -1.7) [bend left=90] edge[->] node[below] {\smaller[2]{\textcolor{red}{su}}} (-4, -1.7);
 	\draw (-2.6, -1.7) [bend right=95] edge[->] node[below, outer sep=0pt] {\smaller[2]{\textcolor{red}{obj}}} (-0.26, -1.7);
@@ -297,14 +297,14 @@
 	{
 	\smaller
 	\[
-		\infer[\backslash E]{\text{this}, \text{makes}, \text{some}, \text{sense} \vdash s}{
+		\infer[\li~ E]{\text{this}, \text{makes}, \text{some}, \text{sense} \vdash s}{
 			\infer[\mathcal{L}ex]{\text{this}: np}{}
 			&
-			\infer[/ E]{\text{makes}, \text{some}, \text{sense} \vdash np\backslash s}{
-				\infer[\mathcal{L}ex]{\text{makes} \vdash(np \backslash s)/np}{}
+			\infer[\li~ E]{\text{makes}, \text{some}, \text{sense} \vdash np\li s}{
+				\infer[\mathcal{L}ex]{\text{makes} \vdash np\li np\li s}{}
 				&
-				\infer[/ E]{\text{some}, \text{sense} \vdash np}{
-					\infer[\mathcal{L}ex]{\text{some}: np/ np}{}
+				\infer[\li~ E]{\text{some}, \text{sense} \vdash np}{
+					\infer[\mathcal{L}ex]{\text{some}: np\li np}{}
 					&
 					\infer[\mathcal{L}ex]{\text{sense}: np}{}
 				}
@@ -316,73 +316,73 @@
  
  \newcommand{\etext}[1]{\scriptsize {\textit{#1}}}
 
-\begin{frame}{(2) \AE thel}
-	\small
-	\centering
+%\begin{frame}{(2) \AE thel}
+%	\small
+%	\centering
+%
+%	\light{\alt<2->{...to ILL$_{\diamondsuit,\Box}$ proofs}{...from dependency graphs}}
+%	\vfill
+%	\alt<2->{
+%	\scriptsize
+%	\[
+%		\infer[\li E]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}}, \text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash s}{
+%			\infer[\textcolor{red}{\diamondsuit^{su} I}]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}} \vdash \textcolor{red}{\diamondsuit^{su}} np}{
+%				\infer[\mathcal{L}ex]{\text{this}: np}{}
+%			}
+%			&
+%			\infer[\li E]{\text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{su}}np\li s}{
+%				\infer[\mathcal{L}ex]{\text{makes} \vdash (\textcolor{red}{\diamondsuit^{su}}np \li s)/\textcolor{red}{\diamondsuit^{obj}}np}{}
+%				&
+%				\infer[\textcolor{red}{\diamondsuit^{obj} I}]{\textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{obj}} np}{
+%					\infer[\li E]{\textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \vdash np}{
+%						\infer[\textcolor{blue}{\Box^{mod}} E]{\textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}} \vdash np\li np}{
+%							\infer[\mathcal{L}ex]{\text{full}: \textcolor{blue}{\Box^{mod}}(np\li np)}{}
+%						}
+%						&
+%						\infer[\mathcal{L}ex]{\text{sense}: np}{}
+%					}
+%				}
+%			}
+%		}
+%	\]
+%	\vfill
+%	
+%	\uncover<3->{
+%	\begin{flushright}
+%		\larger
+%		\begin{flushright}\light{$\li$~ \sim{} relaxation\textsuperscript{\textdownarrow}}\end{flushright}
+%	\end{flushright}
+%	}
+%	}
+%	{
+%	\begin{tikzpicture}[
+%	every text node part/.style={align=center},
+%	every node/.style={transform shape},
+%	block/.style={rectangle, inner sep=0pt, minimum width=40pt, minimum height=20pt, align=center},
+%	rblck/.style={rectangle, draw=red, inner sep=0pt, minimum width=40pt, minimum height=20pt},
+%	bblck/.style={rectangle, draw=blue, inner sep=0pt, minimum width=40pt, minimum height=20pt},
+%	oblck/.style={rectangle, draw=olive, inner sep=0pt, minimum width=40pt, minimum height=20pt}	
+%	]
+%
+%	\node[block] (smain) 		at (0, 0) 			{\textsc{s}\textsubscript{main}};
+%	\node[block] (this) 			at (-1.75, -1.75)	{\textsc{np}\\ this};
+%	\node[block] (makes) 		at (0, -1.75) 		{\textsc{verb}\\ makes};
+%	\node[block] (fullsense)		at (1.75, -1.75) 	{\textsc{np}};
+%	\node[block] (full)			at (0.75, -3.5) 		{\textsc{adj}\\full};
+%	\node[block] (sense)			at (2.25, -3.5) 		{\textsc{np}\\sense};
+%
+%	
+%	\draw (smain)		edge[->,red]		node[left]	{\etext{su}}		(this);
+%	\draw (smain) 		edge[->,red]		node[right] 	{\etext{obj}} 	(fullsense);	
+%	\draw (smain)		edge[->]			node[left]	{\etext{hd}}		(makes);
+%	\draw (fullsense)	edge[->,blue]	node[left] 	{\etext{mod}} 	(full);
+%	\draw (fullsense)	edge[->]			node[right] {\etext{hd}} 	(sense);
+%	\end{tikzpicture}	
+%	}
+%\end{frame}
 
-	\light{\alt<2->{...to ILL$_{\diamondsuit,\Box}$ proofs}{...from dependency graphs}}
-	\vfill
-	\alt<2->{
-	\scriptsize
-	\[
-		\infer[\li E]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}}, \text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash s}{
-			\infer[\textcolor{red}{\diamondsuit^{su} I}]{\textcolor{red}{\langle} \text{this} \textcolor{red}{\rangle^{su}} \vdash \textcolor{red}{\diamondsuit^{su}} np}{
-				\infer[\mathcal{L}ex]{\text{this}: np}{}
-			}
-			&
-			\infer[\li E]{\text{makes}, \textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{su}}np\li s}{
-				\infer[\mathcal{L}ex]{\text{makes} \vdash (\textcolor{red}{\diamondsuit^{su}}np \li s)/\textcolor{red}{\diamondsuit^{obj}}np}{}
-				&
-				\infer[\textcolor{red}{\diamondsuit^{obj} I}]{\textcolor{red}{\langle} \textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \textcolor{red}{\rangle^{obj}} \vdash \textcolor{red}{\diamondsuit^{obj}} np}{
-					\infer[\li E]{\textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}}, \text{sense} \vdash np}{
-						\infer[\textcolor{blue}{\Box^{mod}} E]{\textcolor{blue}{\langle} \text{full} \textcolor{blue}{\rangle^{mod}} \vdash np\li np}{
-							\infer[\mathcal{L}ex]{\text{full}: \textcolor{blue}{\Box^{mod}}(np\li np)}{}
-						}
-						&
-						\infer[\mathcal{L}ex]{\text{sense}: np}{}
-					}
-				}
-			}
-		}
-	\]
-	\vfill
-	
-	\uncover<3->{
-	\begin{flushright}
-		\larger
-		\begin{flushright}\light{$\li$~ \sim{} relaxation\textsuperscript{\textdownarrow}}\end{flushright}
-	\end{flushright}
-	}
-	}
-	{
-	\begin{tikzpicture}[
-	every text node part/.style={align=center},
-	every node/.style={transform shape},
-	block/.style={rectangle, inner sep=0pt, minimum width=40pt, minimum height=20pt, align=center},
-	rblck/.style={rectangle, draw=red, inner sep=0pt, minimum width=40pt, minimum height=20pt},
-	bblck/.style={rectangle, draw=blue, inner sep=0pt, minimum width=40pt, minimum height=20pt},
-	oblck/.style={rectangle, draw=olive, inner sep=0pt, minimum width=40pt, minimum height=20pt}	
-	]
 
-	\node[block] (smain) 		at (0, 0) 			{\textsc{s}\textsubscript{main}};
-	\node[block] (this) 			at (-1.75, -1.75)	{\textsc{np}\\ this};
-	\node[block] (makes) 		at (0, -1.75) 		{\textsc{verb}\\ makes};
-	\node[block] (fullsense)		at (1.75, -1.75) 	{\textsc{np}};
-	\node[block] (full)			at (0.75, -3.5) 		{\textsc{adj}\\full};
-	\node[block] (sense)			at (2.25, -3.5) 		{\textsc{np}\\sense};
-
-	
-	\draw (smain)		edge[->,red]		node[left]	{\etext{su}}		(this);
-	\draw (smain) 		edge[->,red]		node[right] 	{\etext{obj}} 	(fullsense);	
-	\draw (smain)		edge[->]			node[left]	{\etext{hd}}		(makes);
-	\draw (fullsense)	edge[->,blue]	node[left] 	{\etext{mod}} 	(full);
-	\draw (fullsense)	edge[->]			node[right] {\etext{hd}} 	(sense);
-	\end{tikzpicture}	
-	}
-\end{frame}
-
-
-\begin{frame}{(3) The Neural Lexicon \visible<7->{-- \light{take \# 2}}}
+\begin{frame}{The Neural Lexicon \visible<7->{-- \light{take \# 2}}}
 	\centering
 	\begin{center}\begin{adjustbox}{height=.75\textheight}\begin{tikzpicture}
 		[t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt, inner sep=0pt}, 
@@ -518,7 +518,7 @@
 \tikzset{idx/.style={black!80}}
 
 
-\begin{frame}{(4) Parsing as Permutation}	
+\begin{frame}{Parsing as Permutation}	
 	\centering
 	\alt<6->{
 		\begin{tikzpicture}
@@ -621,7 +621,7 @@
 \section{Goodbye}
 \begin{frame}{Just out of time \light{(hopefully)}}
 		\begin{itemize}
-			\item parser/resource web API\\
+			\item parser/resource (for Dutch) web API\\
 			\light{parseport.hum.uu.nl/spindle}
 			\uncover<2->{
 			\item thesis, this presentation, \textit{etc.}\\
