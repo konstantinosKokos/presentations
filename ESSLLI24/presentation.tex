@@ -18,6 +18,8 @@
 \usepackage{amsmath}
 \usepackage{proof}
 \setbeamercovered{transparent=05}
+\newfontfamily\DejaSans{DejaVu Sans}
+
 
 \usepackage{adjustbox}
 \setlist[itemize]{label=$\circ$, topsep=0pt, itemsep=0pt}
@@ -206,7 +208,7 @@
 					\item[\textbf{!}] \eqmakebox[things][l]{ambiguity}
 						$\leadsto$ \textbf{\alert{more proof candidates}}
 					\uncover<11->{	  \eqmakebox[things][l]{...}
-						$\leadsto$ \textcolor{red}{\frownie}
+						$\leadsto$ \textcolor{red}{\Large \DejaSans 😱}
 					}}}}}
 				\end{itemize}
 				
@@ -224,7 +226,7 @@
 		\visible<10->{
 			\draw[c] plot [smooth cycle, tension=1.9,yshift=-20pt] coordinates {(2.85, -7.25) (1.95, -4.) (6, -4.75)};
 			\draw[c] plot [smooth cycle, tension=1.9,yshift=-20pt] coordinates {(2.8, -7.25) (1.9, -4.1) (6.05, -4.7)};
-			\node (X) at (4, -6) {\Huge \alert{${o}^n$}};
+			\node (X) at (4, -6) {\Huge \alert{$c^n$}};
 		}
 	\end{tikzpicture}\end{adjustbox}\end{center}
 \end{frame}
@@ -311,144 +313,10 @@
 	\]
 	}}
  \end{frame}
+ 
+ \newcommand{\etext}[1]{\scriptsize {\textit{#1}}}
 
-\begin{frame}{(2) The Neural Lexicon \visible<7->{-- \light{take \# 2}}}
-	\centering
-	\begin{center}\begin{adjustbox}{height=.75\textheight}\begin{tikzpicture}
-		[t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt, inner sep=0pt}, 
-		 node distance=10pt,
-		 c/.style={smooth cycle,tension=2,very thick,draw=black}
-		 ]
-
-	\visible<7->{
-	\begin{scope}[xshift=20pt]
-	\node[t]	 (np2)			at (0.6, -0.4)	{\alt<8,12,13,19,23>{\textcolor{red}{$np$}}{$np$}};
-	\node[t]	 (s2)			at (-0.6, -0.4) 	{\alt<20,24>{\textcolor{red}{$s$}}{$s$}};
-	\node[t] (ss)			at (0.4, 0.40)	{\alt<11,16>{\textcolor{red}{/}}{/}};
-	\node[t] (bs)			at (-0.4, 0.40)	{\alt<17,21>{\textcolor{red}{$\backslash$}}{$\backslash$}};
-	\node[t] (su)			at (-1.1, -1.20)	{\alt<18,22>{\textcolor{red}{$\diamondsuit^{su}$}}{$\diamondsuit^{su}$}};
-	\node[t] (ob)			at (0, -1.20)	{$\diamondsuit^{obj}$};
-	\node[t] (mod2)			at (1.1, -1.20)	{\alt<10,15>{\textcolor{red}{$\Box^{mod}$}}{$\Box^{mod}$}};
-	\end{scope}
-	\draw[c] plot [smooth cycle, tension=1] coordinates {(0.75, 1) (-1, -1.2)  (2.5, -1.2)};
-	}
-	\visible<-6>	{
-	\node[t]	 (np)			at (-0.5, -0.6)	{\alt<3,5>{\textcolor{red}{$np$}}{$np$}};
-	\node[t]	 (mod)			at (1.9, -1.3) 	{\alt<4>{\textcolor{red}{$\Box^{mod}(np/np)$}}{$\Box^{mod}(np/np)$}};
-	\node[t] (v)				at (0.9, 0.5) 	{$(\diamondsuit^{su}np \backslash s)/\diamondsuit^{obj}np$};
-	\draw[c] plot [smooth cycle, tension=1] coordinates {(1.5, 1) (-1.2, -0.2) (1.5, -1.8) (3.2, -0.8)};
-	}
-	
-		
-	\node[minimum width=60pt,minimum height=60pt,fill=black!90,fill opacity=1,label={[anchor=center]center:
-		\textbf{\textcolor{white}{
-		\alt<7->{
-			\begin{tabular}{@{}c@{}}Better\\Black Box\end{tabular}
-		}{
-			Black Box
-		}
-		}}},
-	outer sep=5pt,draw=black!40, ultra thick] (lex) at (1, -4.5) {};
-
-	
-	\visible<2,3,8>{
-	\node[t,text width=30pt]	 (this)			at (-2, -4.5)	{"this"};
-	}
-	\visible<2-6,8->{
-	\draw[->, thick] (this) -- (lex);
-	}
-	\visible<3,5>{
-	\draw[->, thick, red] (lex) -- (np);
-	}
-	\visible<4,9-13>{
-	\node[t,text width=17pt]	 (no)			at (-2, -4.5)	{"no"};
-	}
-	\visible<4>{
-	\draw[->, thick, red] (lex) -- (mod);
-	}
-	\visible<5>{
-	\node[t,text width=30pt]	 (that)			at (-2, -4.5)	{\textcolor{red}{"that"}};
-	\node[t] 								at (-2, -5)		{\light{brand new word!}};
-	}
-	\visible<6>{
-	\node[t] (???)							at (1, -2.5)		{\textcolor{red}{\textbf{???}}};
-	}
-	\visible<6,14->{
-	\node[t,text width=47pt] (rly)			at (-2, -4.5)	{\textcolor{red}{"really"}};
-	}
-	\visible<8,12,13,19,23>{
-	\draw[->, thick, red] (lex) -- (np2);
-	}
-	\visible<10,15>{
-	\draw[->, thick, red] (lex) -- (mod2);
-	}
-	\visible<11,16>{
-	\draw[->, thick, red] (lex) -- (ss);
-	}
-	\visible<17,21>{
-	\draw[->, thick, red] (lex) -- (bs);
-	}
-	\visible<18,22>{
-	\draw[->, thick, red] (lex) -- (su);
-	}
-	\visible<20,24>{
-	\draw[->, thick, red] (lex) -- (s2);
-	}
-	
-	\visible<10-13>{
-	\node[t] (npmod)							at (3, -2.5)		{\textcolor{red}{
-		$\Box^{mod}(
-			\alt<11->{
-				\alt<12->{np}{\_}
-				/
-				\alt<13->{np}{\_}
-			}{\_}
-		)
-		$
-	}};
-	}
-	
-	\visible<15->{
-	\node[t, text width=140pt] (vpmod)							at (4, -2.5)		{\textcolor{red}{
-		$\Box^{mod}\left(
-			\alt<16->{
-				\alt<17->{
-					\left(
-					\alt<18->{
-						\diamondsuit^{su}
-						\alt<19->{np}{\_}
-					}{\_}
-					\backslash
-					\alt<20->{s}{\_}
-					\right)
-				}{\_}
-				/
-				\alt<21->{
-					\left(
-					\alt<22->{
-						\diamondsuit^{su}
-						\alt<23->{np}{\_}
-					}{\_}
-					\backslash
-					\alt<24->{s}{\_}
-					\right)
-				}{\_}
-			}{\_}
-		\right)
-		$
-	}};
-	}
-	
-	\visible<24->{
-	\node[t] (vpmod)							at (4, -3)	{\light{a vp modifier!}};
-	}
-		 
-	\end{tikzpicture}\end{adjustbox}\end{center}
-\end{frame}
-
-\newcommand{\etext}[1]{\scriptsize {\textit{#1}}}
-
-\begin{frame}{(3) \AE thel}
+\begin{frame}{(2) \AE thel}
 	\small
 	\centering
 
@@ -513,13 +381,144 @@
 	}
 \end{frame}
 
+
+\begin{frame}{(3) The Neural Lexicon \visible<7->{-- \light{take \# 2}}}
+	\centering
+	\begin{center}\begin{adjustbox}{height=.75\textheight}\begin{tikzpicture}
+		[t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt, inner sep=0pt}, 
+		 node distance=10pt,
+		 c/.style={smooth cycle,tension=2,very thick,draw=black}
+		 ]
+
+	\visible<7->{
+	\begin{scope}[xshift=20pt]
+	\node[t]	 (np2)			at (0.6, -0.4)	{\alt<8,12,13,19,23>{\textcolor{red}{$np$}}{$np$}};
+	\node[t]	 (s2)			at (-0.6, -0.4) 	{\alt<20,24>{\textcolor{red}{$s$}}{$s$}};
+	\node[t] (li)			at (0, 0.40)	{\alt<11,16,17,21>{\textcolor{red}{$~\li~$}}{$\li$}};
+	\node[t] (su)			at (-1.1, -1.20)	{\alt<18,22>{\textcolor{red}{$\diamondsuit^{su}$}}{$\diamondsuit^{su}$}};
+	\node[t] (ob)			at (0, -1.20)	{$\diamondsuit^{obj}$};
+	\node[t] (mod2)			at (1.1, -1.20)	{\alt<10,15>{\textcolor{red}{$\Box^{mod}$}}{$\Box^{mod}$}};
+	\end{scope}
+	\draw[c] plot [smooth cycle, tension=1] coordinates {(0.75, 1) (-1, -1.2)  (2.5, -1.2)};
+	}
+	\visible<-6>	{
+	\node[t]	 (np)			at (-0.45, -0.6)	{\alt<3,5>{\textcolor{red}{$np$}}{$np$}};
+	\node[t]	 (mod)			at (1.9, -1.3) 	{\alt<4>{\textcolor{red}{$\Box^{mod}(np\li np)$}}{$\Box^{mod}(np\li np)$}};
+	\node[t] (v)				at (0.9, 0.4) 	{$\diamondsuit^{obj}np \li \diamondsuit^{su}np \li s$};
+	\draw[c] plot [smooth cycle, tension=1] coordinates {(1.6, 1) (-1.4, -0) (1.5, -1.8) (3.3, -0.9)};
+	}
+	
+		
+	\node[minimum width=60pt,minimum height=60pt,fill=black!90,fill opacity=1,label={[anchor=center]center:
+		\textbf{\textcolor{white}{
+		\alt<7->{
+			\begin{tabular}{@{}c@{}}Better\\Black Box\end{tabular}
+		}{
+			Black Box
+		}
+		}}},
+	outer sep=5pt,draw=black!40, ultra thick] (lex) at (1, -4.5) {};
+
+	
+	\visible<2,3,8>{
+	\node[t,text width=30pt]	 (this)			at (-2, -4.5)	{"this"};
+	}
+	\visible<2-6,8->{
+	\draw[->, thick] (this) -- (lex);
+	}
+	\visible<3,5>{
+	\draw[->, thick, red] (lex) -- (np);
+	}
+	\visible<4,9-13>{
+	\node[t,text width=17pt]	 (no)			at (-2, -4.5)	{"no"};
+	}
+	\visible<4>{
+	\draw[->, thick, red] (lex) -- (mod);
+	}
+	\visible<5>{
+	\node[t,text width=30pt]	 (that)			at (-2, -4.5)	{\textcolor{red}{"that"}};
+	\node[t] 								at (-2, -5)		{\light{brand new word!}};
+	}
+	\visible<6>{
+	\node[t] (???)							at (1, -2.5)		{\textcolor{red}{\textbf{???}}};
+	}
+	\visible<6,14->{
+	\node[t,text width=47pt] (rly)			at (-2, -4.5)	{\textcolor{red}{"really"}};
+	}
+	\visible<8,12,13,19,23>{
+	\draw[->, thick, red] (lex) -- (np2);
+	}
+	\visible<10,15>{
+	\draw[->, thick, red] (lex) -- (mod2);
+	}
+	\visible<11,16,17,21>{
+	\draw[->, thick, red] (lex) -- (li);
+	}
+	\visible<18,22>{
+	\draw[->, thick, red] (lex) -- (su);
+	}
+	\visible<20,24>{
+	\draw[->, thick, red] (lex) -- (s2);
+	}
+	
+	\visible<10-13>{
+	\node[t] (npmod)							at (3, -2.5)		{\textcolor{red}{
+		$\Box^{mod}(
+			\alt<11->{
+				\alt<12->{np}{\_}
+				\li
+				\alt<13->{np}{\_}
+			}{\_}
+		)
+		$
+	}};
+	}
+	
+	\visible<15->{
+	\node[t, text width=140pt] (vpmod)							at (4.3, -2.5)		{\textcolor{red}{
+		$\Box^{mod}\left(
+			\alt<16->{
+				\alt<17->{
+					\left(
+					\alt<18->{
+						\diamondsuit^{su}
+						\alt<19->{np}{\_}
+					}{\_}
+					\li
+					\alt<20->{s}{\_}
+					\right)
+				}{\_}
+				\li
+				\alt<21->{
+					\left(
+					\alt<22->{
+						\diamondsuit^{su}
+						\alt<23->{np}{\_}
+					}{\_}
+					\li
+					\alt<24->{s}{\_}
+					\right)
+				}{\_}
+			}{\_}
+		\right)
+		$
+	}};
+	}
+	
+	\visible<24->{
+	\node[t] (vpmod)							at (4, -3)	{\light{a vp modifier!}};
+	}
+		 
+	\end{tikzpicture}\end{adjustbox}\end{center}
+\end{frame}
+
 \newcommand{\greenat}[2]{\alt<#1>{\textcolor{green}{#2}}{#2}}
 \newcommand{\redat}[2]{\alt<#1>{\textcolor{red}{#2}}{#2}}
 \newcommand{\grayat}[2]{\alt<#1>{\textcolor{gray!40}{#2}}{#2}}
 \tikzset{idx/.style={black!80}}
 
 
-\begin{frame}{(4) Neural Proof Nets}	
+\begin{frame}{(4) Parsing as Permutation}	
 	\centering
 	\alt<6->{
 		\begin{tikzpicture}
@@ -625,12 +624,9 @@
 			\item parser/resource web API\\
 			\light{parseport.hum.uu.nl/spindle}
 			\uncover<2->{
-			\item Dependency as Modality, Parsing as Permutation\\
-			\light{github.com/konstantinosKokos/phd-thesis}\\
-			\uncover<3->{
-			\item this presentation\\
-			\light{github.com/konstantinosKokos/presentations}
-			}}
+			\item thesis, this presentation, \textit{etc.}\\
+			\light{github.com/konstantinosKokos}\\
+			}
 		\end{itemize}\vfill
 		
 		\visible<4->{
