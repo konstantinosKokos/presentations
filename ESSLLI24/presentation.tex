@@ -25,6 +25,11 @@
 \setlist[itemize]{label=$\circ$, topsep=0pt, itemsep=0pt}
 \setlist[itemize,2]{label=-,leftmargin=*}
 
+\newcommand{\greenat}[2]{\alt<#1>{\textcolor{green}{#2}}{#2}}
+\newcommand{\redat}[2]{\alt<#1>{\textcolor{red}{#2}}{#2}}
+\newcommand{\grayat}[2]{\alt<#1>{\textcolor{gray!40}{#2}}{#2}}
+\tikzset{idx/.style={black!80}}
+
 
 \usepackage{eqparbox}
 
@@ -232,6 +237,19 @@
 \end{frame}
 
 \section{Contributions}
+\begin{frame}{Contributions: TL;DR}
+	\begin{itemize}
+		\item[1.] dependency labeling with $\diamondsuit$, $\Box$ modalities 
+		\item[2.] $\sim$65\,000 proof-derivations for written Dutch
+		\item[3.] fast \& accurate wide-coverage parsing using
+		\begin{itemize}
+			\item[(a)] an inductive neural lexicon
+			\item[(b)] neural proof search as subtype permutation
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+
 \begin{frame}{Dependency as Modality}
 	\begin{center}
 		\alt<4->{\light{Glorious new parse}}{\alt<2->{\light{Fancy colored rules}}{\light{A boring, old, monochromatic parse}}}
@@ -512,15 +530,10 @@
 	\end{tikzpicture}\end{adjustbox}\end{center}
 \end{frame}
 
-\newcommand{\greenat}[2]{\alt<#1>{\textcolor{green}{#2}}{#2}}
-\newcommand{\redat}[2]{\alt<#1>{\textcolor{red}{#2}}{#2}}
-\newcommand{\grayat}[2]{\alt<#1>{\textcolor{gray!40}{#2}}{#2}}
-\tikzset{idx/.style={black!80}}
-
 
 \begin{frame}{Parsing as Permutation}	
 	\centering
-	\alt<6->{
+%	\alt<6->{
 		\begin{tikzpicture}
 		[tree/.style={very thick},
 	     ctx/.style={thick, ->, rounded corners},
@@ -529,7 +542,7 @@
 	     
 	    \tikzset{every node/.style={outer sep=0pt}}
 		
-			\visible<11->{
+			\visible<6->{
 				\begin{scope}[xshift=330pt, yshift=115pt, scale=0.75]f
 					\draw[thick, gray!50] (-2.99, -2.99) grid (-0.01, -0.01);			
 					\node (0) 	at (-3.5, -0.5) {\textcolor{green}{$np_0$}};
@@ -544,78 +557,78 @@
 				\end{scope}
 			}	    
 	    
-			\node[t] (w1)			at (0, 0)			{\grayat{10-}{this}};
-			\node[t] (t1_n)			at (0, 1)			{\greenat{7-}{$np_0$}};
+			\node[t] (w1)			at (0, 0)			{\grayat{5-}{this}};
+			\node[t] (t1_n)			at (0, 1)			{\greenat{2-}{$np_0$}};
 			
-			\node[t] (w2)			at (2, 0)			{\grayat{10-}{makes}};
-			\node[t] (t2_li_1)		at (2, 1)			{\greenat{7-}{\grayat{10-}{$\li$}}};
-			\node[t] (t2_su)			at (1.3, 1.75)		{\redat{7-}{\grayat{10-}{$\diamondsuit^{su}$}}};
-			\node[t] (t2_np_1)		at (1.2, 2.5)		{\redat{7-}{$np_1$}};
-			\node[t] (t2_li_2)		at (2.6, 1.75)		{\greenat{7-}{\grayat{10-}{$\li$}}};
-			\node[t] (t2_obj)		at (2.1, 2.5)		{\redat{7-}{\grayat{10-}{$\diamondsuit^{obj}$}}};
-			\node[t] (t2_np_2)		at (2.1, 3.25)		{\redat{7-}{$np_2$}};
-			\node[t] (t2_s)			at (3.1, 2.5)		{\greenat{7-}{\grayat{10-}{$s_3$}}};
-			\grayat{10-}{
+			\node[t] (w2)			at (2, 0)			{\grayat{5-}{makes}};
+			\node[t] (t2_li_1)		at (2, 1)			{\greenat{2-}{\grayat{5-}{$\li$}}};
+			\node[t] (t2_su)			at (1.3, 1.75)		{\redat{2-}{\grayat{5-}{$\diamondsuit^{su}$}}};
+			\node[t] (t2_np_1)		at (1.2, 2.5)		{\redat{2-}{$np_1$}};
+			\node[t] (t2_li_2)		at (2.6, 1.75)		{\greenat{2-}{\grayat{5-}{$\li$}}};
+			\node[t] (t2_obj)		at (2.1, 2.5)		{\redat{2-}{\grayat{5-}{$\diamondsuit^{obj}$}}};
+			\node[t] (t2_np_2)		at (2.1, 3.25)		{\redat{2-}{$np_2$}};
+			\node[t] (t2_s)			at (3.1, 2.5)		{\greenat{2-}{\grayat{5-}{$s_3$}}};
+			\grayat{5-}{
 			\draw[tree] (t2_li_1) -- (t2_su) -- (t2_np_1);
 			\draw[tree] (t2_li_1) -- (t2_li_2) -- (t2_obj) -- (t2_np_2);
 			\draw[tree] (t2_li_2) -- (t2_s);
 			}
 		
-			\node[t] (w3)			at (4.6, 0)			{\grayat{10-}{full}};
-			\node[t] (t3_mod)		at (4.6, 1)			{\greenat{7-}{\grayat{10-}{$\Box^{mod}$}}};
-			\node[t] (t3_li)			at (4.6, 1.75)		{\greenat{7-}{\grayat{10-}{$\li$}}};
-			\node[t]	 (t3_np_1)		at (4.0, 2.5)		{\redat{7-}{$np_4$}};
-			\node[t]	 (t3_np_2)		at (5.2, 2.5)		{\greenat{7-}{$np_5$}};
-			\grayat{10-}{
+			\node[t] (w3)			at (4.6, 0)			{\grayat{5-}{full}};
+			\node[t] (t3_mod)		at (4.6, 1)			{\greenat{2-}{\grayat{5-}{$\Box^{mod}$}}};
+			\node[t] (t3_li)			at (4.6, 1.75)		{\greenat{2-}{\grayat{5-}{$\li$}}};
+			\node[t]	 (t3_np_1)		at (4.0, 2.5)		{\redat{2-}{$np_4$}};
+			\node[t]	 (t3_np_2)		at (5.2, 2.5)		{\greenat{2-}{$np_5$}};
+			\grayat{5-}{
 			\draw[tree] (t3_mod) -- (t3_li) -- (t3_np_1);
 			\draw[tree] (t3_li) -- (t3_np_2);
 			}
 			
-			\node[t] (w4)			at (6.2, 0)			{\grayat{10-}{sense}};
-			\node[t] (t4_n)			at (6.2, 1)			{\greenat{7-}{$np_6$}};
+			\node[t] (w4)			at (6.2, 0)			{\grayat{5-}{sense}};
+			\node[t] (t4_n)			at (6.2, 1)			{\greenat{2-}{$np_6$}};
 			
-			\visible<8->{
-			\node[t] (vd)			at (7.4, 1)			{\grayat{10-}{$\vdash$}};
-			\node[t] (t5_s)			at (8.2, 1)			{\redat{7-}{\grayat{10-}{{$s_7$}}}};
+			\visible<3->{
+			\node[t] (vd)			at (7.4, 1)			{\grayat{5-}{$\vdash$}};
+			\node[t] (t5_s)			at (8.2, 1)			{\redat{2-}{\grayat{5-}{{$s_7$}}}};
 			}
 			
-			\visible<9->{
+			\visible<4->{
 			\draw[->, idx, rounded corners=17] (t1_n) -- ($(t1_n) + (0, 2.5)$) -| (t2_np_1);
 			\draw[->, idx, rounded corners=30] (t4_n) -- ($(t4_n) + (0, 3)$) -| (t3_np_1);
 			\draw[->, idx, rounded corners=35] (t3_np_2) -- ($(t3_np_2) + (0, 2.5)$) -| (t2_np_2);
 			}
-			\visible<9>{
+			\visible<4>{
 			\draw[->, idx, rounded corners=47] (t2_s) -- ($(t2_s) + (0, 2)$) -| (t5_s);
 			}
 		\end{tikzpicture}
-	}{
-		\begin{tikzpicture}
-		[tree/.style={very thick},
-	     ctx/.style={thick, ->, rounded corners},
-	     ctxbi/.style={thick, <->},
-	     t/.style={align=center}]
-	     
-	    \tikzset{every node/.style={outer sep=0pt}}
-			\node[t] (t2)			at (-1.75, 1.75)		{$\redat{3}{\diamondsuit^{su}}\redat{4}{np}\redat{2}{~\li~}\diamondsuit^{obj}np\li s$};
-			\node[t] (=)				at (0.4, 1.75)		{$\leadsto$};
-			\visible<2->{
-			\node[t] (t2_li_1)		at (2, 1)			{$\redat{2}{\li}$};
-			\visible<3->{
-			\node[t] (t2_su)			at (1.3, 1.75)		{$\redat{3}{\diamondsuit^{su}}$};
-			\draw[tree] (t2_li_1) -- (t2_su);
-			\visible<4->{
-			\node[t] (t2_np_1)		at (1.2, 2.5)		{$\redat{4}{np}$};
-			\draw[tree] (t2_su) -- (t2_np_1);
-			\visible<5->{
-			\node[t] (t2_li_2)		at (2.6, 1.75)		{$\li$};
-			\node[t] (t2_obj)		at (2.1, 2.5)		{$\diamondsuit^{obj}$};
-			\node[t] (t2_np_2)		at (2.1, 3.25)		{$np$};
-			\node[t] (t2_s)			at (3.1, 2.5)		{$s$};
-			\draw[tree] (t2_li_1) -- (t2_li_2) -- (t2_obj) -- (t2_np_2);
-			\draw[tree] (t2_li_2) -- (t2_s);	
-			}}}}
-		\end{tikzpicture}
-	}
+%	}{
+%		\begin{tikzpicture}
+%		[tree/.style={very thick},
+%	     ctx/.style={thick, ->, rounded corners},
+%	     ctxbi/.style={thick, <->},
+%	     t/.style={align=center}]
+%	     
+%	    \tikzset{every node/.style={outer sep=0pt}}
+%			\node[t] (t2)			at (-1.75, 1.75)		{$\redat{3}{\diamondsuit^{su}}\redat{4}{np}\redat{2}{~\li~}\diamondsuit^{obj}np\li s$};
+%			\node[t] (=)				at (0.4, 1.75)		{$\leadsto$};
+%			\visible<2->{
+%			\node[t] (t2_li_1)		at (2, 1)			{$\redat{2}{\li}$};
+%			\visible<3->{
+%			\node[t] (t2_su)			at (1.3, 1.75)		{$\redat{3}{\diamondsuit^{su}}$};
+%			\draw[tree] (t2_li_1) -- (t2_su);
+%			\visible<4->{
+%			\node[t] (t2_np_1)		at (1.2, 2.5)		{$\redat{4}{np}$};
+%			\draw[tree] (t2_su) -- (t2_np_1);
+%			\visible<5->{
+%			\node[t] (t2_li_2)		at (2.6, 1.75)		{$\li$};
+%			\node[t] (t2_obj)		at (2.1, 2.5)		{$\diamondsuit^{obj}$};
+%			\node[t] (t2_np_2)		at (2.1, 3.25)		{$np$};
+%			\node[t] (t2_s)			at (3.1, 2.5)		{$s$};
+%			\draw[tree] (t2_li_1) -- (t2_li_2) -- (t2_obj) -- (t2_np_2);
+%			\draw[tree] (t2_li_2) -- (t2_s);	
+%			}}}}
+%		\end{tikzpicture}
+%	}
 \end{frame}
 
 \section{Goodbye}
