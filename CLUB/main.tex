@@ -1,0 +1,601 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{A}
+\setbeamerfont{frametitle}{size=\normalsize}
+\setbeamerfont{normal text}{size=\small}
+
+\usepackage{amsmath}
+\usepackage{datetime}
+\usepackage{relsize}
+\usepackage{ulem}
+\usepackage{amsmath}
+\usepackage{calc}
+\usepackage{tikz}
+\usetikzlibrary{fit,positioning,arrows,automata,shapes,backgrounds,
+				calc,patterns}
+\tikzset{
+	unary/.style={thin,double},
+	head/.style={ultra thick}
+}
+\usepackage{tabularx}
+\usepackage{stmaryrd}
+\usepackage{wasysym}
+\usepackage{booktabs}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{centernot}
+\usepackage{graphics}
+\usepackage{palatino}
+\usepackage{soul}
+\usepackage{stackengine}
+\usepackage{eqparbox}
+\usepackage{textcomp}
+\setlength{\leftmargini}{0.5cm}
+\setlength{\leftmarginii}{0.5cm}
+\usepackage{tikz}
+
+\hypersetup{
+    colorlinks=true,
+    urlcolor=blue,
+    pdfpagemode=FullScreen,
+}
+
+\begin{document}
+
+\date{}
+
+\title{
+Tables with Numbers
+}
+\subtitle{\smaller \textcolor{gray!90}{and what they (do not) mean}}
+\author{Konstantinos Kogkalidis\\
+\smaller[2] \textcolor{gray!90}{based on joint work with Stergios Chatzikyriakidis}\\
+\vspace{1em}
+\includegraphics[width=0.175\textwidth]{stergios.png}
+}
+\date{\smaller[2] Circolo Linguistico dell’Università di Bologna\\
+ 07/11/24}
+
+{%
+\setbeamertemplate{headline}{}
+\frame{\titlepage
+}
+}
+
+\section{Premise}
+\begin{frame}{}
+\vfil
+\begin{center}
+\framebox{
+What is the epistemic culture of CL today?
+}
+\end{center}
+\vfill
+
+\smaller
+
+\visible<2->{
+Disclaimers:
+\begin{enumerate}
+	\item[\textbf{1.}] no ``authority'' (scientific, or otherwise)\vspace{0.5em}
+	\uncover<3->{
+	\begin{quote}
+		\smaller
+		``... twitter-worthy: ... a polemic, shallow and insulting sound-bite ... for people like Chomsky ...'' \\
+		\textnormal{ | anonymous reviewer, Oct 2024}
+	\end{quote}
+	\visible<4->{
+	\item[\textbf{2}.] (1) is not self-absolving}}}
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}{Context: a Brief History of CL\\
+\quad{\smaller -- or: how CL became NLP}}
+\smaller
+
+\alt<3->{
+	\begin{center}
+		\framebox{\textbf{Methodological} Paradigm Shifts \textcolor{red}{$\implies$} \textbf{Cultural} Paradigm Shifts}
+	\end{center}
+	\vfill
+	\begin{flushright}
+		\smaller \textcolor{gray!90}{Evident in what the field perceives as ``progress''.}
+	\end{flushright}
+}{
+	\begin{tabular}{@{}l@{\quad}c@{\quad}l@{}}
+	(1920s) & - & \textbf{Conceptualization Era}:
+	Philosophy of Computation, Structuralism\\
+	& & \textcolor{gray!90}{\smaller \textit{``what is the relation between language and reality?''}} \\
+	& \vdots \\
+	(1950s) & - & \textbf{Proto-NLP}: Information Theory, Machine Translation\\
+	& & {\smaller \textcolor{gray!90}{\textit{``how to transmit/compress/encrypt/decrypt/translate written/verbal messages?''} }}\\
+	(1970s) & - & \textbf{Syntactic Era}: Formal Grammars, Logics, Algebras, Algorithms\\
+	& & {\smaller \textcolor{gray!90}{\textit{``how to systematically describe language and operate on these descriptions?''}}}\\
+	(1990s) & - & \textbf{Statistical Era}: Stochastic Grammars, EM, Parameter Fitting\\
+	& & {\smaller \textcolor{gray!90}{\textit{``how to optimize the description and automate the description process?''}}}\\
+	(2010s) & - & \textbf{Neural ``Revolution''}: Word Vectors, Supervised Learning\\
+	& & {\smaller \textit{\textcolor{gray!90}{``how well can we automate a textual processing task?''}}}\\
+	& \vdots \\
+	\visible<2->{
+	\alert{(today)} & - & \textbf{Scale Era}: Large {\smaller \textcolor{gray}{(Language)}} Models\\
+	& & {\smaller \textit{\textcolor{gray!90}{``how well can we automate \textbf{all mental} processing tasks?''}}}}
+	\end{tabular}\vfill
+}
+\end{frame}
+
+\begin{frame}{NLP, Progress\\	\quad\smaller
+	\alt<4->{
+		Exhibit D: Quantifying quantification
+	}{
+		Exhibit \alt<2->{\alt<3->{C}{B}}{A}
+	}
+}\smaller
+
+	\begin{center}
+	\alt<2->{
+		\alt<3->{
+			\alt<4->{
+				\vspace{-.25em}
+				\includegraphics[height=.875\textheight]{numbers.pdf}\vfil
+			}{
+				\url{https://aclanthology.org/events/acl-2024/}
+			}
+		}{
+			\vspace{-2.25em}
+			\includegraphics[trim={1em 10.5em 1em 5.5em}, clip, height=1.45\textheight]{gpt.pdf}
+		}
+	}{
+		\url{https://nlpprogress.com}
+	}
+	\end{center}
+\end{frame}
+
+\begin{frame}{Spoiler Alert}
+	\smaller 
+	(Tables with) numbers are \alert{bad}:
+	\begin{enumerate}
+		\item a heavily inflated epistemic currency;
+		\item an environmental pollutant;
+		\item a mechanism of perpetuating inequality (academic + social);
+		\item a tool reinforcing severe corporate monopoly.
+	\end{enumerate}	
+\end{frame}
+
+\section{(Meta)science}
+
+\begin{frame}{Neopositivism; a primer}
+
+		\alt<4->{
+			\centering
+			\framebox{\textsc{Number} witnesses \textsc{Truth}.}
+		}{
+		\[
+		\boxed{
+			\textsc{Truth} \equiv \mathbb{1}
+		}
+		\]
+		\smaller
+		\vfill
+		\uncover<2-3>{
+			Scientific methodology:
+			\begin{enumerate}
+				\item observe
+				\item theorize
+				\item fit
+				\item evaluate
+				\item accept/reject/refine | repeat
+			\end{enumerate}\vfill
+			
+			\uncover<3->{
+					Theories are refutable; conclusions are not.\\
+					Reproducibility ensures results are objective, neutral \& \textit{universal}.\vfill
+			}
+		}
+		}
+					
+\end{frame}
+
+\begin{frame}{The problem with language}
+	\smaller
+	Where it all falls apart
+	\begin{enumerate}
+		\item TL: lack of computational foundations
+		\uncover<2->{
+		\item CL: theories either too narrow or just suck
+		\uncover<3->{
+		\item NLP: engineering trumps theory
+		\uncover<4->{
+		\item[]  $\implies$ \alert{theory} iteration $\leadsto$ \alert{model} iteration
+		}}}
+	\end{enumerate}\vfill
+	\visible<4->{
+	\centering
+	Today, CL papers come in two main flavors: \textbf{benchmarks} \& \textbf{models} -- \\
+	-- complementary facets of the same one thing: \textbf{tables with numbers}.
+	}
+\end{frame}
+
+\begin{frame}{Models\\
+\quad \smaller (large or otherwise, language or otherwise) \visible<3->{are \textbf{not} a substitute to theory}}
+	\alt<3->{
+		\centering
+		\framebox{\textsc{Number} witnesses \st{\textsc{Truth}} \alert{\textsc{Performance}}.}
+	}{
+		\smaller
+		\begin{itemize}
+			\item theory-neutral
+			\item infallible (other than in performance)
+			\item[]  $\implies$ have \alert{nothing} to say (other than know-how)
+			\item[]
+			\uncover<2->{
+			\item language reduced to ``tasks`
+			\item ``understanding`` $:= \sum\text{task}$
+			\item[]  $\implies$ ``understanding`` \alert{without understanding}
+			}
+		\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}{Epistemic Inflation\\
+\quad \smaller \visible<-3>{\alt<2->{2}{1}/2: \alt<2->{Effects}{Causes}}
+}
+	\alt<4->{
+		\centering
+		\framebox{\textsc{Number} witnesses \st{\textsc{Truth}} \st{\textsc{Performance}}  \alert{\textsc{Nothing}}.}
+	}{
+		\smaller
+		\alt<2->{
+			\begin{itemize}
+				\item ``progress'' $\leadsto$ leaderboarding competition
+				\item performative sales-pitch aesthetics
+				\item low-hanging-fruit agendas
+				\item knowledge recycling, citation amnesia
+				\item less replication
+				\visible<3->{
+				\item[] $\implies$ more numbers $\leadsto$ \alert{less validity}
+				}
+			\end{itemize}
+		}{
+			\begin{itemize}
+				\item model iteration is easier than theory iteration
+				\item performance is a prerequisite for publication
+				\item publication is a prerequisite for employment / status / \dots 
+				\item[]  $\implies$ extra incentives for \alert{more numbers}
+			\end{itemize}
+		}
+	}
+\end{frame}
+
+\section*{}
+\begin{frame}[plain]{}
+	\smaller
+	\centering
+	\vfil
+	Back on earth\dots
+\end{frame}
+
+\section{Planet}
+
+\begin{frame}{CL and sustainability}
+	\smaller
+	The best performing models are typically \alert{the biggest}.\vfill
+	
+	\alt<2->{
+		Big models $\implies$
+		\begin{itemize}
+			\item big energy (\alert{150TWh} | 1-2\% of global energy consumption)
+			\item big emissions (\alert{60MtCO\textsubscript{2}e} | 250,000 transatlantic flights)
+			\item big water (\alert{2.2Gm\textsuperscript{3}} | 0.33\% of global annual withdrawal)\\
+			\quad {\smaller ($\sim$2 Denmarks or $\sim$44 Congos, for scale)}
+		\end{itemize}\vfill
+		
+		\smaller
+		\begin{flushright}
+			\textcolor{gray!90}{
+				Private data center estimates, US (2022).
+			}
+		\end{flushright}
+	}{
+		\begin{center}
+			\includegraphics[width=1.06\textwidth]{model_size.png}
+		\end{center}
+	}
+\end{frame}
+
+\begin{frame}{Buzzwords}
+	\smaller
+	``Green'' AI/NLP:
+	\begin{enumerate}
+		\uncover<-3,5->{
+		\item eco-awareness; stamp models with (post-hoc) ecolabels
+		\item consumption optimization (quantization, truncation, sparsification, MoE \dots)\\
+		}
+		\visible<2->{
+		\uncover<-2,4->{
+		\item[\alert{\textbf{?}}\hphantom{.}] produce less numbers
+		}
+		}
+	\end{enumerate}
+	\vfill
+
+	\begin{center}
+	\alt<5->{
+		\framebox{
+			\textbf{technopositivism\quad
+			\alert{$\nleftrightarrow$}\quad 
+			technodeterminism
+			}
+		}
+	}{
+			\visible<3->{\uncover<-3>{\textbf{technopositivism}}}\quad
+			\visible<5->{\alert{$\nleftrightarrow$}}\quad
+			\visible<4->{\textbf{technodeterminism}}
+	}
+	\end{center}
+	\vfill
+
+	\visible<6->{
+	\begin{flushright}
+		\smaller[1]
+		\textcolor{gray!90}{Who produces ``Green'' AI/NLP research anyway?}
+	\end{flushright}
+	}
+\end{frame}
+
+\section*{}
+\begin{frame}[plain]{}
+    \begin{tikzpicture}[remember picture, overlay]
+    		\only<1>{
+        		\node[anchor=center, outer sep=0pt, at=(current page.center)] 
+        		{\includegraphics[width=\paperwidth,height=\paperheight]{./movie/slide_1.png}};
+		}
+    		\only<2>{
+        		\node[anchor=center, outer sep=0pt, at=(current page.center)] 
+        		{\includegraphics[width=\paperwidth,height=\paperheight]{./movie/slide_2.png}};
+        	}
+    		\only<3>{
+        		\node[anchor=center, outer sep=0pt, at=(current page.center)] 
+        		{\includegraphics[width=\paperwidth,height=\paperheight]{./movie/slide_3.png}};
+        	}
+    		\only<4>{
+        		\node[anchor=center, outer sep=0pt, at=(current page.center)] 
+        		{\includegraphics[width=\paperwidth,height=\paperheight]{./movie/slide_4.png}};
+        	}
+    		\only<5>{
+        		\node[anchor=center, outer sep=0pt, at=(current page.center)] 
+        		{\includegraphics[width=\paperwidth,height=\paperheight]{./movie/slide_5.png}};
+		}
+         
+    \end{tikzpicture}
+	\smaller
+	\vspace{20em}	
+	\begin{flushright}
+		\smaller[1]
+			\alt<3->{
+				Who produces green AI/NLP research anyway?
+			}{
+				\textcolor{white}{Who produces green AI/NLP research anyway?}
+			}
+	\end{flushright}
+	
+	\end{frame}
+
+\section*{}
+\begin{frame}[plain]{}
+	\smaller
+	\vspace{20em}	
+	\begin{flushright}
+		\smaller[1]
+			\textcolor{gray!90}{Who produces \textbf{any} AI/NLP research anyway?}
+	\end{flushright}
+\end{frame}
+
+\section{Privilege}
+
+\begin{frame}{The cost of numbers, in \$}
+	\centering
+	\vfill
+	\begin{minipage}{0.5\textwidth}
+		\smaller
+		For comparison:
+		\begin{itemize}
+			\item \eqmakebox[things][l]{UniBo / Aalto (2023): }
+			    $\sim 10^8$ \\
+			    \quad {\smaller \textcolor{gray!90}{(or: 1 GPT-4)}}
+			\item \eqmakebox[things][l]{GPT-5 (``leaked''/rumored): }
+				$\sim 2 \times 10^9$\\
+			    \quad {\smaller \textcolor{gray!90}{(or: 200 UniBos)}}
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+		\includegraphics[width=\textwidth]{budgets.pdf}
+	\end{minipage}%
+\end{frame}
+
+\begin{frame}{Science of the few \visible<6->{is science \alert{\textbf{for}} the few}}
+	\smaller
+		\begin{itemize}
+			\item less wealthy institutions/departments locked out of ``SOTA'' research
+			\uncover<2->{
+			\item[] $\implies$ \alert{what} research is done $\longleftrightarrow$ \alert{who} gets to do it
+			\uncover<3->{
+			\item[] $\implies$ agendas shaped by \alert{few} countries/institutions/individuals\\
+			{\hfill \smaller \textcolor{gray!90}{(\dots so much for ``universality'')}}
+			\uncover<4->{
+			\item ``top'' research centers are not open to everyone\\
+			{\hfill \smaller \textcolor{gray!90}{(socioeconomic, geographic, cultural, gender etc. filters)}}
+			\uncover<5->{
+			\item[] $\implies$ CL dissemination $\equiv$ \alert{bias propagation
+			}}}}}
+		\end{itemize}\vfill
+	
+	\visible<6->{
+		\begin{center}
+		\framebox{\textbf{
+			technoscientific hegemonialism}
+			$\leadsto$
+			\textbf{\alert{cultural and linguistic homogenization}}
+		}
+	\end{center}
+	}
+\end{frame}
+
+\begin{frame}{``Understanding'' \textbf{whose} language?
+}
+	\smaller
+	\centering
+	\vspace{0.5em}
+	\includegraphics[height=0.875\textheight,trim={3em 2.5em 3em 1.5em}, clip]{diversity.png}
+	\begin{flushright}
+		\smaller[2]
+		\vspace{-1.5em}
+		\textcolor{gray!90}{Geographic Citation Gaps in NLP Research, Rungta et al (2022)}
+	\end{flushright}
+\end{frame}
+
+\begin{frame}{Academic Mobility \\ 
+\quad \smaller -- or: Academic Alienation}
+	\smaller
+	Frontier CL research is \textbf{exclusive}, \textbf{concentrated}, \textbf{centralized}.
+	\begin{itemize}
+		\item[] $\implies$ publish or perish $\leadsto$ \alert{move} or perish
+		\item[] $\implies$ academic mobility \alert{flows towards \$}
+		\item[] $\implies$ under-funded countries/institutions lose (yet) another resource: \alert{workforce}
+	\end{itemize}
+	\vfill
+	
+	\centering
+	\framebox{
+	``forced'' mobility + globalized leaderboarding = \alert{scientific assimilation}
+	}
+\end{frame}
+
+\section{Profit}
+
+\begin{frame}{Research\\
+\quad \smaller (and Development)}
+	\centering
+		\resizebox{0.55\textwidth}{!}{\begin{tikzpicture}
+			\node (pre) at (0,0) {\includegraphics[width=9em]{pre-reveal.png}};
+			\node (b) at (0.012, 2.997) {results};
+			\visible<2->{
+				\node (a) at (-2.856, 0.942) {scale};
+				\draw[->] (a) -- (b);
+			}
+			\visible<3->{
+				\node (e) at (-1.773, -2.430) {budget};
+				\draw[->] (e) -- (a);
+			}
+			\visible<4->{
+				\node (c) at (2.856, 0.918) {commerce};
+				\draw[->] (b) -- (c);
+			}
+			\visible<5->{
+				\node (d) at (1.758, -2.430) {profit};
+				\draw[->] (c) -- (d);
+			}
+			\visible<6->{
+				\draw[->] (d) -- (e);
+				\node (pre) at (0,0) {\includegraphics[width=9em]{post-reveal.png}};
+			}
+		\end{tikzpicture}}
+\end{frame}
+
+\begin{frame}{Corporate Takeover}
+\begin{minipage}[t]{0.45\textwidth}
+    \vfill
+	\includegraphics[width=\textwidth]{sponsors.pdf}
+\end{minipage}\hfil%
+\begin{minipage}[t]{0.45\textwidth}
+    \vfill
+    \visible<2->{
+		\includegraphics[width=\textwidth]{citations.pdf}
+	}
+\end{minipage}
+\end{frame}
+
+
+\begin{frame}{... and why it's bad}
+	\smaller
+	The promise: {\smaller \textcolor{gray!90}{(read: neoliberal narrative)}}
+	\begin{itemize}
+		\item academia produces knowledge
+		\item industry actualizes knowledge
+		\item academia scrutinizes industry	
+	\end{itemize}
+	
+	\uncover<2->{
+	\hfill \textcolor{gray!90}{\textit{implicit condition: pursuit of knowledge $\parallel$ big tech interests}}
+	}
+	\vfill
+
+	\uncover<3->{	
+	In reality:
+	\begin{itemize}
+		\item industry \st{actualizes} \alert{predates} knowledge
+		\uncover<4->{
+		\item corporate resources $\leadsto$  means of scientific \st{empowerment} \alert{coercion}
+		\uncover<5->{
+		\item surviving ideas $\leadsto$ \st{socially relevant tools} \alert{economically viable products}}
+		\visible<6->{
+		\item[]
+		\item[] \hfil \framebox{$\implies$ scientist $\leadsto$ \alert{big tech spokesperson}}
+		}}
+	\end{itemize}
+	}
+\end{frame}
+
+\begin{frame}{AI Ethics\\
+\quad \smaller -- or: corporate ethics}
+	\smaller
+	AI/NLP ``ethics'' are \textbf{self-produced} virtue-signaling gestures:
+	\begin{itemize}
+		\item assertions of accountability \& transparency
+		\item self-regulatory guidelines \& suggestions
+		\item ``democratization'' of technoscientific capital
+		\item corporate ads for social inclusivity and the general ``good'' {\smaller \textcolor{gray!90}{(what about the bad?)}}
+		\visible<2->{
+		\item[\vdots]
+		\item[\alert{\textbf{?}}] change course?
+		}
+	\end{itemize}
+\end{frame}
+
+
+\section*{}
+\begin{frame}[plain]
+	\smaller
+	\centering
+	\framebox{\textsc{Number} witnesses \st{\textsc{Truth}} \st{\textsc{Performance}}  \st{\textsc{Nothing}} \alert{\textsc{Harm}}.}
+	\vfill
+	
+	\visible<2->{
+	\begin{flushright}
+		\textcolor{gray!90}{Where do we go from here?}
+	\end{flushright}
+	}
+\end{frame}
+
+\begin{frame}{Ack.}
+	\smaller
+	\begin{center}
+		Thanks
+	\end{center}\vfill
+
+	\hfill\begin{minipage}{0.3\textwidth}
+		\textcolor{gray!90}{
+			 And thanks to:\\
+			- Giada Palmieri \\ 
+			- Savvas Papadopoulos \\ 
+			- Vasilis Boudrids \\
+			- Fabio Tamburini \\
+			- Emily Bender \\
+		    - Anonymous Reviewers \\
+			\dots
+		}
+	\end{minipage}
+\end{frame}
+
+
+\end{document}
