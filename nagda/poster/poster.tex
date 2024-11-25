@@ -1,0 +1,331 @@
+\documentclass{article}
+\usepackage[paperwidth=36in,paperheight=24in,hmargin=1.4in,vmargin=1in]{geometry}
+
+\usepackage{graphicx}
+\usepackage{enumitem}
+\pagenumbering{gobble}
+\usepackage[utf8]{inputenc}
+\usepackage{emoji}
+\usepackage{tikz}
+\usetikzlibrary{positioning,fit,calc}
+\usepackage{tikz-qtree}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,  % Change link color to blue
+    urlcolor=blue    % Change URL color to blue
+}
+\usepackage{newpxtext,newpxmath}
+\usepackage{eulervm}
+\makeatletter
+\def\txds@@scale{1}
+\input{ot1tx-ds.fd}
+\makeatother
+\usepackage[bb=tx]{mathalpha}
+
+\newcommand{\titlefont}{\fontsize{55}{55}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\sectionfont}{\fontsize{34}{34}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\nfont}{\fontsize{21}{22}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\tikzfont}{\fontsize{11}{13}\selectfont\setlength{\parskip}{1.2\baselineskip}}
+\newcommand{\agdafont}{\fontsize{18}{19}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\jsonfont}{\fontsize{18}{19}\selectfont\setlength{\parskip}{1\baselineskip}}
+
+\newcommand{\light}[1]{\textcolor{gray!90}{#1}}
+\newcommand{\ie}{\textit{i.e.},}
+\newcommand{\ia}{\textit{i.a.},}
+
+
+
+%%%%%%%%%%
+% Minted %
+%%%%%%%%%%
+\usepackage{minted}
+\setminted[json]{fontsize=\jsonfont}
+\setminted[agda]{fontsize=\agdafont}
+
+%%%%%%%%
+% Agda %
+%%%%%%%%
+\usepackage[conor]{agda}
+\AtBeginEnvironment{code}{\agdafont}
+\usepackage{newunicodechar}
+\newunicodechar{ℕ}{\ensuremath{\mathbb{N}}}
+\newunicodechar{λ}{\ensuremath{\mathnormal\lambda}}
+\newunicodechar{→}{\ensuremath{\mathnormal\to}}
+\newunicodechar{∀}{\ensuremath{\mathnormal\forall}}
+\newunicodechar{≡}{\ensuremath{\mathnormal\equiv}}
+\newunicodechar{⋯}{\ensuremath{\mathnormal\dots}}
+\newcommand\AC[1]{\AgdaInductiveConstructor{\agdaFontSize#1}}
+\newcommand\AD[1]{\AgdaDatatype{\agdaFontSize#1}}
+\newcommand\AF[1]{\AgdaFunction{\agdaFontSize#1}}
+\newcommand\AS[1]{\AgdaSymbol{\agdaFontSize#1}}
+\newcommand\AB[1]{\AgdaBound{\agdaFontSize#1}}
+\newcommand\AK[1]{\AgdaKeyword{\agdaFontSize#1}}
+
+\newcommand{\fanode}{@}
+\newcommand{\sanode}{$\to$}
+\newcommand{\dpnode}{$\Pi$}
+
+
+
+\begin{document}
+	% Title
+	\begin{minipage}{\textwidth}
+		\begin{minipage}{0.5\textwidth}
+			\titlefont
+			Learning Structure-Aware Representations \\of Dependent Types
+		\end{minipage}%
+		\begin{minipage}{0.3\textwidth}
+			\nfont
+			Konstantinos Kogkalidis\\
+			Orestis Melkonian\\
+			Jean-Philippe Bernardy\\
+		\end{minipage}\hfill
+		\begin{minipage}{0.15\textwidth}
+			\includegraphics[width=\textwidth]{NeurIPS_logo.png}
+		\end{minipage}
+	\end{minipage}
+	\vspace{0.5in}
+
+	\begin{minipage}[t]{0.29\textwidth}
+	{\sectionfont\textbf{Background}}
+	\nfont
+	
+	\textbf{Context}. Dependent type theories are formal languages used for defining mathematical objects and reasoning about their properties. Dependently-typed programming languages equate proofs with programs, facilitating theorem proving and formal verification. Here's a tiny program in \textbf{Agda}, proving that the addition of naturals is commutative:
+	
+	\hfill\begin{minipage}{0.9\textwidth}
+		\input{agda-example.tex}
+	\end{minipage}
+	
+	\vspace{-0.5\parskip}
+	\hfill\begin{minipage}{0.95\textwidth}
+	\light{\textbf{Remark 1.} Look at all the colors! \emoji{rainbow}}\\	
+	\light{\textbf{Remark 2.} Is proving (\textit{m} + \textit{n} $\equiv$ \textit{n} + m) any different to (\textit{x} + \textit{y} $\equiv$ \textit{y} + \textit{x})? \emoji{thinking}}	
+	\end{minipage}
+	
+	\textbf{Motivation}. If dependently-typed programs are proofs, and representing programs is essential to automating program synthesis, then \textbf{\textit{representing dependently-typed programs}} is key to \textbf{\textit{automating theorem proving}} (ATP).
+		
+	Two major issues in the literature:
+	\begin{itemize}[topsep=-0.75\baselineskip]
+		\item \textbf{Resource Uniformity.}\\
+		Many ATP models/resources/interfaces for Coq, Lean.\\
+		\textit{None for Agda}.
+		\item \textbf{No Structural Fidelity.}\\
+		Most ATP resources/frameworks today treat proofs as glorified text.\\
+		\textit{Gone are all the colors. Names suddenly matter.}
+	\end{itemize}
+
+	{\sectionfont\vspace{\parskip}\textbf{Contributions (tl;dr)}}	
+	\nfont
+	
+	\begin{itemize}[topsep=-0.25\baselineskip]
+		\item \textbf{Machine Learning, for Agda}.\\
+		We develop a package to faithfully extract the skeleton structure of dependently-typed program-proofs from type-checked Agda files. We apply the algorithm on Agda's public library ecosystem and release the result as a massive, highly elaborated ATP dataset.
+		\item \textbf{Representation Learning for Dependent Types.}\\
+		Capitalizing on this new resource, we present a representation learning model for expressions involving dependent types. Contra prior work, the model is structure-faithful, being invariant to $\alpha$-renaming, superficial syntactic sweetening, scope permutation, irrelevant definitions, \textit{etc}. 
+	\end{itemize}
+	
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.29\textwidth}
+	\sectionfont{\textbf{Dataset}}	
+	\nfont
+
+	\textbf{Problem Generation}. Left-to-right language modeling assumes proving is a linear process. Truth begs to differ; the statement below is valid syntax:
+	\begin{center}\begin{code}%
+		\>[0]\AgdaFunction{+-comm}\AgdaSpace{}%
+		\AgdaInductiveConstructor{zero}%
+		\>[16]\AgdaSymbol{(}\AgdaInductiveConstructor{suc}\AgdaSpace{}%
+		\AgdaBound{n}\AgdaSymbol{)}%
+		\>[25]\AgdaSymbol{=}\AgdaSpace{}%
+		\AgdaHole{\{!!\}}\<%
+	\end{code}\end{center}
+
+	\vspace{-0.5\parskip}
+	\hfill\begin{minipage}{0.95\textwidth}
+	\light{\textbf{Remark 3.} Proofs can have \textit{holes}: unfilled parts deferred for later. \emoji{cheese}}
+	\end{minipage}
+	
+	We use Agda's type-checker to find \textit{all possible holes} in all written proofs. For each hole, we record the \textit{goal type} (the type of the hole) and the \textit{typing context} (all proven premises currently available). Ground truth corresponds to a selection (and arrangement) of the context (how to fill the hole).
+	
+	\vspace{-0.5\parskip}
+	\hfill\begin{minipage}{0.95\textwidth}
+	\light{\textbf{Remark 4.} Correct \textbf{premise selection} goes a long way towards ATP. \emoji{jigsaw}}
+	\end{minipage}
+	
+	We export the extracted problems not \textit{only} as \textbf{strings}, but \textit{also} as \textbf{structures}.\linebreak
+	The export preserves and specifies all type information available to the checker, including \textbf{references} and \textbf{token structure at the subtype level}.
+	
+	
+	Post-tokenization, this is what the \textit{types} of \AgdaDatatype{$\mathbb{N}$}, \AgdaFunction{$+$} and \AgdaFunction{+-comm} look like:
+	
+	\begin{tikzpicture}[
+			ast/.style={draw,gray,thick,outer sep=2pt,opacity=0.5},
+			lab/.style={font=\large},
+			ref/.style={->,dashed,gray,opacity=0.4,thick},
+			var/.style={gray,opacity=0.8,execute at begin node={\strut(},execute at end node=)},
+			t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt},
+			scale=1.45, transform shape]
+		\tikzset{level 1/.style={level distance=22pt}, edge from parent/.append style={thick}}
+		\tikzfont
+		\begin{scope}[xshift=1cm]
+		\Tree
+		[.\node(t11) {•};
+				\node (t12) {\AgdaPrimitive{Set}};
+		]
+		\node[ast,fit=(t11)(t12)](nat) {};
+		\node[lab,xshift=5.5pt,yshift=4pt]() at(nat.north west) {\AgdaDatatype{ℕ}};
+		\begin{scope}[xshift=3.5cm,yshift=-1.5cm]
+		\Tree
+		[.\node (t21) {•};
+			[.{\sanode{}}
+				\node[var] (plus-l) {\AgdaDatatype{ℕ}};
+				[.{\sanode{}}
+					\node[var] (plus-r) {\AgdaDatatype{ℕ}};
+					\node[var] (plus-out) {\AgdaDatatype{ℕ}};
+				]
+			]
+		]
+		\node[ast,fit=(t21)(plus-l)(plus-out)] (+) {};
+		\node[lab,xshift=4.5pt,yshift=4pt]() at(+.north west) {\AgdaFunction{+}};
+		\begin{scope}[xshift=6cm,yshift=3.2cm]\Tree
+		[.\node (t31) {•};
+			[.{\dpnode{}}
+				\node[var] (m-def) {$\AgdaBound{m}:\AgdaPrimitive{Set}$};
+				[.{\dpnode{}}
+					\node[var] (n-def) {$\AgdaBound{n}:\AgdaPrimitive{Set}$};
+					[.{\fanode{}}
+						[.{\fanode{}}
+							{(\AgdaPrimitive{≡})}
+							[.{\fanode{}}
+								[.{\fanode{}}
+									\node[var] (+-ref-1) {\AgdaFunction{+}};
+									\node[var] (m-ref-1) {\AgdaBound{m}};
+								]
+								\node[var] (n-ref-1) {\AgdaBound{n}};
+							]
+						]
+						[.{\fanode{}}
+							[.{\fanode{}}
+								\node[var] (+-ref-2) {\AgdaFunction{+}};
+								\node[var] (n-ref-2) {\AgdaBound{n}};
+							]
+							\node[var] (m-ref-2) {\AgdaBound{m}};
+						]
+					]
+				]
+			]
+		]
+		\node[ast,fit=(t31)(m-def)(+-ref-1)(m-ref-2)] (comm) {};
+		\node[lab,xshift=19pt,yshift=4pt]() at(comm.north west) {\AgdaFunction{+-comm}};
+		\end{scope}\end{scope}\end{scope}
+		\draw[ref] (plus-l) -- (nat);
+		\draw[ref] (plus-r) -- (nat);
+		\draw[ref] (plus-out) -- (nat);
+		\draw[ref] (m-def) -- (nat);
+		\draw[ref] (n-def) -- (nat);
+		\draw[ref] (+-ref-1) -- (+);
+		\draw[ref] (+-ref-2) -- (+);
+		\draw[ref] (m-ref-1) -- (m-def);
+		\draw[ref] (m-ref-2) -- (m-def);
+		\draw[ref] (n-ref-1) -- (n-def);
+		\draw[ref] (n-ref-2) -- (n-def);
+	\end{tikzpicture}
+
+%		\vspace{-0.5\parskip}
+		\hfill\begin{minipage}{0.95\textwidth}\light{\textbf{Remark 5.} Note the AST and referencing structures \emoji{christmas-tree}\emoji{christmas-tree}\emoji{christmas-tree}}\\
+		\light{\textbf{Remark 6.} Contrast with the tokenization of GPT-4o below. \raisebox{-0.25em}{\rotatebox{45}{\emoji{straight-ruler}}}}
+		\end{minipage}
+		
+		\newcommand{\cbp}[1]{\framebox{\strut#1}}
+		\newcommand{\cbg}[1]{\framebox{\strut#1}}
+		\newcommand{\cbr}[1]{\framebox{\strut#1}}
+		\newcommand{\cbb}[1]{\framebox{\strut#1}}
+		\newcommand{\cby}[1]{\framebox{\strut#1}}
+		{\tikzfont\centering
+		\cbp{data}\cbg{~}\cby{$\mathbb{N}$}\cbr{ :}\cbb{ Set}\cbp{<newline>}\cbg{\_}\cby{+}\cbr{\_}\cbb{ :}\cbg{$\mathbb{N}$}\cby{$\to$}\cbr{}\cbb{$\mathbb{N}$}\cbr{<newline>}\cbb{+-}\cbp{comm}\cbg{ :}\cby{ (}\cbr{m}\cbb{ n}\cbp{ :}\cbg{}\cby{$\mathbb{N}$}\cbr{)}\cbb{ $\to$}\cbp{ m}\cbg{ +}\cby{ n}\cbr{}\cbb{$\equiv$}\cbp{ m}\cbg{ +}\cby{ m}\cbr{<newline>}
+		}
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.29\textwidth}
+	\sectionfont{\textbf{Representation Learning}}
+	\nfont
+
+	We build representations for lemmas and holes on the basis of their types.
+	
+	\textbf{Architecture.} We use a fully-attentive bidirectional Transformer encoder, where full attention is restricted to tokens within the same type, augmented with various representational adjustments.
+	\begin{enumerate}[topsep=-0.75\baselineskip]
+		\item \textbf{Tree PE}. We use positional encodings that employ an inductive parameterization of the group structure of binary branching trees. These relieve the model from having to ``parse'' the type's symbolic sequentialization.
+		\item \textbf{Variable Binding.} We resolve nominal indexing, and represent variable references by the representation of the reference's path relative to the binder.
+		\item \textbf{Scope Referencing.} We organize lemmas into a \textsc{poset} according to their dependency levels. We then build representations in dependency-sorted minibatches, and represent lemma references by the representations of their referents.
+		\light{\hfill (here: $\mathbb{N}$ < $+$ < +-comm)}
+		\item \textbf{Efficient Attention.} We use linear attention combined with a Taylor-approximation of the exponential map to efficiently avoid the quadratic explosion -- without losing expressivity.
+	\end{enumerate}
+	
+	\vspace{\baselineskip}
+	\textbf{Training.} We train with infoNCE in a premise selection setup using a subset of Agda's standard library, and evaluate in proximal and distant domains.
+	
+	{\newcommand{\stdlib}{\texttt{stdlib}}
+	\newcommand\unimath{\texttt{Unimath}}
+	\newcommand\typetopo{\texttt{TypeTopo}}
+	\newcommand\agdaQuill{\textsc{Quill}}	
+
+	\newcommand{\sstat}[2]{\hphantom{1}\ensuremath{#1}}
+	\newcommand{\bstat}[2]{\ensuremath{#1}}
+	\newcommand{\bfstat}[2]{\ensuremath{\mathbf{#1}}}
+	
+	\newcolumntype{C}{>{\centering\arraybackslash}X}
+	\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+	\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+	
+	\centering
+	\begin{tabularx}{0.95\textwidth}{
+		@{}l@{\quad}L@{~/~}R@{\quad}R@{~/~}L@{\quad}R@{~/~}L@{\quad}R@{~/~}L@{}
+%		@{}l@{~~}c@{~~}c@{\hskip 36.5pt}c@{~~}c@{\hskip 36.5pt}c@{~~}c@{\hskip 36.5pt}c@{~~}c
+	}
+	& \multicolumn{8}{c}{Average and R-Precision}\\
+	\multicolumn{1}{@{}l}{\textsc{Model}}
+	& \multicolumn{2}{@{\quad}C@{\quad}}{\stdlib{}:\textsc{id}}
+	& \multicolumn{2}{C@{\quad}}{\stdlib{}:\textsc{ood}}
+	& \multicolumn{2}{@{\quad}C@{\quad}}{\unimath}
+	& \multicolumn{2}{@{\quad}C@{\quad}}{\typetopo}\\
+	\toprule
+	~\agdaQuill 	&
+		\bfstat{50.2}{0.5} & \bfstat{40.3}{0.4} & \bfstat{38.7}{0.7} & \bfstat{31.1}{0.9} & \bfstat{27.0}{0.4} & \bfstat{17.4}{0.3} & \bfstat{22.5}{0.3} & \bfstat{15.4}{0.5} \\
+	~~- (4)		& \bstat{47.0}{0.4} & \bstat{36.2}{0.5} & \bstat{37.1}{0.5} & \bstat{29.2}{0.6} & \bstat{26.8}{0.2} & \bstat{17.0}{0.1} & \bstat{21.4}{0.5} & \bstat{14.4}{0.4} \\
+	~~- (1)	 & \bstat{44.5}{1.5} & \bstat{34.1}{1.8} & \bstat{30.7}{0.4} & \bstat{24.0}{0.4} & \bstat{24.8}{3.4} & \bstat{15.5}{2.9} & \bstat{18.8}{1.1} & \bstat{12.3}{0.9}\\
+	~~- (2)	& \bstat{35.8}{2.7} & \bstat{25.9}{2.7} & \bstat{25.5}{2.7} & \bstat{19.1}{2.4} & \bstat{19.7}{1.8} & \bstat{11.6}{1.5} & \bstat{17.7}{3.0} & \bstat{11.0}{3.1}\\	
+	~Transformer & \bstat{10.9}{0.4} & \sstat{3.7}{0.2} & \sstat{8.5}{0.2	} & \sstat{4.5}{0.1} & \sstat{9.4}{0.3} & \sstat{3.9}{0.1} & \sstat{5.8}{0.0} & \sstat{0.9}{0.0} \\
+	\bottomrule	
+	\end{tabularx}
+	}
+	
+	\hfill\begin{minipage}{0.95\textwidth}
+		\light{\textbf{Remark 7.} Structural adjustments >> architectural adjustments. \emoji{balance-scale}}
+	\end{minipage}
+
+
+	\sectionfont
+	\vspace{\parskip}
+	\textbf{Learn more}
+	\nfont
+	
+	For more details, take a look at:
+	\begin{itemize}[topsep=-0.75\baselineskip]
+		\item \url{agda.readthedocs.io}\\
+		for an intro to Agda
+		\item \url{github.com/omelkonian/agda2train}\\ for the proof extraction code 
+		\item \url{github.com/konstantinosKokos/quill}\\ for the Python interface and neural engine
+		\item \url{arxiv.org/abs/2402.02104}\\ for prose, figures, tables with numbers, etc.
+	\end{itemize}
+
+	\vspace{\parskip}\vspace{\parskip}\vspace{\parskip}\vspace{\parskip}
+		
+	\includegraphics[height=0.2\textwidth]{cost.pdf}\hspace{1.5em}
+	\raisebox{1.25em}{\includegraphics[height=0.12\textwidth]{eu.png}}
+	
+	\end{minipage}%
+
+\end{document}
+
