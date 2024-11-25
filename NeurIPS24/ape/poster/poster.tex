@@ -1,0 +1,398 @@
+\documentclass{article}
+\usepackage[paperwidth=36in,paperheight=24in,hmargin=1.4in,vmargin=1in]{geometry}
+
+\usepackage{graphicx}
+\usepackage{tikz}
+\tikzset{
+    grid/.style={very thin,gray}
+}
+\tikzset{
+    dot/.style={
+        draw,
+        gray!50,
+         line width=1pt,
+         minimum height=3.5pt,
+         inner sep=0pt,
+         anchor=center,
+         outer sep=5pt
+    },
+    label/.style={text height =1.5ex}
+}
+\usepackage{tikz-qtree}
+\usetikzlibrary{calc,positioning,arrows.meta,arrows}
+\usepackage{enumitem}
+
+\pagenumbering{gobble}
+
+
+%\usepackage{xcolor}
+%\definecolor{blue}{HTML}{46A5FF}
+%\definecolor{yellow}{HTML}{F7E159}
+%\definecolor{red}{HTML}{FD6360}
+
+
+\usepackage[T1]{fontenc}
+\usepackage{newpxtext,newpxmath}
+\usepackage{eulervm}
+\makeatletter
+\def\txds@@scale{1}
+\input{ot1tx-ds.fd}
+\makeatother
+\usepackage[bb=tx]{mathalpha}
+
+\newcommand{\titlefont}{\fontsize{55}{55}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\sectionfont}{\fontsize{34}{34}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\nfont}{\fontsize{21}{22}\selectfont\setlength{\parskip}{1\baselineskip}}
+\newcommand{\tikzfont}{\fontsize{10.5}{11}\selectfont\setlength{\parskip}{1.2\baselineskip}}
+
+\newcommand{\light}[1]{\textcolor{gray!90}{#1}}
+
+\newcommand{\Path}{\ensuremath{\mathbb{P}}}
+\newcommand{\zero}{\ensuremath{\mathbb{0}}}
+\newcommand{\one}{\ensuremath{\mathbb{1}}}
+\newcommand{\two}{\ensuremath{\mathbb{2}}}
+\newcommand{\pcomp}{\mathbin +}
+\newcommand\pinvt[1]{\mathop{-}#1}
+\newcommand\pinv[1]{(\pinvt{#1})}
+\newcommand{\perm}[1]{\ensuremath{\mathcal{S}_{#1}}}
+\newcommand\hmmax{0}
+\newcommand\bmmax{0}
+\newcommand{\inter}[1]{\ensuremath\lceil{#1}\rceil}
+
+
+\newcommand{\ape}{{APE}}
+\newcommand{\rope}{{RoPE}}
+\newcommand{\ie}{\textit{i.e.},}
+\newcommand{\ia}{\textit{i.a.},}
+
+%\renewcommand{\quad}{\hphantom{x}}
+\renewcommand{\section}[1]{\textbf{\sectionfont #1}}
+
+
+\begin{document}
+	% Title
+	\begin{minipage}{\textwidth}
+		\begin{minipage}{0.5\textwidth}
+			\titlefont
+			Algebraic Positional Encodings
+		\end{minipage}%
+		\begin{minipage}{0.3\textwidth}
+			\nfont
+			Konstantinos Kogkalidis\\
+			Jean-Philippe Bernardy\\
+			Vikas Garg
+		\end{minipage}\hfill
+		\begin{minipage}{0.15\textwidth}
+			\includegraphics[width=\textwidth]{NeurIPS_logo.png}
+		\end{minipage}
+	\end{minipage}
+	\vspace{0.5in}
+	
+	% Columns
+	\begin{minipage}[t]{0.29\textwidth}
+		\sectionfont
+		\textbf{TL;DR}
+		
+		\nfont	
+		\hfill\rule[0\baselineskip]{0.65\textwidth}{1pt}
+		
+		\hfill\begin{minipage}{0.65\textwidth}
+		``\textit{%
+					syntax is an algebra,\\
+					semantics is an algebra,\\
+					and meaning is a homomorphism between them%
+				}''\\
+		\end{minipage}
+		\vspace{-\baselineskip}
+		\hfill\rule{.65\textwidth}{1pt}
+		
+		\hfill Montague's theory of meaning
+		
+		We argue that:
+		\begin{itemize}[topsep=-1\baselineskip,noitemsep]
+			\item understanding and explicating the formation rules and rewrite properties of \textbf{positions} over different \textbf{ambient structures} (\textit{syntax})
+			\item and finding appropriate structure-preserving \textbf{interpretations} (\textit{meaning})
+		\end{itemize}
+		is the only way to structure-faithful \textbf{positional encodings} (\textit{semantics}).
+		
+		We call these Algebraic Positional Encodings (\ape). APE readily apply to:
+		\begin{itemize}[topsep=-1\baselineskip,noitemsep]
+			\item sequences
+			\item trees
+			\item grids
+			\item ...
+		\end{itemize}\vspace{\baselineskip}
+
+		We show that \textbf{sequential \ape{} theoretically subsume \rope}. 	Beyond sequences, \ape{} are a \textbf{theoretically disciplined and highly general extension of \rope{} across multiple dimensions} \light{(both metaphorical and literal)}.
+		
+		\sectionfont
+		\vspace{\parskip}
+		\textbf{Sequences}
+		
+		\nfont
+		Let $\Path$ be a \textit{path} (\ie{} a relative offset) between two points in a sequence.
+		
+		$\Path$ admits a simple inductive definition:
+		\begin{align*}
+		\Path & :=  \one & & \light{\text{\# take a step to the right}}\\
+		      & \quad | ~ \Path + \Path & & \light{\text{\# join two paths together}}\\
+		      & \quad | ~ \Path^{-1} & & \light{\text{\# flip a path around}}
+		\end{align*}
+		where $+$ associative and commutative with $\zero := \one + \one^{-1}$ as its neutral element.
+		
+		\textbf{Remark 1.} The signature coincides with that of the integers, $\Path \equiv \mathbb{Z}$.\\
+		\textbf{Remark 2.} The signature corresponds to an infinite cyclic group, $\Path \equiv \langle \one \rangle$.\\
+		\textbf{Remark 3.} The signature admits a representation in $O(n)$.\\
+		\hphantom{x}Consider the interpretation $\inter{}: \langle \one \rangle \to \langle W \rangle$, such that:
+		\begin{align*}
+			\inter{\one} & \mapsto W & & \light{\text{\# $W$ represents a single step}}\\
+			\inter{p + q} & \mapsto \inter{p} \inter{q} & & \light{\text{\# path composition $\leadsto$ matrix multiplication}}\\
+			\inter{p^{-1}} & \mapsto \inter{p}^{-1} & & \light{\text{\# path inversion $\leadsto$ matrix transposition}}
+		\end{align*}
+		\textbf{Remark 4.} $A \to B = (A \to \zero) + (\zero \to B)$. Visually:
+		\begin{center}
+		\begin{tikzpicture}[scale=2, transform shape]\tikzfont
+	        \draw[grid] (0,0) -- (4.5,0);
+	        \draw[grid,dashed] (4.5,0) -- (5.5,0);
+	        \node[dot] (0) at (0,0) {};
+	        \node[below=-5pt of 0,label] {$\zero$};
+	        \node[dot] (1) at (1,0) {};
+	        \node[below=-5pt of 1,label] {$\one$};
+	        \node[dot] (2) at (2,0) {};
+	        \node[below=-5pt of 2,label] {$\one^{2}$};
+	        \node[dot] (3) at (3,0) {};
+	        \node[below=-5pt of 3,label] {$\one^{3}$};
+	        \node[dot] (4) at (4,0) {}; 
+	        \node[below=-5pt of 4,label] {$\one^{4}$};
+	        
+	        \draw[->,dotted,very thick] (1) to[bend left=45] node[midway, above]{${W}^{-1}{W}^4 = {W}^{3}$} (4);
+	        \draw[<-,dotted,very thick] (1) to[bend right=45] node[midway, below]{${W}^{-4}{W} = {W}^{-3}$} (4);
+	    \end{tikzpicture}
+		\end{center}
+		\textbf{Remark 5.} This setup offers an inductive parameterization of sequential PE using just \textbf{one trainable primitive} (a single matrix).
+				
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.28\textwidth}
+		\sectionfont	
+		\textbf{How-To}
+		
+		\nfont
+		
+		Simply substitute dot-product for the tensor contraction:
+		\begin{center}
+		\begin{tikzpicture}[scale=2, transform shape]\tikzfont
+			\tikzstyle{v} = [
+			    draw, 
+			    ultra thick, 
+			    fill=blue!20, 
+			    circle, 
+			    rounded corners, 
+%			    text centered, 
+			]
+			\tikzstyle{m} = [
+			    draw, 
+			    ultra thick, 
+			    fill=green!20, 
+			    rectangle, 
+			    rounded corners, 
+%			    text centered, 
+			]
+
+			\node[v] at (0, 0) (q) {$q$};
+			\node[m] at (2, 0) (fq) {$\Phi^{(q)}$};
+			\draw[ultra thick] (q) -- (fq) node[above, midway] {$\alpha$};
+			
+			\node[m] at (5, 0) (aq) {$A^{(q)}$};
+			\draw[ultra thick] (fq.east)
+			    .. controls +(0.5,0) and +(-0.5,0.0) .. ++(1, 0.5) node[midway,above] {$\beta$}
+			    -- ++(2, 0)
+			    .. controls +(0.35,0) and +(0.35,0) .. 
+			    	(aq.east);
+
+			\node[v] at (0, -2) (k) {$k$};			
+			\node[m] at (2, -2) (fk) {$\Phi^{(k)}$};
+			\node[m] at (5, -2) (ak) {$A^{(k)}$};
+			\draw[ultra thick] (k) -- (fk) node[below, midway] {$\epsilon$};
+
+			\draw[ultra thick] (aq.west)
+				.. controls +(-0.35, 0) and +(-0.35, 0) .. ++(0, -0.5)
+				-- ++ (+0.5, 0)
+				.. controls +(1.15, 0) .. ++(1.15, -0.5)
+				-- +(0, -1) node[midway,right] {$\gamma$}
+				.. controls +(-0, -0.5) .. ++ (-0.65, -1.5)
+				-- ++(-1, 0)
+				.. controls +(-0.35, 0) and +(-0.35, 0) .. +(0, +0.5)
+			;
+
+			\draw[ultra thick] (fk.east)
+			    .. controls +(0.5,0) and +(-0.5,0.0) .. ++(1, 0.5) node[midway,above] {$\delta$}
+			    -- ++(2, 0)
+			    .. controls +(0.35,0) and +(0.35,0) .. 
+			    	(ak.east);
+			    	
+			\draw[dashed, ultra thick, gray, rounded corners] (3.5, 1) -- (6.85, 1) -- (6.85, -3) -- (3.5, -3) -- cycle;
+			\node[anchor=west] at (7, 1) {$T^{(q\to k)}$};
+		\end{tikzpicture}
+		\end{center}
+		where:
+		\begin{itemize}[noitemsep,topsep=-\baselineskip]
+			\item $q, k \in \mathbb{R}^{n}$
+			\item $\Phi^{(q,k)} \in \mathbb{R}^{n\times n}$
+			\item $A^{(q,k)} \in O(n)$ the representations of the positions of $q$ and $k$\\
+			\light{\hfill \textbf{Note}: $T^{(q\to k)} = {A^{(q)}}^\top A^{(k)}$ the \textbf{path} representation from $q$ to $k$}
+		\end{itemize}
+		\vspace{\parskip}
+	
+		In the sequential setup RoPE $\equiv$ APE, except with a fixed $W$. Why? \\
+		\vspace{-2\baselineskip}
+		\begin{flushright}
+		\light{
+			\textbf{Hint}: $W = QRQ^\top$ (where $Q \in O(n)$ and $R$ a block-diagonal rotation).
+		}
+		\end{flushright}		 
+		
+		\sectionfont
+		\vspace{\parskip}
+		\textbf{Trees}
+		
+		\nfont
+		Extend the definition of $\Path$ with \textbf{options}, to arrive at a definition of paths $\Path_{\kappa}$ over $\kappa$-ary branching trees:
+		\begin{align*}
+			\Path_{\kappa} & := 
+			 \one & & \light{\text{\# take the first branch}}\\
+			  & \quad | ~ \two & & \light{\text{\# take the second branch}}\\
+			  & \quad | ~ \dots\\
+ 			  & \quad | ~ \kappa & & \light{\text{\# take the $\kappa$-th branch}}\\
+		      & \quad | ~ \Path + \Path & & \light{\text{\# join two paths together}}\\
+		      & \quad | ~ \Path^{-1} & & \light{\text{\# flip a path around}}
+		\end{align*}
+		
+		\textbf{Remark 5.} This is now a generic group with $\kappa$ generators.\\
+		\textbf{Remark 6.} Unlike sequences, the structure is not commutative.\\
+		\textbf{Remark 7.} All else remains the same -- just extend the interpretation to:\\
+		$ \langle \one,\two,\dots,\kappa \rangle \to \langle W_1, W_2,\dots,W_\kappa \rangle$. Visually:
+
+		
+		\begin{center}
+		\begin{tikzpicture}[grow'=up,anchor=center,sibling distance=0.8cm,level distance=1.33cm,scale=2, transform shape]\tikzfont
+		    \tikzset{level 3/.style={sibling distance=13pt}}
+		    \tikzset{level 3/.style={level distance=30pt}}
+		    \tikzset{edge from parent/.style={grid,draw}}
+		    \tikzset{every tree node/.style={label}}
+		            \Tree 
+		            [.\node (1) {$\zero$};
+		                [.\node (2) {$\one$};
+		                    [.\node (4) {$\one\one$};
+		                        \edge[dashed]; {}
+		                        \edge[dashed]; {}
+		                    ]
+		                    [.\node (5) {$\one\two$};
+		                        \edge[dashed]; {}
+		                        \edge[dashed]; {}
+		                    ]
+		                ]
+		                [.\node (3) {$\two$};
+		                    [.\node(6) {$\two\one$};
+		                        \edge[dashed]; {}
+		                        \edge[dashed]; {}
+		                    ]
+		                    [.\node(7) {$\two\two$};
+		                        \edge[dashed]; {}
+		                        \edge[dashed]; {}
+		                    ]
+		                ]
+		            ]  
+		        \draw [->,dotted,very thick,rounded corners,transform canvas={shift={(0,5pt)}}]
+		            ($(6.south) + (7pt, -3pt)$) --
+		            ($(3.north) + (-5pt,6pt)$) -- 
+		            ($(3.south) + (-5pt,-2pt)$) -- 
+		            ($(1.north) + (0, 0.8pt)$) -- 
+		            ($(2.south) + (5pt,-2pt)$) -- 
+		            ($(2.north) + (5pt,6pt)$) -- 
+		            ($(5.south) + (-7pt,-3pt)$);
+		        \node (x) at (0pt, 41pt) {$(W_2W_1)^{-1}W_{1}W_2$};
+		    \end{tikzpicture}
+		    \sectionfont
+			\vspace{\parskip}
+				    
+%			\includegraphics[width=0.3\textwidth]{qr.png}		    
+		    
+		\end{center}
+	\end{minipage}\hfill
+	\begin{minipage}[t]{0.286\textwidth}
+		\sectionfont
+		\textbf{Grids}
+		\nfont
+		
+		Rather than add options, we can glue two (or more) sequences together by means of the \textbf{group direct sum}, $\oplus$.
+		Consider the composite group $\Path^2 := \Path \oplus \Path$, with the group operation and inversion defined as:
+		\begin{align*}
+			(x, y) + (z,w) &= (x+z,y+w)\\
+			(x, y)^{-1} &= (x^{-1}, y^{-1})
+		\end{align*}
+		
+		\textbf{Remark 8.} The structure is commutative once more.\\
+		\textbf{Remark 9.} Elements of $\Path^2$ are still to be interpreted as (orthogonal) matrices, except now block-structured, by virtue of the \textbf{matrix direct sum}:
+		\begin{align*}
+			\inter{p \oplus q} \mapsto \inter{p} \oplus \inter{q} = \begin{bmatrix}
+			\inter{p} & 0\\
+			0 & \inter{q}
+			\end{bmatrix}
+		\end{align*}
+		Visually:\\
+		\vspace{-\baselineskip}
+		\begin{center}
+			\begin{tikzpicture}[scale=2, transform shape]\tikzfont
+		        \draw[step=1cm,grid] (0,0) grid (2.99,2.99);
+		        \draw[dashed,grid] (0, 3) -- (3, 3);
+		        \draw[dashed,grid] (3, 0) -- (3, 3);
+		        \draw[dashed,grid] (0, 3) -- (0, 4);
+		        \draw[dashed,grid] (1, 3) -- (1, 4);
+		        \draw[dashed,grid] (2, 3) -- (2, 4);
+		        \draw[dashed,grid] (3, 3) -- (3, 4);
+		        \draw[dashed,grid] (3, 0) -- (4,0);f
+		        \draw[dashed,grid] (3, 1) -- (4,1);
+		        \draw[dashed,grid] (3, 2) -- (4,2);
+		        \draw[dashed,grid] (3, 3) -- (4,3);
+		
+		        \foreach \x in {0,1,2,3} {
+		        \foreach \y in {0,1,2,3} {
+		            \filldraw[gray!90] (\x,\y) circle (1pt);
+		           }
+		        }
+		        \node[left, label,fill opacity=0.5, text opacity=1.] at (0, 3) {$(\one^3, \zero)$};
+		        \node[right, label,fill opacity=0.5, fill=white, text opacity=1.] at (3,1) {$(\one, \one^3)$};
+		        \draw[->, dotted, very thick]
+		            (0.15, 3) 
+		            to[bend left=40] 
+		            node[midway,above,right,fill opacity=0.6, fill=white, text opacity=1.,xshift={0.25cm}]{${H}^{-2}\oplus{W}^3$} 
+		            (2.95, 1.15);
+		        \draw[<-, dotted, very thick] 
+		            (0, 2.85) 
+		            to[bend right=40] 
+		            node[midway,below,left,fill opacity=0.4, fill=white, text opacity=1., xshift={-0.25cm}]{${H}^{2}\oplus{W}^{-3}$} 
+		            (2.85,1);
+		    \end{tikzpicture}
+		\end{center}
+		\textbf{Remark 10.} The same interpretation strategy can be applied to construct \textbf{any other composition} of established structures and their representations.
+		
+		\sectionfont
+		\vspace{\parskip}
+		\textbf{Read More}
+		\nfont
+		
+		Read the paper for:
+		\begin{itemize}[noitemsep,topsep=-\baselineskip]
+			\item prose
+			\item tables with numbers
+			\item links to code
+			\item references
+			\item ... other things papers usually have
+		\end{itemize}
+		
+		\vspace{\parskip}\vspace{\parskip}\vspace{\parskip}\vspace{\parskip}
+		\centering\includegraphics[width=0.25\textwidth]{qr.png}
+	\end{minipage}%
+
+\end{document}
+
