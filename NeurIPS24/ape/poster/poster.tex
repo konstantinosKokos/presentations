@@ -21,8 +21,12 @@
 \usepackage{tikz-qtree}
 \usetikzlibrary{calc,positioning,arrows.meta,arrows}
 \usepackage{enumitem}
-
-\pagenumbering{gobble}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,  % Change link color to blue
+    urlcolor=blue    % Change URL color to blue
+}\pagenumbering{gobble}
 
 
 %\usepackage{xcolor}
@@ -89,7 +93,7 @@
 	\vspace{0.5in}
 	
 	% Columns
-	\begin{minipage}[t]{0.29\textwidth}
+	\begin{minipage}[t]{0.3\textwidth}
 		\sectionfont
 		\textbf{TL;DR}
 		
@@ -123,7 +127,7 @@
 			\item ...
 		\end{itemize}\vspace{\baselineskip}
 
-		We show that \textbf{sequential \ape{} theoretically subsume \rope}. 	Beyond sequences, \ape{} are a \textbf{theoretically disciplined and highly general extension of \rope{} across multiple dimensions} \light{(both metaphorical and literal)}.
+		We show that \textbf{sequential \ape{} theoretically subsume \rope}. 	Beyond se\nolinebreak{}quences, \ape{} are a \textbf{theoretically disciplined and highly general extension of \rope{} across multiple dimensions} \light{(both metaphorical and literal)}.
 		
 		\sectionfont
 		\vspace{\parskip}
@@ -378,19 +382,28 @@
 		
 		\sectionfont
 		\vspace{\parskip}
-		\textbf{Read More}
+		\textbf{Results}
 		\nfont
 		
-		Read the paper for:
-		\begin{itemize}[noitemsep,topsep=-\baselineskip]
-			\item prose
-			\item tables with numbers
-			\item links to code
-			\item references
-			\item ... other things papers usually have
+		We get really good results in many different setups (sequence transduction/tree manipulation/image recognition).\\
+		\vspace{-2\baselineskip}
+		\begin{flushright}
+				\light{Details omitted for suspense (and space economy).}
+		\end{flushright}
+		
+		\sectionfont
+		\vspace{\parskip}
+		\textbf{Learn More}
+		\nfont
+		
+		\begin{itemize}[topsep=-0.5\baselineskip]
+			\item \url{arxiv.org/abs/2312.16045}\\
+			prose, tables with numbers, references, etc.
+			\item \url{github.com/konstantinosKokos/APE}\\
+			reference implementation, experiment scripts, practical how-tos, etc.\\
 		\end{itemize}
 		
-		\vspace{\parskip}\vspace{\parskip}\vspace{\parskip}\vspace{\parskip}
+		\vspace{\parskip}\vspace{\parskip}
 		\centering\includegraphics[width=0.25\textwidth]{qr.png}
 	\end{minipage}%
 
