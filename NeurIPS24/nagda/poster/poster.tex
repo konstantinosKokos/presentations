@@ -106,7 +106,7 @@
 	\light{\textbf{Remark 2.} Is proving (\textit{m} + \textit{n} $\equiv$ \textit{n} + m) any different to (\textit{x} + \textit{y} $\equiv$ \textit{y} + \textit{x})? \emoji{thinking}}	
 	\end{minipage}
 	
-	\textbf{Motivation}. If dependently-typed programs are proofs, and representing programs is essential to automating program synthesis, then \textbf{\textit{representing dependently-typed programs}} is key to \textbf{\textit{automating theorem proving}} (ATP).
+	\textbf{Motivation}. If dependently-typed programs are proofs, and representing programs is essential to automating program synthesis, then \textbf{\textit{representing dependently-typed programs}} is key to \textbf{\textit{automated theorem proving}} (ATP).
 		
 	Two major issues in the literature:
 	\begin{itemize}[topsep=-0.75\baselineskip]
@@ -122,10 +122,10 @@
 	\nfont
 	
 	\begin{itemize}[topsep=-0.25\baselineskip]
-		\item \textbf{Machine Learning, for Agda}.\\
+		\item \textbf{Machine Learning for Agda}.\\
 		We develop a package to faithfully extract the skeleton structure of dependently-typed program-proofs from type-checked Agda files. We apply the algorithm on Agda's public library ecosystem and release the result as a massive, highly elaborated ATP dataset.
 		\item \textbf{Representation Learning for Dependent Types.}\\
-		Capitalizing on this new resource, we present a representation learning model for expressions involving dependent types. Contra prior work, the model is structure-faithful, being invariant to $\alpha$-renaming, superficial syntactic sweetening, scope permutation, irrelevant definitions, \textit{etc}. 
+		Capitalizing on this new resource, we present a representation learning model for expressions involving dependent types. Contra prior work, the model is structure-faithful, being invariant to $\alpha$-renaming, superficial syntactic sugaring, scope permutation, irrelevant definitions, \textit{etc}. 
 	\end{itemize}
 	
 	\end{minipage}\hfill
@@ -235,7 +235,7 @@
 	\end{tikzpicture}
 
 %		\vspace{-0.5\parskip}
-		\hfill\begin{minipage}{0.95\textwidth}\light{\textbf{Remark 5.} Note the AST and referencing structures \emoji{christmas-tree}\emoji{christmas-tree}\emoji{christmas-tree}}\\
+		\hfill\begin{minipage}{0.95\textwidth}\light{\textbf{Remark 5.} Note the AST and referencing structures. \emoji{christmas-tree}\emoji{christmas-tree}\emoji{christmas-tree}}\\
 		\light{\textbf{Remark 6.} Contrast with the tokenization of GPT-4o below. \raisebox{-0.25em}{\rotatebox{45}{\emoji{straight-ruler}}}}
 		\end{minipage}
 		
@@ -245,7 +245,7 @@
 		\newcommand{\cbb}[1]{\framebox{\strut#1}}
 		\newcommand{\cby}[1]{\framebox{\strut#1}}
 		{\tikzfont\centering
-		\cbp{data}\cbg{~}\cby{$\mathbb{N}$}\cbr{ :}\cbb{ Set}\cbp{<newline>}\cbg{\_}\cby{+}\cbr{\_}\cbb{ :}\cbg{$\mathbb{N}$}\cby{$\to$}\cbr{}\cbb{$\mathbb{N}$}\cbr{<newline>}\cbb{+-}\cbp{comm}\cbg{ :}\cby{ (}\cbr{m}\cbb{ n}\cbp{ :}\cbg{}\cby{$\mathbb{N}$}\cbr{)}\cbb{ $\to$}\cbp{ m}\cbg{ +}\cby{ n}\cbr{}\cbb{$\equiv$}\cbp{ m}\cbg{ +}\cby{ m}\cbr{<newline>}
+		\cbp{data}\cbg{~}\cby{$\mathbb{N}$}\cbr{ :}\cbb{ Set}\cbp{<newline>}\cbg{\_}\cby{+}\cbr{\_}\cbb{ :}\cbg{$\mathbb{N}$}\cby{$\to$}\cbr{}\cbb{$\mathbb{N}$}\cbr{<newline>}\cbb{+-}\cbp{comm}\cbg{ :}\cby{ (}\cbr{m}\cbb{ n}\cbp{ :}\cbg{}\cby{$\mathbb{N}$}\cbr{)}\cbb{ $\to$}\cbp{ m}\cbg{ +}\cby{ n}\cbr{}\cbb{$\equiv$}\cbp{ n}\cbg{ +}\cby{ m}\cbr{<newline>}
 		}
 	\end{minipage}\hfill
 	\begin{minipage}[t]{0.29\textwidth}
@@ -259,7 +259,7 @@
 		\item \textbf{Tree PE}. We use positional encodings that employ an inductive parameterization of the group structure of binary branching trees. These relieve the model from having to ``parse'' the type's symbolic sequentialization.
 		\item \textbf{Variable Binding.} We resolve nominal indexing, and represent variable references by the representation of the reference's path relative to the binder.
 		\item \textbf{Scope Referencing.} We organize lemmas into a \textsc{poset} according to their dependency levels. We then build representations in dependency-sorted minibatches, and represent lemma references by the representations of their referents.
-		\light{\hfill (here: $\mathbb{N}$ < $+$ < +-comm)}
+		\light{\hfill (here: $\mathbb{N}$ ~<~ $+$ ~<~ +-comm)}
 		\item \textbf{Efficient Attention.} We use linear attention combined with a Taylor-approximation of the exponential map to efficiently avoid the quadratic explosion -- without losing expressivity.
 	\end{enumerate}
 	
