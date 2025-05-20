@@ -12,22 +12,22 @@
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{booktabs}
+\usepackage{multirow}
+
 \usepackage{proof}
 \usepackage{eqparbox}
 
 \usepackage[normalem]{ulem}
 
-\definecolor{light}{rgb}{0.38,0.38,0.38}
-\newcommand{\light}[1]{\textcolor{light}{#1}}
-
 \usepackage{tikz}
-\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{decorations.pathreplacing, calc}
 \usepackage{relsize}
 \usepackage{enumitem}
 \setlist[itemize]{label=\textcolor{pred}{$\bullet$}, topsep=0pt, itemsep=0pt}
 \setlist[itemize,2]{label=\textcolor{pred}{$\circ$}, topsep=0pt, itemsep=0pt,leftmargin=1.5em}
 
-%
+\definecolor{light}{rgb}{0.38,0.38,0.38}
+\newcommand{\light}[1]{\textcolor{light}{#1}}
 \newcommand{\rulestyle}[1]{#1}
 \newcommand{\Ax}{\rulestyle{Ax}}
 \newcommand{\EX}{\rulestyle{Ex}}
@@ -68,6 +68,10 @@
 \newcommand{\w}[1]{\text{#1}}
 \newcommand{\sbr}{\mathbin{\cdot}}
 \newcommand{\Ass}{\rulestyle{A}}
+\newcommand{\Prim}[1][]{\ensuremath{{\mathsf{Prim}_{#1}}}}
+\newcommand{\Cons}[1][]{\ensuremath{{\mathsf{Cons}_{#1}}}}
+\newcommand{\types}{\ensuremath{\mathcal{U}}}
+\newcommand{\terms}{\ensuremath{\Lambda}}
 
 \title{Grammaticality as Provability}
 \date{%
@@ -147,7 +151,7 @@
 	\begin{minipage}{.5\textwidth}
 		\begin{tabular}{@{}r@{ }l@{}}
 		 	\multicolumn{2}{@{}l}{\textbf{Types}}\\
-			$\ty{A, B, C}$ & $:= p \ | \ \ty{A\li B} \ | \ \ty{A\otimes B}$ \qquad \light{($p \in Prim.$)}\\
+			$\ty{A, B, C}$ & $:= p \ | \ \ty{A\li B} \ | \ \ty{A\otimes B}$ \qquad \light{($p \in \Prim$)}\\
 		    \addlinespace
 			\multicolumn{2}{@{}l}{\uncover<2->{\textbf{Structures}}}\\
 		  	\uncover<2->{
@@ -365,6 +369,7 @@
 		}
 
 	\end{tikzpicture}\end{minipage}\hfill
+	% (L?)
 	\begin{minipage}[t]{0.55\textwidth}\vspace{-8em}\begin{itemize}
 		\item \eqmakebox[logic][l]{\alert{L}} \light{(Lambek, 1958)}
 		\visible<2->{
@@ -409,7 +414,6 @@
 		NL			& tree		& $\crossmark$	& $\crossmark$\\
 		NLP			& mobile	& $\crossmark$	& $✔$
 	\end{tabular}
-
 \end{frame}
 
 \begin{frame}{Type-Logical Grammar 101\\
@@ -432,16 +436,217 @@
 	
 	\visible<2->{
 	\textbf{The lexicon} -- a mapping associating words and types\\
-		\light{\quad $\Lex{} : \mathsf{Words}$ $\to$ $\mathcal{P}(\mathcal{U})$}
+		\light{\quad $\Lex{} : \mathsf{Words}$ $\to$ $\mathcal{P}(\types)$}
 	}
 \end{frame}
 
+\begin{frame}{Pipeline}
+\smaller\centering
+	\begin{tikzpicture}[
+		t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt, color=light},
+		node distance=10pt,
+		arr/.style={thick,->},
+		scale=0.8
+	]
+		\node[t] (w1) 			at (0, 0.2) {w\textsubscript{0}};
+		\node[t] (wdots)		at (2, 0.2) {\dots};		
+		\node[t] (wn) 			at (4, 0.2) {w\textsubscript{n}};
+		\node[rectangle,draw=black, minimum width=120pt,minimum height=20pt,fill=gray!20] (lex)
+							 	at (2, -1.5) {Lexicon};
+		\draw[arr]  (w1) -- ++ (0.6, -1.1);
+		\draw[arr] (wn) -- ++ (-0.6, -1.1);
+		\node[t] (t1)			at (0, -3.2) {$\left(\ty{t}_{0,0} \mathbin{\&} \ty{t}_{0, 1} \mathbin{\&} \dots\right)$};
+		\node[t] (tdots)		at (2, -3.2) 	  {\dots};
+		\node[t] (tn)			at (4, -3.2) {$\left(\ty{t}_{n,0} \mathbin{\&} \ty{t}_{n,1} \mathbin{\&} \dots\right)$};
+		\draw[arr] ($(w1) + (0.6, -2.2)$) -- ($(t1.north) + (0, 0.1)$);
+		\draw[arr] ($(wn) + (-0.6, -2.2)$) -- ($(tn.north) + (0, 0.1)$);
+		\draw [thick,decorate,decoration={brace,aspect=0.2,amplitude=10pt,mirror}] (-0.5,-3.5) -- (4.5,-3.5) 
+				node[black,xshift=-113.5pt,yshift=-0.6cm] {\footnotesize $\times$}
+				node[xshift=-140pt, yshift=-8.5em, align=right,color=light] {\smaller $j = |\ty{t}_0| \times \dots \times |\ty{t}_n|$ judgements};				
+		\node[t] (c11)			at (1.7, -5) {$\ty{t}_{0,0} ~ \sbr$};
+		\node[t] 				at (2.75, -5) {\dots};
+		\node[t] (cn1)			at (4.4, -5) {$\sbr ~\ty{t}_{n,0} \vdash ?$};
+		\node[t] (c12)			at (1.7, -6) {$\ty{t}_{0,0} ~ \sbr$};
+		\node[t] 				at (2.75, -6) {\dots};
+		\node[t] (cn2)			at (4.4, -6) {$\sbr ~\ty{t}_{n,1} \vdash ?$};
+		\node[t] (vd)			at (2.75, -7) {\vdots};
+		\node[t] (c1k)			at (1.9, -8) {$\ty{t}_{0,|t_0 - 1|}~\sbr$};
+		\node[t] 				at (2.75, -8) {\dots};
+		\node[t] (cnk)			at (4.2, -8) {$\sbr~\ty{t}_{n,|t_n - 1|} \vdash ?$};
+		\draw[arr, rounded corners] (0.5, -4.3) -- ++ (0, -0.7) -- ++ (0.65, 0);
+		\draw[arr, rounded corners] (0.5, -4.3) -- ++ (0, -1.7) -- ++ (0.65, 0);
+		\draw[arr, rounded corners] (0.5, -4.3) -- ++ (0, -3.7) -- ++ (0.65, 0);
+		\node[rectangle, draw=black, minimum height=120pt,fill=gray!20] (pr)
+								at (7.4, -6.5)	{\begin{tabular}{c}Theorem\\ Prover\end{tabular}};	
+		\draw[arr] (cn1) -- ++ (1.7, 0);
+		\draw[arr] (cn2) -- ++ (1.7, 0);
+		\draw[arr] (cnk) -- ++ (1.9, 0);
+		\draw[arr] (cn1) ++ (4.2, 0) -- ++ (1.2, 0) node[right] {$\{p_0, p_0', \dots \}$};
+		\draw[arr] (cn2) ++ (4.2, 0) -- ++ (1.2, 0) node[right] {$\{p_1, p_1', \dots \}$};
+		\node 					at ($(vd) + (6.6, 0)$) {\vdots};
+		\draw[arr] (cnk) ++ (4.4, 0) -- ++ (1.2, 0) node[right] {$\{p_j, p_j', \dots \}$};
+	\end{tikzpicture}
+\end{frame}
 
-%\renewcommand{\Lex}{}
-%\renewcommand{\Ax}{}
+\begin{frame}{Compositionality\smaller\\
+\quad\light{An example}
+}\smaller
+	\alt<2>{
+		\visible<2->{
+		\begin{center}
+			Source $\Sigma$: (N)L $\xrightarrow{\makebox[0.33in]{$\langle \eta, \theta\rangle$}}$ Target T: MILL
+		\end{center}
+		\textbf{Base syntactic types $\Prim_\Sigma$ :} $\ty{n}$, $\ty{np}$, $\ty{s}$\\
+		\textbf{Base semantic types $\Prim_T$ :} $\ty{e}$, $\ty{t}$
+		\vfill
+		
+		\begin{minipage}[t]{0.2\textwidth}
+		\begin{tabular}{@{}l@{ = }l@{}}
+			\multicolumn{2}{@{}l}{$\eta_0 : \Prim_\Sigma \to \types_T$}\\
+			$\eta_0 ~ \ty{np}$ & $\ty{e}$\\
+			$\eta_0 ~ \ty{s}$ & $\ty{t}$\\
+			$\eta_0 ~ \ty{n}$ & $\ty{e\li t}$\\		
+		\end{tabular}\end{minipage}%
+		\begin{minipage}[t]{0.35\textwidth}
+		$\rightsquigarrow$\hspace{2em}\begin{tabular}{@{}l@{ = }l@{}}
+			\multicolumn{2}{@{}l}{$\eta : \types_\Sigma \to \types_T$}\\
+			$\eta ~ \ty{p}$ & $\eta_0 ~ \ty{p}$\\
+			$\eta ~ (\ty{A / B})$ & $\eta ~ (\ty{A / B})$ = $(\eta ~ A) \li (\eta ~ B)$\\
+			\multicolumn{2}{@{}l}{\hphantom{$\eta_0$}}
+		\end{tabular}		
+		\end{minipage}\vfill
+		
+		\begin{minipage}[t]{0.2\textwidth}
+		\begin{tabular}{@{}l@{ = }l@{}}
+			\multicolumn{2}{@{}l}{$\theta_0 : \Cons_\Sigma \to \terms_T$}\\
+			\multicolumn{2}{@{}l}{\dots}\\
+		\end{tabular}\end{minipage}%
+		\begin{minipage}[t]{0.35\textwidth}
+		$\rightsquigarrow$\hspace{2em}\begin{tabular}{@{}l@{ = }l@{}}
+			\multicolumn{2}{@{}l}{$\theta : \terms_\Sigma \to \terms_T$}\\
+			$\theta ~ (\te{s \appr t})$ & $\theta ~ (\te{t \appl s})$ = $(\theta~\te{s})~ (\theta~\te{t})$
+		\end{tabular}		
+		\end{minipage}\vfill
+		}
+	}{
+	\begin{center}\begin{tabular}{@{}c@{\quad}c@{\quad}c@{\quad}c@{\quad}c@{}}
+		\text{syntactic calculus} & $\xrightarrow{\makebox[0.33in]{$h_1$}}$ & \text{semantic calculus} & $\xrightarrow{\makebox[0.33in]{$h_2$}}$ & \text{lexical meaning}\\
+				(N)L\textsuperscript{(+)} & & MILL${}^{\text{(+)}}_{\li, \otimes}$ & & FOL / IL / \dots \\ 
+		\addlinespace
+		\multirow{2}{*}{\textit{surface form}} & & \textit{meaning} & & \textit{meaning} \\
+		& &	{\footnotesize\light{\textit{derivational}}} & & {\footnotesize\textit{\light{lexical}}}
+	\end{tabular}\end{center}\vfill
+	
+	$h_i := \langle \eta_i, \theta_i \rangle$, where:
+	\begin{itemize}
+		\item $\eta$ an action on types
+		\item $\theta$ an action proofs (terms)
+	\end{itemize}\vfill
+	}
+\end{frame}
 
-\begin{frame}{Type-Logical Grammar 102\\
-\smaller\quad\light{Example derivation (L)}
+\begin{frame}{Warmup (1)\smaller\\
+\quad\light{Lexical Ambiguity}}\smaller
+	\vspace{1em}
+	\begin{tabular}{@{}r@{ :: }l@{}}
+		\w{the}			& $\ty{np/n}$\\
+		\w{culling} 	& $\ty{n} \visible<5->{\mathbin{\alert{\&}} \alert{np/np}}$\\
+		\w{necessary} & $\ty{n/n}$\\
+		\visible<2->{\w{was} & $\ty{(np\bs s) / (n / n)}$}\\
+		\visible<3->{\w{hunters'} & $\ty{n / n} \visible<5->{\mathbin{\alert{\&}} \alert{\ty{(np /n) \bs (np/(np/np))}}}$}
+	\end{tabular}
+	\vfill
+	
+	\alt<6->{
+	\[
+		\begin{array}{l}
+\theta\left(\left(\left(\w{the} \appr \w{hunters'}\right) \appl \w{culling}\right) \appr \left(\w{was} \appl \w{necessary}\right) \right) \quad \light{\text{-\,- plug in }\theta_0 (\w{hunters'}) := \lambda f^{\ty{(e\li t)\li e}} g^{\ty{e\li e}}.g \ (f \ \textsc{hunters})}\\
+		\quad \stackrel{\beta}{\rightsquigarrow} 
+		\textsc{was}^{\ty{((e\li t)\li (e\li t))\li e \li t}}~\textsc{necessary}^{\ty{(e\li t)\li e\li t}}~\left(\textsc{culling}^{\ty{e\li e}} \left(\textsc{the}^{\ty{(e\li t) \li e}}~\textsc{hunters}^{\ty{e\li t}} \right) \right)\\
+		\equiv \theta\left(\left(\w{culling} \appl \left(\w{the} \appl \w{hunters}\right)\right) \appr \left(\w{was} \appl \w{necessary}\right) \right)
+		\end{array}
+	\]
+	}{
+	\alt<5->{
+	\[
+		\infer[\bs_E]{(((\w{the} \sbr \w{hunters'}) \sbr \w{culling}) \sbr (\w{was} \sbr \w{necessary})) \vdash \ty{s}}{			
+			\infer[/_E]{((\w{the} \sbr \w{hunters'}) \sbr \w{culling}) \vdash \ty{np}}{
+				\infer[\bs_E]{(\w{the} \sbr \w{hunters'}) \vdash \ty{np / (np / np)}}{
+					\infer[\Lex]{\ty{np / n}}{\w{the}}
+					&
+					\infer[\Lex]{\alert{\ty{(np / n) \bs (np / (np / np)}}}{\w{hunters'}}
+				}
+				&
+				\infer[\Lex]{\alert{\ty{np/np}}}{\w{culling}}
+			}
+			&
+			\infer[/_E]{(\w{was} \sbr \w{necessary}) \vdash \ty{np\bs s}}{
+				\infer[\Lex]{\ty{(np\bs s) / (n / n)}}{\w{was}}
+				&
+				\infer[\Lex]{\ty{n / n}}{\w{necessary}}
+			}
+		}
+	\]
+	}{
+	\alt<3->{
+	\[
+		\lightat{4}{
+		\infer[\bs_E]{((\w{the} \sbr (\w{hunters'} \sbr \w{culling})) \sbr (\w{was} \sbr \w{necessary})) \vdash \ty{s}}{
+			\infer[/_E]{(\w{the} \sbr (\w{hunters'} \sbr \w{culling})) \vdash \ty{np}}{
+				\infer[\Lex]{\ty{np / n}}{\w{the}}
+				&
+				\infer[/_E]{(\w{hunters'} \sbr \w{culling}) \vdash \ty{n}}{
+					\infer[\Lex]{\ty{n / n}}{\w{hunters'}}
+					& 
+					\infer[\Lex]{\ty{n}}{\w{culling}}
+				}
+			}
+			&
+			\infer[/_E]{(\w{was} \sbr \w{necessary}) \vdash \ty{np\bs s}}{
+				\infer[\Lex]{\ty{(np\bs s) / (n / n)}}{\w{was}}
+				&
+				\infer[\Lex]{\ty{n / n}}{\w{necessary}}
+			}
+		}
+		}
+	\]
+	}{
+	\alt<2->{
+		\[
+			\infer[\bs_E]{((\w{the} \sbr \w{culling}) \sbr (\w{was} \sbr \w{necessary})) \vdash \ty{s}}{
+				\infer[/_E]{(\w{the} \sbr \w{culling}) \vdash \ty{np}}{
+					\infer[\Lex]{\ty{np / n}}{\w{the}}
+					&
+					\infer[\Lex]{\ty{n}}{\w{culling}}
+				}
+				&
+				\infer[/_E]{(\w{was} \sbr \w{necessary}) \vdash \ty{np\bs s}}{
+					\infer[\Lex]{\ty{(np\bs s) / (n / n)}}{\w{was}}
+					&
+					\infer[\Lex]{\ty{n / n}}{\w{necessary}}
+				}
+			}
+	\]
+	}{
+	\[
+		\infer[/_E]{(\w{the} \sbr (\w{necessary} \sbr \w{culling})) \vdash \ty{np}}{
+			\infer[\Lex]{\ty{np/n}}{\w{the}}
+			&
+			\infer[/_E]{(\w{necessary} \sbr \w{culling}) \vdash \ty{n}}{
+				\infer[\Lex]{\ty{n/n}}{\w{necessary}}
+				&
+				\infer[\Lex]{\ty{n}}{\w{culling}}
+			}
+		}
+	\]
+	}}}}
+\end{frame}
+
+\begin{frame}{}\smaller
+\end{frame}
+
+\begin{frame}{Warmup (2)\smaller\\
+\quad\light{The need for associativity}
 }\smaller
 	\[
 		\infer[/_E]{(\w{the} \sbr (\w{violence} \sbr (\w{that} \sbr ((\w{the} \sbr \w{world}) \sbr \w{ignores})))) \vdash \ty{np}}{
@@ -476,6 +681,13 @@
 			}
 		}
 	\]
+	
+	\visible<2->{
+	\begin{itemize}
+		\item x
+		\visible<3->{ y}
+	\end{itemize}
+	}
 \end{frame}
 
 \end{document}
