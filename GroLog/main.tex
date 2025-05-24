@@ -20,7 +20,27 @@
 \usepackage[normalem]{ulem}
 
 \usepackage{tikz}
-\usetikzlibrary{decorations.pathreplacing, calc}
+\usetikzlibrary{decorations.pathreplacing, calc, fit, positioning}
+\usepackage{tikz-qtree}
+\tikzset{
+	unary/.style={thin,double},
+	head/.style={ultra thick}
+}
+\newcommand{\tikzmark}[2]{%
+    \tikz[remember picture,overlay] \coordinate (tikzmark-#1-start) at (0,0);%
+    {#2}%
+    \tikz[remember picture,overlay] \coordinate (tikzmark-#1-end) at (0,0);%
+    \tikz[remember picture,overlay] \node[anchor=center, outer sep=0pt] (#1) at ($ (tikzmark-#1-start)!0.5!(tikzmark-#1-end) $) {\vphantom{#2}};%
+}
+\newcommand{\markproofleaf}[2]{\tikzmark{#1}{\textcolor{textcolor}{#2}}}
+\newcommand{\arc}[4]{%
+	\draw[->] (#1) .. controls
+      ($(#1)!0.33!(#2) + (0,#3)$) and
+      ($(#2)!0.33!(#1) + (0,#3)$)
+    .. node[below] {#4} (#2);
+}
+
+
 \usepackage{relsize}
 \usepackage{enumitem}
 \setlist[itemize]{label=\textcolor{pred}{$\bullet$}, topsep=0pt, itemsep=0pt}
@@ -43,7 +63,9 @@
 \newcommand{\crossmark}{✘}
 \newcolumntype{C}{>{\centering\arraybackslash}X}
 \newcommand{\alertat}[2]{\alt<#1>{\alert{#2}}{#2}}
-\newcommand{\lightat}[2]{\alt<#1>{\light{#2}}{#2}}
+
+\newcommand{\colorat}[3]{\alt<#2>{\textcolor{#1}{#3}}{#3}}
+\newcommand{\lightat}[2]{\colorat{light}{#1}{#2}}
 \newcommand{\showat}[2]{\alt<#1>{#2}{}}
 \newcommand{\strat}[2]{\alt<#1>{\sout{#2}}{#2}}
 \newcommand{\caseof}[3]{\text{case }{\te{#1}}\text{ of }{\te{#2}}\text{ in }{\te{#3}}}
@@ -63,6 +85,8 @@
 	}%
 }
 \newcommand{\subst}[1]{\llbracket{#1}\rrbracket}
+\newcommand{\struct}[2][]{\langle #2 \rangle^{\scalebox{0.66}{\dep{#1}}}}
+\newcommand{\alertstruct}[2][]{\textcolor{pred}{\langle} #2 \textcolor{pred}{\rangle}}
 \renewcommand{\alert}[1]{\textcolor{pred}{#1}}
 \newcommand{\Lex}{\rulestyle{Lex}}
 \newcommand{\w}[1]{\text{#1}}
@@ -72,6 +96,60 @@
 \newcommand{\Cons}[1][]{\ensuremath{{\mathsf{Cons}_{#1}}}}
 \newcommand{\types}{\ensuremath{\mathcal{U}}}
 \newcommand{\terms}{\ensuremath{\Lambda}}
+
+\makeatletter
+\newcommand{\getfontdim}[1]{%
+  \fontdimen22
+  \ifx#1\displaystyle\textfont\else
+  \ifx#1\textstyle\textfont\else
+  \ifx#1\scriptstyle\scriptfont\else
+  \scriptscriptfont\fi\fi\fi 2
+}
+\makeatother
+
+% ratio: 1.8/2.75
+\newcommand{\domodaldiamondscale}[2]{\raisebox{0.175\getfontdim{#1}}{\scalebox{1.1}{\ensuremath{#1#2}}}}
+\newcommand{\domodalboxscale}[2]{\raisebox{0.15\getfontdim{#1}}{\scalebox{0.85}{\ensuremath{#1#2}}}}
+\newcommand{\dmodaldiamondscale}[1]{\mathpalette\domodaldiamondscale{#1}\relax}
+\newcommand{\dmodalboxscale}[1]{\mathpalette\domodalboxscale{#1}\relax}
+\newcommand{\domodalxdiascale}[2]{\raisebox{0.175\getfontdim{#1}}{\scalebox{1.1}{\ensuremath{#1#2}}}}
+\newcommand{\modalxdiascale}[1]{\mathpalette\domodalxdiascale{#1}\relax}
+\newcommand{\modalboxscale}[1]{\mathpalette\domodalboxscale{#1}\relax}
+\renewcommand{\diamond}{\dmodaldiamondscale{\diamondsuit}}
+\newcommand{\bx}{\dmodalboxscale{\Box}}
+\newcommand{\xdiamond}{\modalxdiascale{\vardiamondsuit}}
+\newcommand{\xbx}{\modalboxscale{\blacksquare}}
+\newcommand{\dep}[1]{\ensuremath{\mathsf{#1}}}
+\newcommand{\deps}{\mathrm{D}}
+\newcommand{\adjuncts}{\mathrm{A}}
+\newcommand{\complements}{\mathrm{C}}
+\newcommand{\ddia}[1][]{\diamond^{\scalebox{0.66}{\dep{\smaller{#1}}}}}
+\newcommand{\dbox}[1][]{\bx^{\scalebox{0.66}{\dep{\smaller{#1}}}}}
+\newcommand{\dxbox}[1][]{\xbx^{\scalebox{0.66}{\dep{\smaller{#1}}}}}
+\newcommand{\dxdia}[1][]{\xdiamond^{\scalebox{0.66}{\dep{\smaller{#1}}}}}
+
+
+\newcommand{\su}{\dep{su}}
+\newcommand{\obj}{\dep{obj1}}
+\newcommand{\io}{\dep{obj2}}
+\newcommand{\ddet}{\dep{det}}
+\newcommand{\dmod}{\dep{mod}}
+\newcommand{\predc}{\dep{predc}}
+\newcommand{\body}{\dep{body}}
+
+\makeatletter
+\newcommand{\domodaltermscale}[2]{\raisebox{0.25\getfontdim{#1}}{\scalebox{0.85}{\ensuremath{#1#2}}}}
+\makeatother
+\newcommand{\dmodaltermscale}[1]{\mathpalette\domodaltermscale{#1}\relax}
+\newcommand{\boxelim}{\dmodaltermscale{▼}}
+\newcommand{\boxintro}{\dmodaltermscale{▲}}
+\newcommand{\diaelim}{\dmodaltermscale{▽}}
+\newcommand{\diaintro}{\dmodaltermscale{△}}
+\newcommand{\dboxelim}[1][]{\boxelim^{\dep{#1}}}
+\newcommand{\ddiaelim}[1][]{\diaelim^{\dep{#1}}}
+\newcommand{\ddiaintro}[1][]{\diaintro^{\dep{#1}}}
+\newcommand{\dboxintro}[1][]{\boxintro^{\dep{#1}}}
+
 
 \title{Grammaticality as Provability}
 \date{%
@@ -185,7 +263,7 @@
 	\multicolumn{2}{@{}c@{}}{
 	\uncover<8->{
 	\alertat{8}{
-	$\infer=[\EX]{\Gamma\sbr \ty{B}\sbr \ty{A}\sbr \Delta \vdash \ty{C}}{\Gamma\sbr \ty{A}\sbr \ty{B}\sbr \Delta \vdash \ty{C}}$
+	$\infer=[\EX]{\Gamma\sbr \showat{10-}{\light{\te{y}}:}\ty{B}\sbr \showat{10-}{\light{\te{x}}:}\ty{A}\sbr \Delta \vdash \showat{10-}{\light{\te{s}}:}\ty{C}}{\Gamma\sbr \showat{10-}{\light{\te{x}}:}\ty{A}\sbr \showat{10-}{\light{\te{y}}:}\ty{B}\sbr \Delta \vdash \showat{10-}{\light{\te{s}}:}\ty{C}}$
 	}}}
 	\end{tabularx}
 \end{frame}
@@ -346,7 +424,7 @@
 \end{frame}
 
 \begin{frame}{The Small Picture\\
-\quad\smaller\light{An alternative timeline}}
+\quad\smaller\light{An Alternative Timeline}}
 	\smaller
 	
 	\begin{minipage}[t]{0.45\textwidth}\centering\begin{tikzpicture}[
@@ -488,8 +566,9 @@
 	\end{tikzpicture}
 \end{frame}
 
+
 \begin{frame}{Compositionality\smaller\\
-\quad\light{An example}
+\quad\light{A Toy Example}
 }\smaller
 	\alt<2>{
 		\visible<2->{
@@ -545,25 +624,33 @@
 	}
 \end{frame}
 
-\begin{frame}{Warmup (1)\smaller\\
-\quad\light{Lexical Ambiguity}}\smaller
+\begin{frame}{Warmup\smaller\\
+\quad\light{
+\alt<5->{Lexical Ambiguity}{\alt<4>{Constituency Interface}{\alt<3>{Multirole Functions}{\alt<2>{Bidirectional F/A Structures}{Iterative Composition}}}}
+}}\smaller
 	\vspace{1em}
+	\colorat{light!30}{4}{
 	\begin{tabular}{@{}r@{ :: }l@{}}
 		\w{the}			& $\ty{np/n}$\\
 		\w{culling} 	& $\ty{n} \visible<5->{\mathbin{\alert{\&}} \alert{np/np}}$\\
 		\w{necessary} & $\ty{n/n}$\\
 		\visible<2->{\w{was} & $\ty{(np\bs s) / (n / n)}$}\\
 		\visible<3->{\w{hunters'} & $\ty{n / n} \visible<5->{\mathbin{\alert{\&}} \alert{\ty{(np /n) \bs (np/(np/np))}}}$}
-	\end{tabular}
+	\end{tabular}}
 	\vfill
 	
 	\alt<6->{
 	\[
 		\begin{array}{l}
-\theta\left(\left(\left(\w{the} \appr \w{hunters'}\right) \appl \w{culling}\right) \appr \left(\w{was} \appl \w{necessary}\right) \right) \quad \light{\text{-\,- plug in }\theta_0 (\w{hunters'}) := \lambda f^{\ty{(e\li t)\li e}} g^{\ty{e\li e}}.g \ (f \ \textsc{hunters})}\\
+\theta\left(\left(\left(\w{the} \appr \w{hunters'}\right) \appl \w{culling}\right) \appr \left(\w{was} \appl \w{necessary}\right) \right)
+		\visible<-6>{\stackrel{?}{\equiv} \theta\left(\left(\w{culling} \appl \left(\w{the} \appl \w{hunters}\right)\right) \appr \left(\w{was} \appl \w{necessary}\right) \right)}\\
+		\visible<7->{\light{\text{-\,- plug in }\theta_0 (\w{hunters'}) := \lambda f^{\ty{(e\li t)\li e}} g^{\ty{e\li e}}.g \ (f \ \textsc{hunters})}}\\
+		\visible<7->{
 		\quad \stackrel{\beta}{\rightsquigarrow} 
-		\textsc{was}^{\ty{((e\li t)\li (e\li t))\li e \li t}}~\textsc{necessary}^{\ty{(e\li t)\li e\li t}}~\left(\textsc{culling}^{\ty{e\li e}} \left(\textsc{the}^{\ty{(e\li t) \li e}}~\textsc{hunters}^{\ty{e\li t}} \right) \right)\\
+		\textsc{was}^{\ty{((e\li t)\li (e\li t))\li e \li t}}~\textsc{necessary}^{\ty{(e\li t)\li e\li t}}~\left(\textsc{culling}^{\ty{e\li e}} \left(\textsc{the}^{\ty{(e\li t) \li e}}~\textsc{hunters}^{\ty{e\li t}} \right) \right)}\\
+		\visible<8>{
 		\equiv \theta\left(\left(\w{culling} \appl \left(\w{the} \appl \w{hunters}\right)\right) \appr \left(\w{was} \appl \w{necessary}\right) \right)
+		}
 		\end{array}
 	\]
 	}{
@@ -590,8 +677,8 @@
 	}{
 	\alt<3->{
 	\[
-		\lightat{4}{
-		\infer[\bs_E]{((\w{the} \sbr (\w{hunters'} \sbr \w{culling})) \sbr (\w{was} \sbr \w{necessary})) \vdash \ty{s}}{
+		\colorat{light!30}{4}{
+		\infer[\bs_E]{((\markproofleaf{n1}{\w{the}} \sbr (\markproofleaf{n2}{\w{hunters'}} \sbr \markproofleaf{n3}{\w{culling}})) \sbr (\markproofleaf{n4}{\w{was}} \sbr \markproofleaf{n5}{\w{necessary}})) \vdash \ty{s}}{
 			\infer[/_E]{(\w{the} \sbr (\w{hunters'} \sbr \w{culling})) \vdash \ty{np}}{
 				\infer[\Lex]{\ty{np / n}}{\w{the}}
 				&
@@ -610,6 +697,43 @@
 		}
 		}
 	\]
+	\visible<4->{
+	\begin{tikzpicture}[remember picture, overlay,
+	    every node/.style={
+	        inner sep=0pt,
+	        outer sep=2pt,
+	        minimum height=0pt,
+	        text depth=0.3em,
+	        align=center,
+	        color=pred
+	    },
+	]
+	  \node[above=4.5em of n1.center] (n11) {DET};
+	  \node[above=2em of n2.center] (n22) {ADJ};
+	  \node[above=2em of n3.center] (n33) {N};
+	  \node[above=4.5em of n4.center] (n44) {COP};
+	  \node[above=4.5em of n5.center] (n55) {ADJ};
+	  \node (n23) at ($(n22)!0.5!(n33) + (0, 2.5em)$) {N};
+	  \node (n45) at ($(n44)!0.5!(n55) + (0, 2.5em)$) {VP};
+	  \node (n13) at ($(n11)!0.5!(n33) + (0, 4em)$) {NP};
+	  \node (n15) at ($(n11)!0.5!(n55) + (0, 6em)$)	{S};
+
+	  \draw (n1) -- (n11);
+	  \draw (n2) -- (n22);
+	  \draw (n22) -- (n23);
+	  \draw (n33) -- (n23);
+	  \draw (n23) -- (n13);
+	  \draw (n1) -- (n11);
+	  \draw (n11) -- (n13);
+	  \draw (n3) -- (n33);
+	  \draw (n4) -- (n44);
+	  \draw (n5) -- (n55);
+  	  \draw (n44) -- (n45);
+  	  \draw (n55) -- (n45);
+  	  \draw (n13) -- (n15);
+  	  \draw (n45) -- (n15);
+	\end{tikzpicture}
+	}
 	}{
 	\alt<2->{
 		\[
@@ -639,13 +763,10 @@
 			}
 		}
 	\]
-	}}}}
+	 }}}}
 \end{frame}
 
-\begin{frame}{}\smaller
-\end{frame}
-
-\begin{frame}{Warmup (2)\smaller\\
+\begin{frame}{Troubling Developments\smaller\\
 \quad\light{The need for associativity}
 }\smaller
 	\[
@@ -681,13 +802,531 @@
 			}
 		}
 	\]
-	
+\end{frame}
+
+\begin{frame}{Troubling Developments \#2\smaller\\
+\light{\quad The need for Control}}
+\smaller
+	But global associativity:
+		\begin{itemize}
+			\item \alert{too little}\\
+			\textit{the violence that the world ignores \_ happily}
+			\hfill \light{happily :: $\ty{(np \bs s) \bs np \bs s}$}
+			\item \alert{too much}\\
+			*\textit{the violence that (the state enables genocide) and the world ignores \_}
+			\hfill \light{and :: $\ty{(s\bs s)/s}$}
+		\end{itemize}\vfill
+		
 	\visible<2->{
+	The solution(s):}
 	\begin{itemize}
-		\item x
-		\visible<3->{ y}
-	\end{itemize}
+		\item selectively \textit{block} structural manipulation within a \textit{lax} logic, or
+		\item selectively \textit{allow} structural manipulation within a \textit{strict} logic
+	\end{itemize}\vfill
+	
+	\visible<3->{
+	\alert{\textit{How to distinguish domains where structural rules are (in)admissible?}}
 	}
 \end{frame}
 
+\begin{frame}{}
+	\centering \light{Modalities to the Rescue}
+\end{frame}
+
+\begin{frame}{Modal Inference\smaller\\
+\quad\light{Rules \& Term Imprints}}\smaller
+	\begin{tabular}{@{}r@{ }l@{}}
+	 	\multicolumn{2}{@{}l}{\textbf{Types}}\\
+		$\ty{A, B, C}$ & $:= \dots \ | \ \ty{\alertat{-2}{\ddia} A} \ | \ \ty{\alertat{-2}{\dbox} A}$ \hfill \light{-\,- $\ddia$, $\dbox$: residuated pair}
+		\\
+	    \addlinespace
+		\multicolumn{2}{@{}l}{\uncover<2->{\textbf{Structures}}}\\
+	  	\uncover<2->{
+	   	$\Gamma, \Delta$ & $:= \dots \ | \ \alertat{-2}{\struct{\textcolor{textcolor}{\Gamma}}}$
+	   	}
+	\end{tabular}\vfill
+	
+	
+	\begin{center}\begin{tabularx}{0.8\textwidth}{@{}CC@{}}
+		\uncover<3,7->{\alertat{3}{$\infer[\ddia_I]{\struct{\Gamma} \vdash \showat{8}{\light{\ddiaintro \te{s}} :}\ty{\ddia A}}{\Gamma \vdash \showat{8}{\light{\te{s}} :}\ty{A}}$}}
+		&
+		\uncover<4,7->{\alertat{4}{$\infer[\dbox_E]{\struct{\Gamma} \vdash \showat{8}{\light{\te{\dboxelim s}} :} \ty{A}}{\Gamma \vdash \showat{8}{\light{\te{s}} :}\ty{\dbox A}}$}}\\
+		\addlinespace\addlinespace\addlinespace
+		\uncover<5,7->{\alertat{5}{$\infer[\dbox_I]{\Gamma \vdash \showat{8}{\light{\te{\dboxintro s}}:} \ty{\dbox A}}{\struct{\Gamma} \vdash \showat{8}{\light{\te{s}}:} \ty{A}}$}}
+		&
+		\uncover<6,7->{\alertat{6}{$\infer[\ddia_E]{\Delta\subst{\Gamma} \vdash \showat{8}{\light{\caseof{\ddiaelim s}{x}{t}}:} B}{\Gamma \vdash \showat{8}{\light{\te{s}}:}\ty{\ddia A} & \Delta\subst{\struct{\showat{8}{\light{\te{x}}:}\ty{A}}} \vdash \showat{8}{\light{\te{t}}:}\ty{B}}$}}
+	\end{tabularx}\end{center}
+\end{frame}
+
+\begin{frame}{Modal Inference\smaller\\
+\quad\light{Derived Properties \alt<4>{4 : Triple Laws}{\alt<3>{3: Interior \& Closure}{\alt<2>{2: Residuation}{1: Tonicity}}}}}\smaller
+	
+	\smaller
+	\begin{center}\begin{tabularx}{0.95\textwidth}{@{}CC@{}}
+	\alt<4>{
+		$
+		\infer[\dbox_I]{\light{\te{x}} : \ty{\dbox\ddia\dbox A} \vdash \light{\dboxintro(\caseof{\ddiaelim\dboxelim x'}{x}{\dboxelim x})} : \ty{\dbox A} }{
+			\infer[\ddia_E]{\struct{\light{\te{x}} : \ty{\dbox\ddia\dbox A}} \vdash \light{\caseof{\ddiaelim\dboxelim x'}{x}{\dboxelim x}} : \ty{A}}{
+				\infer[\dbox_E]{\struct{\light{\te{x}} : \ty{\dbox\ddia\dbox A}} \vdash \light{\te{\dboxelim x}} : \ty{\ddia\dbox A}}{
+					\infer[\Ax]{\light{\te{x}} : \ty{\dbox\ddia\dbox A} \vdash \light{\te{x}} : \ty{\dbox\ddia\dbox A}}{}
+				}
+				&
+				\infer[\dbox_E]{\struct{\light{\te{x'}} : \ty{\dbox A}} \vdash \light{\te{\dboxelim x'}} : \ty{A}}{
+					\infer[\Ax]{\light{\te{x'}} : \ty{\dbox A} \vdash \light{\te{x'}} : \ty{\dbox A}}{}
+				}
+			}
+		}
+		$
+		&
+		$
+		\infer[\dbox_I]{\light{\te{x}}: \ty{\dbox A} \vdash \light{\te{\dboxintro\ddiaintro x}} : \ty{\dbox\ddia\dbox A}}{
+			\infer[\ddia_I]{\struct{\light{\te{x}}: \ty{\dbox A}} \vdash \light{\te{\ddiaintro x}}: \ty{\ddia \dbox A}}{
+				\infer[\Ax]{\light{\te{x}}: \ty{\dbox A} \vdash \light{\te{x}}: \ty{\dbox A}}{}
+			}
+		}
+		$
+		\\
+		\addlinespace\addlinespace\addlinespace
+		$
+		\infer[\ddia_E]{\light{\te{x'}} : \ty{\ddia\dbox\ddia A} \vdash \light{\caseof{\ddiaelim x'}{x}{\dboxelim x}} : \ty{\ddia A}}{
+			\infer[\Ax]{\light{\te{x'}} : \ty{\dbox\ddia\dbox A} \vdash \light{\te{x'}} : \ty{\dbox\ddia\dbox A}}{}
+			&
+			\infer[\dbox_E]{\struct{\light{\te{x}}: \ty{\dbox\ddia A}} \vdash \light{\te{\dboxelim x}} : \ty{\ddia A}}{
+				\infer[\Ax]{\light{\te{x}}: \ty{\dbox\ddia A} \vdash \light{\te{x}}: \ty{\dbox\ddia A}}{}
+			}
+		}
+		$
+		&
+		$
+		\infer[\ddia_E]{\light{\te{x'}} : \ty{\ddia A} \vdash \light{\caseof{\ddiaelim x'}{x}{\ddiaintro\dboxintro\ddiaintro x}} : \ty{\ddia\dbox\ddia A}}{
+			\infer[\Ax]{\light{\te{x'}} : \ty{\ddia A} \vdash \light{\te{x'}} : \ty{\ddia A}}{}
+			&
+			\infer[\ddia_I]{\struct{\light{\te{x}} : \ty{A}} \vdash \light{\te{\ddiaintro\dboxintro\ddiaintro x}} : \ty{\ddia\dbox\ddia A}}{
+				\infer[\dbox_I]{\light{\te{x}} : \ty{A} \vdash \light{\te{\dboxintro\ddiaintro x}} : \ty{\dbox\ddia A}}{
+					\infer[\ddia_I]{\struct{\light{\te{x}} : \ty{A}} \vdash \light{\te{\ddiaintro x}} : \ty{\ddia A}}{
+						\infer[\Ax]{\light{\te{x}}: \ty{A} \vdash \light{\te{x}}}{}
+					}
+				}
+			}
+		}
+		$
+		\\
+		\addlinespace\addlinespace\addlinespace
+		\multicolumn{2}{@{}c@{}}{\larger \alert{$ \ty{\dbox\ddia\dbox A} \iff \ty{\dbox A}$}}\\
+		\multicolumn{2}{@{}c@{}}{\larger \alert{$\ty{\ddia\dbox\ddia A} \iff \ty{\ddia A}$}}
+	}{
+	\alt<3>{
+		$
+		\infer[\dbox_I]{\Gamma \vdash \light{\te{\dboxintro\ddiaintro s}}: \ty{\dbox\ddia A}}{
+			\infer[\ddia_I]{\struct{\Gamma} \vdash \light{\te{\ddiaintro s}}:\ty{\ddia A}}{\Gamma \vdash \light{\te{s}}:\ty{A}}
+		}
+		$ 
+		&
+		$
+		\infer[\ddia_E]{\Gamma \vdash \light{\caseof{\ddiaelim s}{x}{\dboxelim x}}:\ty{A}}{
+			\Gamma \vdash \light{\te{s}}: \ty{\ddia\dbox A}
+			&
+			\infer[\dbox_E]{\struct{\light{\te{x}}:\ty{\dbox A}} \vdash \light{\te{\dboxelim x}}: \ty{A}}{\light{\te{x}}:\ty{\dbox A} \vdash \light{\te{x}}:\ty{\dbox A}}
+		}
+		$\\
+		\addlinespace\addlinespace\addlinespace
+		\multicolumn{2}{@{}c@{}}{\larger \alert{$\ty{\ddia\dbox A} \implies \ty{A} \implies \ty{\dbox\ddia A}$}}
+	}{
+	\alt<2>{
+		$
+		\infer[\ddia_E]{\light{\te{x'}}:\ty{\ddia A} \vdash \light{\caseof{\ddiaelim x'}{x}{\dboxelim s}}:\ty{B}}{
+			\light{\te{x'}}:\ty{\ddia A} \vdash \light{\te{x'}}:\ty{\ddia A}
+			&
+			\infer[\dbox_E]{\struct{\light{\te{x}}: \ty{A}} \vdash \light{\te{\dboxelim s}}:\ty{B}}{
+				\infer*[\light{\te{s}}]{\light{\te{x}}:\ty{A} \vdash \light{\te{s}}: \ty{\dbox B}}{}
+			}
+		}
+		$
+		&
+		$
+		\infer[\dbox_E]{\light{\te{x'}}:\ty{A} \vdash \light{\te{\dboxintro s}}:\ty{\dbox B}}{
+			\infer[\li_{\beta}]{\struct{\light{\te{x'}}:\ty{A}} \vdash \light{\te{s}[\ddiaintro x'/x]}:\ty{B}}{
+				\infer*[s]{\light{\te{x}}:\ty{\ddia A} \vdash \light{\te{s}}: \ty{B}}{}
+			}
+		}
+		$\\
+		\addlinespace\addlinespace\addlinespace
+		\multicolumn{2}{@{}c@{}}{\larger \alert{$(\ty{A \implies \dbox B}) \iff (\ty{\ddia A \implies B})$}}
+	}{
+		$
+		\infer[\ddia_E]{\light{\te{x'}} : \ty{\ddia A} \vdash \light{\caseof{\ddiaelim x'}{x}{\ddiaintro s}} : \ty{\ddia B}}{
+			\infer[\Ax]{\light{\te{x'}} : \ty{\ddia A} \vdash \light{\te{x'}} : \ty{\ddia A}}{}
+			&
+			\infer[\ddia_I]{\struct{\light{\te{x}} : \ty{A}} \vdash \light{\te{\ddiaintro s}}: \ty{\ddia B}}{
+				\infer*[s]{\light{\te{x}} : \ty{A} \vdash \light{\te{s}}: \ty{B}}{}
+			}
+		}
+		$
+		&
+		$
+		\infer[\dbox_I]{\light{\te{x'}} : \ty{\dbox A} \vdash \light{\te{\dboxintro s[\dboxelim x'/x]}} : \ty{\dbox B}}{
+			\infer[\li_{\beta}]{\struct{\light{\te{x'}} : \ty{\dbox A}} \vdash \light{\te{s[\dboxelim x'/x]}}:\ty{B}}{
+				\light{\te{x}}:\ty{A} \vdash \light{\te{s}}:\ty{B}
+			}
+		}
+		$\\
+		\addlinespace\addlinespace\addlinespace
+		\multicolumn{2}{@{}c@{}}{\larger \alert{$(\ty{A} \implies \ty{B}) \implies (\ty{\dbox A \implies \dbox B})$}}\\
+		\multicolumn{2}{@{}c@{}}{\larger \alert{$(\ty{A} \implies \ty{B}) \implies (\ty{\ddia A \implies \ddia B})$}}
+	}}}\end{tabularx}\end{center}
+\end{frame}
+
+\begin{frame}{Take 1\smaller\\
+\quad\light{Structural Postulates}}\smaller
+
+	\begin{center}\begin{tabularx}{0.8\textwidth}{@{}CC@{}}
+		$
+		\infer[C^r_{\ddia}]{\Gamma\subst{\left(\ty{A_1}\sbr \ty{A_3}\right)\sbr\alert{\struct{A_2}}} \vdash \ty{B}}{
+			\Gamma\subst{\left(\ty{A_1}\sbr \alert{\struct{\ty{A_2}}}\right)\sbr \ty{A_3}} \vdash \ty{B}
+		}
+		$
+		&
+		$
+		\infer[A^r_{\ddia}]{\Gamma\subst{\left(\ty{A_1} \sbr \ty{A_2}\right) \sbr \alert{\struct{A_3}}} \vdash \ty{B}}{
+			\Gamma\subst{\ty{A_1} \sbr \left(\ty{A_2} \sbr \struct{\ty{A_3}}\right)} \vdash \ty{B}
+		}
+		$
+	\end{tabularx}\end{center}\vfill
+	
+	\visible<2->{
+	Rule form (syntactic) equivalents of formula-level postulates
+	\begin{align*}
+	C^r_{\ddia} : \ty{A_1 \otimes (\ddia A_2 \otimes A_3)} &\implies \ty{(A_1 \otimes A_3) \otimes \ddia A_2}\\
+	A^r_{\ddia} : \ty{A_1 \otimes (A_2 \otimes \ddia A_3) &\implies \ty{(A_1 \otimes A_2) \otimes \ddia A_3}}
+	\end{align*}
+	}
+\end{frame}
+
+\begin{frame}{Structural Postulates\smaller\\
+\quad\light{Modalities Licensing Movement}}\smaller
+	that :: \sout{$\ty{(n \bs n) / (s / np )}$}  $\ty{(n \bs n) / (s / \alert{\ddia\dbox} np )}$
+	\vfill
+
+	\[
+		\infer[/_E]{(\w{that} \cdot ((\w{the} \cdot \w{world}) \cdot ((\w{ignores} \cdot \w{happily}))) \ \vdash \ty{n\bs n}}{
+			\infer[\Lex]{\ty{(n \bs n) / (s / \alert{\ddia\dbox np})}}{\w{that}} 
+			&
+			\hspace{-1.5em}
+			\infer[/_I]{((\w{the} \cdot \w{world}) \cdot ((\w{ignores} \cdot \w{happily})) \vdash \ty{s / \alert{\ddia \dbox np}}}{
+				\infer[\alert{\ddia_E}]{(((\w{the} \cdot \w{world}) \cdot ((\w{ignores} \cdot \w{happily}))\cdot\alert{\ddia \dbox np}) \vdash \ty{s}}{
+					\infer[\Ax]{\ty{\ddia\dbox np} \vdash \ty{\ddia\dbox np}}{}
+					&
+					\hspace{-3.5em}
+					\infer[\alert{A^r_{\ddia}}]{(((\w{the} \cdot \w{world}) \cdot (\w{ignores} \cdot \w{happily}))\cdot\alert{\struct{\ty{\dbox np}}}) \vdash \ty{s}}{
+						\infer[\alert{C^r_{\ddia}}]{((\w{the} \cdot \w{world}) \cdot ((\w{ignores} \cdot \w{happily})\cdot\alert{\struct{\ty{\dbox np}}})) \vdash \ty{s}}{
+							\infer[\bs_E]{((\w{the} \cdot \w{world}) \cdot ((\w{ignores} \cdot \alert{\struct{\ty{\dbox np}}})\cdot\w{happily}) \vdash \ty{s}}{
+								\infer[/_E]{(\w{the} \cdot \w{world}) \vdash \ty{np}}{
+										\infer[\Lex]{\ty{np/n}}{\w{the}}
+										&
+										\infer[\Lex]{\ty{n}}{\w{world}}
+								}
+								&
+								\infer[\bs_E]{((\w{ignores} \cdot \alert{\struct{\ty{\dbox np}}})\cdot\w{happily}) \vdash \ty{np \bs s}}{
+									\infer[/_E]{(\w{ignores} \cdot \alert{\struct{\ty{\dbox np}}}) \vdash \ty{np \bs s}}{
+										\infer[\Lex]{\ty{(np \bs s)/np}}{\w{ignores}}
+										&
+										\infer[\dbox_E]{\alert{\struct{\ty{\dbox np}}} \vdash \ty{np}}{
+											\infer[\Ax]{\alert{\ty{\dbox np}} \vdash \ty{\dbox np}}{}
+										}
+									}
+									&
+									\infer[\Lex]{\ty{(np\bs s)\bs np\bs s}}{\w{happily}}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	\]
+\end{frame}
+
+\begin{frame}{Take 2\smaller\\
+\quad\light{Modalities Blocking Movement}}\smaller
+	and :: \sout{$\ty{(s \bs s) / s}$} \ $\ty{(s \bs \alert{\dbox} s) / s}$
+	\vfill
+	\[
+	\infer[\alert{\lightning}]{(\alertstruct{(\dots \cdot (\w{and} \cdot ((\w{the} \cdot \w{world}) \cdot \w{ignores})))} \cdot \struct{\ty{\dbox np}}) \vdash \ty{s}}{
+		\infer[\dbox_E]{\alertstruct{(\dots \cdot (\w{and} \cdot ((\w{the} \cdot \w{world}) \cdot (\w{ignores} \cdot \struct{\ty{\dbox np}}))))} \vdash \ty{s}}{
+			\infer[\bs_E]{(\dots \cdot (\w{and} \cdot ((\w{the} \cdot \w{world}) \cdot (\w{ignores} \cdot \struct{\ty{\dbox np}})))) \vdash \ty{\alert{\dbox} s}}{
+				\infer*{\dots \vdash \ty{s}}{}
+				&
+				\infer[/_E]{(\w{and} \cdot ((\w{the} \cdot \w{world}) \cdot (\w{ignores} \cdot \struct{\ty{\dbox np}}))) \vdash \ty{s \bs \alert{\dbox} s}}{
+					\infer[\Lex]{\ty{(s \bs \alert{\dbox} s) /s}}{\w{and}}
+					&
+					\infer[\bs_E]{((\w{the} \cdot \w{world}) \cdot (\w{ignores} \cdot \struct{\ty{\dbox np}})) \vdash \ty{s}}{
+						\infer[/_E]{(\w{the} \cdot \w{world}) \vdash \ty{np}}{
+								\infer[\Lex]{\ty{np/n}}{\w{the}}
+								&
+								\infer[\Lex]{\ty{n}}{\w{world}}
+						}
+						&
+						\infer[/_E]{(\w{ignores} \cdot \struct{\ty{\dbox np}}) \vdash \ty{np \bs s}}{
+							\infer[\Lex]{\ty{(np \bs s)/np}}{\w{ignores}}
+							&
+							\infer[\dbox_E]{\struct{\ty{\dbox np}} \vdash \ty{np}}{
+								\infer[\Ax]{\ty{\dbox np} \vdash \ty{\dbox np}}{}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	\]
+\end{frame}
+
+\begin{frame}{Typelogical Grammar 102\smaller\\
+\quad\light{The Multimodal View}}\smaller
+	\uncover<-4>{\textbf{Syntax}}
+	\begin{itemize}
+		\uncover<-4>{\item choose a ``language-neutral'' logical core}
+		\visible<2->{
+		\item \eqmakebox[if][l]{if too strict}\showat{5}{ \alert{$\implies$ modal structure is transient}}
+		\uncover<-4>{
+		\begin{itemize}
+			\item implement language-specific structural postulates by pattern matching on modal structure
+			\item \eqmakebox[lx][l]{adjust the lexicon} \light{-\,- \textit{which words \textit{elicit} movement and / or rebracketing?}}
+		\end{itemize}}}
+		\visible<3->{
+		\item \eqmakebox[if][l]{if too lax}\showat{5}{ \alert{$\implies$ modal structure is persistent}}
+		\uncover<-4>{
+		\begin{itemize}
+			\item use modal structure to demarcate structurally strict / externally impervious domains
+			\item \eqmakebox[lx][l]{(re)adjust the lexicon} \light{-\,- \textit{which words \textit{impose} syntactic islands?}}
+		\end{itemize}}}
+	\end{itemize}\vfill
+	
+	\visible<4->{
+	\uncover<-4>{
+	\textbf{Semantics}\\
+	Just forget about modalities.
+	\begin{itemize}
+		\item $\eta ~ (\ty{\ddia A}) = \eta ~ (\ty{\dbox A}) = \eta ~ \ty{A}$
+		\item $\theta ~ (\te{\ddiaintro s}) = \theta ~ (\te{\dboxintro s}) = \theta ~ (\te{\dboxelim s}) = \theta ~ \te{s}$
+		\item $\theta ~ (\caseof{\ddiaelim s}{x}{t}) = (\theta~\te{t})[\theta~\te{s}/\theta~\te{x}]$
+	\end{itemize}
+	}}
+\end{frame}
+
+\begin{frame}{Persistent Modal Structure\smaller\\
+\quad\light{An Alternative Usecase}}\smaller
+	\begin{center}\begin{tabularx}{0.7\textwidth}{@{}lXr@{}}
+	\begin{tikzpicture}[
+	level distance=60pt, 
+	sibling distance=30pt,
+	t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt}, 
+	node distance=10pt]
+	\Tree [.{$\ty{B}$} \edge[head] node[midway,left,t]{$\textit{head}$}; {$\ty{B}/_l\ty{A}$} \edge node[midway,right,t]{$\textit{complement}$}; {$\ty{A}$} ]
+	\end{tikzpicture}
+	&
+	&
+	\begin{tikzpicture}[
+	level distance=60pt, 
+	sibling distance=30pt,
+	t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt}, 
+	node distance=10pt]
+	\Tree [.{$\ty{B}$} \edge node[midway,left,t]{$\textit{complement}$}; {$\ty{A}$} \edge[head] node[midway,right,t]{$\textit{head}$}; {$\ty{A}\bs_r\ty{B}$} ]
+	\end{tikzpicture}\\
+	\multicolumn{1}{@{}c@{}}{\visible<2>{\alert{$\ty{B /_l A } \equiv \ty{\dbox (B / A)}$\hphantom{lement}}}}
+	& &
+	\multicolumn{1}{@{}c@{}}{\visible<2>{\alert{\hphantom{lement}$\ty{A \bs_r B } \equiv \ty{\dbox (A \bs  B)}$}}}\\
+	\addlinespace\addlinespace\addlinespace
+	\begin{tikzpicture}[
+	level distance=60pt, 
+	sibling distance=30pt,
+	t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt},
+	node distance=10pt]
+	\Tree [.{$\ty{B}$} \edge[head] node[midway,left,t]{$\textit{head}$}; {$\ty{A}$} \edge node[midway,right,t]{$\textit{adjunct}$}; {$\ty{A}/_l\ty{B}$} ]
+	\end{tikzpicture}
+	& &
+	\begin{tikzpicture}[
+	level distance=60pt, 
+	sibling distance=30pt,
+	t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt}, 
+	node distance=10pt]
+	\Tree [.{$\ty{B}$} \edge node[midway,left,t]{$\textit{adjunct}$}; {$\ty{B}/_r\ty{A}$} \edge[head] node[midway,right,t]{$\textit{head}$}; {$\ty{A}$} ]
+	\end{tikzpicture}\hspace{1.3em}\\
+	\multicolumn{1}{@{}c@{}}{\visible<2>{\alert{$\ty{A /_l B } \equiv \ty{\ddia A / B}$\hphantom{adjunct}}}}
+	& & 
+	\multicolumn{1}{@{}c@{}}{\alert{\hphantom{adjunct}\visible<2>{$\ty{B /_r A } \equiv \ty{ B / \ddia A}$}}}\\
+	\end{tabularx}\end{center}\vfill
+\end{frame}
+
+\begin{frame}{Persistent Modal Structure\smaller\\
+\quad\light{A Modern Refinement}}\smaller
+	\begin{itemize}
+	\item Let $\deps := \complements \mathbin{\cup} \adjuncts$, where:
+	\begin{itemize}
+		\item \eqmakebox[line][l]{\eqmakebox[ds][l]{$\complements$} $:= \{\su, \obj, \io, \predc, \dots \}$ } \light{-\,- \textit{mandatory complements}}
+		\item \eqmakebox[line][l]{\eqmakebox[ds][l]{$\adjuncts$} $:= \{\ddet, \dmod, \dots \}$} \light{-\,- \textit{optional adjuncts}}
+	\end{itemize}
+	\item Instantiate a residuated pair $(\dxdia[\dep{d}], \dxbox[\dep{d}])$ for each $\dep{d} \in \deps$.
+	\item Type grammatical functors as:
+	\begin{itemize}
+		\item \eqmakebox[line][l]{$\ty{\dxdia[d] A \li B}$} \light{-\,- \textit{head assigning dependency role $\dep{d}$ to its complement $\ty{A}$}}
+		\item \eqmakebox[line][l]{$\ty{\dxbox[d] (A \li B)}$} \light{-\,- \textit{adjunct projecting its own role $\dep{d}$}}
+	\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Nameless\smaller\\
+\quad\light{Labeled FA Structures}}\smaller
+\vspace{1em}
+	\colorat{light!30}{2,4}{
+	\begin{tabular}{@{}r@{ :: }l@{}}
+		\w{the}			& $\ty{\dxbox[\ddet](np/n)}$\\
+		\w{culling} 	& $\ty{n}$\\
+		\w{necessary} 	& $\ty{\dxbox[\dmod](n/n)}$\\
+		\visible<3->{\w{was} 		& $\ty{(\dxdia[\su] np\bs s) / (\dxdia[\predc]\dxbox[\dmod](n / n))}$}
+	\end{tabular}}
+	\vfill
+	
+	\alt<3->{
+		\colorat{light!30}{4}{
+		\[
+			\infer[\bs_E]{(\struct[\su]{(\struct[\ddet]{\markproofleaf{n1}{\w{the}}} \sbr \markproofleaf{n2}{\w{culling}})}\cdot(\markproofleaf{n3}{\w{was}} \sbr \struct[\predc]{\markproofleaf{n4}{\w{necessary}}})) \vdash \ty{s}}{
+				\infer[\dxdia_I]{\struct[\su]{(\struct[\ddet]{\w{the}} \sbr \w{culling})} \vdash \ty{\dxdia[\su]np}}{
+					\infer[/_E]{(\struct[\ddet]{\w{the}} \sbr \w{culling}) \vdash \ty{np}}{
+						\infer[\dxbox_E]{\struct[\ddet]{\w{the}} \vdash \ty{np/n}}{
+							\infer[\Lex]{\ty{\dxbox[\ddet](np/n)}}{\w{the}}
+						}
+						&
+						\infer[\Lex]{\ty{n}}{\w{culling}}
+					}
+				}
+				&
+				\infer[/_E]{(\w{was} \sbr \struct[\predc]{\w{necessary}}) \vdash \ty{\dxdia[\su] np\bs s}}{
+					\infer[\Lex]{\ty{(\dxdia[\su] np\bs s) / (\dxdia[\predc]\dxbox[\dmod](n / n))}}{\w{was}}
+					&
+					\infer[\dxdia_I]{\struct[\predc]{\w{necessary}} \vdash \ty{\dxdia[\predc]\dxbox[\dmod](n / n)}}{
+						\infer[\Lex]{\ty{\dxbox[\dmod](n / n)}}{\w{necessary}}
+					}
+				}
+			}
+		\]
+		}
+		\visible<4->{
+		\begin{tikzpicture}[remember picture, overlay,
+		    every node/.style={
+		        inner sep=0pt,
+		        minimum height=0pt,
+		        text depth=0.3em,
+		        align=center,
+		        color=pred
+		    },
+		]
+		  \arc{n3}{n4}{-0.45}{\predc}
+		  \arc{n3}{n2}{-0.585}{\su}
+		  \arc{n2}{n1}{-0.47}{\ddet}
+		\end{tikzpicture}
+		}
+	}{
+		\colorat{light!30}{2}{
+		\[
+			\infer[/_E]{(\struct[\ddet]{\markproofleaf{n1}{\w{the}}} \sbr (\struct[\dmod]{\markproofleaf{n2}{\w{necessary}}} \sbr \markproofleaf{n3}{\w{culling}})) \vdash \ty{np}}{
+				\infer[\dxbox_E]{\struct[\ddet]{\w{the}} \vdash \ty{np/n}}{
+					\infer[\Lex]{\ty{\dxbox[\ddet](np/n)}}{\w{the}}
+				}
+				&
+				\infer[/_E]{(\struct[\dmod]{\w{necessary}} \sbr \w{culling}) \vdash \ty{n}}{
+					\infer[\dxbox_E]{\struct[\dmod]{\w{necessary}} \vdash \ty{n / n}}{
+						\infer[\Lex]{\ty{\dxbox[\dmod]n/n}}{\w{necessary}}
+					}
+					&
+					\infer[\Lex]{\ty{n}}{\w{culling}}
+				}
+			}
+		\]
+		}
+		\visible<2->{
+		\begin{tikzpicture}[remember picture, overlay,
+		    every node/.style={
+		        inner sep=0pt,
+		        minimum height=0pt,
+		        text depth=0.3em,
+		        align=center,
+		        color=pred
+		    },
+		]
+		  \arc{n3}{n1}{-1.7}{\ddet}
+		  \arc{n3}{n2}{-0.6}{\dmod}
+		\end{tikzpicture}
+		}
+	}
+\end{frame}
+
+
+\begin{frame}{Nameless\smaller\\
+\quad\light{Horizontal Movement}}\smaller
+
+	\alt<2>{
+		\[
+		\infer*{
+			((\struct[\ddet]{\markproofleaf{n1}{\w{the}}} \cdot \w{\markproofleaf{n2}{violence}}) \cdot \struct[\dmod]{(\markproofleaf{n3}{\w{that}} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\markproofleaf{n4}{\w{the}}} \cdot \markproofleaf{n5}{\w{world}})} \cdot (\markproofleaf{n6}{\w{ignores}} \cdot \struct[\dmod]{\markproofleaf{n7}{\w{happily}}}))})})
+		}{}
+		\]
+	}{
+	that :: \sout{$\ty{(n \bs n) / (s / np )}$} \ \sout{$\ty{(n \bs n) / (s / \ddia\dbox np )}$} $\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \alert{\ddia\dbox}\dxdia[\su] np))}$
+	\vfill
+	\smaller
+	
+	\[
+		\infer[\dxbox_E]{\struct[\dmod]{(\w{that} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))})} \vdash n \bs n}{
+			\infer[/_E]{(\w{that} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))}) \vdash \ty{\dxbox[\dmod](n \bs n)}}{
+				\infer[\Lex]{\dots}{\w{that}} 
+%				\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \ddia\dbox\dxdia[\su] np))}}
+				&
+				\hspace{-4.5em}
+				\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))} \vdash \ty{\dxdia[\body](s / \ddia \dbox\dxdia[\su] np)}}{
+					\infer[/_I]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}})) \vdash \ty{s / \ddia \dbox\dxdia[\su] np}}{
+						\infer[\ddia_E]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\ty{\ddia\dbox\dxdia[\su]np}) \vdash \ty{s}}{
+							\infer[\Ax]{\ty{\ddia\dbox\dxdia[\su] np} \vdash \ty{\ddia\dbox\dxdia[\su] np}}{}
+							&
+							\hspace{-8em}
+							\infer[A^r_{\ddia}]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\struct{\ty{\dbox\dxdia[\su] np}}) \vdash \ty{s}}{
+								\infer[C^r_{\ddia}]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct[\dmod]{\w{happily}})\cdot\struct{\ty{\dbox\dxdia[\su] np}})) \vdash \ty{s}}{
+									\infer[\bs_E]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\su] np}})\cdot\struct[\dmod]{\w{happily}}))  \vdash \ty{s}}{
+										\infer[\dxdia_I]{\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \vdash \ty{\dxdia[\su]np}}{
+											\hspace{-4em}
+											\infer[/_E]{(\struct[\ddet]{\w{the}} \cdot \w{world}) \vdash \ty{np}}{
+													\infer[\dxbox_E]{\struct[\ddet]{\w{the}} \vdash \ty{np / n}}{
+														\infer[\Lex]{\ty{\dxbox[\ddet](np/n)}}{\w{the}}
+													}
+													&
+													\infer[\Lex]{\ty{n}}{\w{world}}
+											}
+										}
+										&
+%										\hspace{-3em}
+										\infer[\bs_E]{((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\su] np}})\cdot\struct[\dmod]{\w{happily}}) \vdash \ty{\dxdia[\su]np \bs s}}{
+											\infer[/_E]{(\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}}) \vdash \ty{\dxdia[\su]np \bs s}}{
+												\infer[\Lex]{\ty{(\dxdia[\su] np \bs s)/\dxdia[\obj] np}}{\w{ignores}}
+												&
+												\infer[\dbox_E]{\struct{\ty{\dbox\dxdia[\obj] np}} \vdash \dxdia[\obj]\ty{np}}{
+													\infer[\Ax]{\ty{\dbox\dxdia[\obj] np} \vdash \ty{\dbox \dxdia[\obj]np}}{}
+												}
+											}
+											&
+											\hspace{-0.5em}
+											\infer[\dxbox_E]{\struct[\dmod]{\w{happily}} \vdash (\dxdia[\su]np\bs s)\bs \dxdia[\su]np\bs s}{
+												\infer[\Lex]{\ty{\dxbox[\dmod]((\dxdia[\su]np\bs s)\bs \dxdia[\su]np\bs s)}}{\w{happily}}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	\]
+	}
+\end{frame}
 \end{document}
