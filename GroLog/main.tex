@@ -33,11 +33,11 @@
     \tikz[remember picture,overlay] \node[anchor=center, outer sep=0pt] (#1) at ($ (tikzmark-#1-start)!0.5!(tikzmark-#1-end) $) {\vphantom{#2}};%
 }
 \newcommand{\markproofleaf}[2]{\tikzmark{#1}{\textcolor{textcolor}{#2}}}
-\newcommand{\arc}[4]{%
-	\draw[->] (#1) .. controls
-      ($(#1)!0.33!(#2) + (0,#3)$) and
-      ($(#2)!0.33!(#1) + (0,#3)$)
-    .. node[below] {#4} (#2);
+\newcommand{\arc}[5][0]{%
+	\draw[->] (#2) .. controls
+      ($(#2)!0.33!(#3) + (0,#4)$) and
+      ($(#3)!0.33!(#2) + (0,#4)$)
+    .. node[below] {#5} ($(#3.center) + (#1, -3pt)$);
 }
 
 
@@ -590,7 +590,7 @@
 		$\rightsquigarrow$\hspace{2em}\begin{tabular}{@{}l@{ = }l@{}}
 			\multicolumn{2}{@{}l}{$\eta : \types_\Sigma \to \types_T$}\\
 			$\eta ~ \ty{p}$ & $\eta_0 ~ \ty{p}$\\
-			$\eta ~ (\ty{A / B})$ & $\eta ~ (\ty{A / B})$ = $(\eta ~ A) \li (\eta ~ B)$\\
+			$\eta ~ (\ty{A \bs B})$ & $\eta ~ (\ty{B / A})$ = $(\eta ~ A) \li (\eta ~ B)$\\
 			\multicolumn{2}{@{}l}{\hphantom{$\eta_0$}}
 		\end{tabular}		
 		\end{minipage}\vfill
@@ -619,7 +619,7 @@
 	$h_i := \langle \eta_i, \theta_i \rangle$, where:
 	\begin{itemize}
 		\item $\eta$ an action on types
-		\item $\theta$ an action proofs (terms)
+		\item $\theta$ an action on proofs (terms)
 	\end{itemize}\vfill
 	}
 \end{frame}
@@ -818,7 +818,7 @@
 		\end{itemize}\vfill
 		
 	\visible<2->{
-	The solution(s):}
+	The solution(s):
 	\begin{itemize}
 		\item selectively \textit{block} structural manipulation within a \textit{lax} logic, or
 		\item selectively \textit{allow} structural manipulation within a \textit{strict} logic
@@ -826,7 +826,7 @@
 	
 	\visible<3->{
 	\alert{\textit{How to distinguish domains where structural rules are (in)admissible?}}
-	}
+	}}
 \end{frame}
 
 \begin{frame}{}
@@ -1175,7 +1175,7 @@
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Nameless\smaller\\
+\begin{frame}{Dependency Modalities\smaller\\
 \quad\light{Labeled FA Structures}}\smaller
 \vspace{1em}
 	\colorat{light!30}{2,4}{
@@ -1261,37 +1261,123 @@
 	}
 \end{frame}
 
+\begin{frame}{Dependency Modalities\smaller\\
+\quad\light{Variations on a Theme}}\smaller
+	\begin{itemize}
+		\item Dependency domains $\supseteq$ constituency structures?\\
+		\light{-\,- a bottleneck of (and argument for) free associativity}
+		\visible<2->{
+		\item Dependency cued by morphology?\\
+		\light{-\,- lexically pre-assigned complements}
+		\visible<3->{
+		\item Movement-like phenomena limited to certain dependencies?\\
+		\light{-\,- dependency-dependent structural rules}
+		\visible<4->{
+		\item Dependency resolves ambiguity?\\
+		\light{-\,- derivational ambiguity $\rightsquigarrow$ lexical ambiguity}
+		}}}
+	\end{itemize}\vfill
+
+	\alt<4->{
+	Dutch embedded clauses are \alert{verb-final}; e.g.	haten :: $\ty{\dxdia[\su]np \bs (\dxdia[\obj]np \bs s)}$
+	\vfill
+	
+	\visible<5->{
+	gender-matched relative clauses are \alert{derivationally ambiguous}:
+	\begin{center}
+		``\textit{mannen die vrouwen haten}'' $\rightsquigarrow$ ``men that hate women'' \ | \ ``men thate women hate''
+	\end{center}
+	
+	consider instead; die :: $\ty{\dxbox[\dmod](n \bs n) / (\dxdia[\obj] np \bs s) \& \dxbox[\dmod](n \bs n) / (\dxdia[\su] np \bs s)}$
+	}}{
+	\smaller
+	\alt<3->{
+		\[
+			\infer*{}{
+				\infer={}{
+					\infer=[\rulestyle{top}]{\Gamma\subst{(\struct[\su]{\Delta} \cdot (\struct[\obj]{\Xi} \cdot \Theta)) } \vdash \ty{A}}{
+						\Gamma\subst{(\struct[\su]{\Delta} \cdot (\Theta \cdot \struct[\obj]{\Xi}))} \vdash \ty{A}
+					}
+				}
+			}
+		\]
+		\vfill
+		\begin{flushright}
+			\light{or perhaps: \EX{} holds within the sentential domain (yet no word salad\dots)}
+		\end{flushright}
+	}{
+	\alt<2->{
+		\begin{minipage}{0.3\textwidth}
+		\begin{tabular}{@{}r@{ :: }l@{}}
+		luin   (\light{read})  		& $\ty{(\dxdia[\su]np \bs s) / \dxdia[\obj] np}$ \\ 
+		min\"a (\light{I-nom}) 		& $\ty{\alert{\dxbox[\su]}\dxdia[\su]np}$ \\
+		kirjan (\light{book-acc}) 	& $\ty{\alert{\dxbox[\obj]}\dxdia[\obj]np}$
+		\end{tabular}		
+		\end{minipage}\hfil
+		\begin{minipage}{0.5\textwidth}
+		\centering
+		$
+			\infer[\bs_E]{\struct[\su]{\w{min\"a}} \cdot \w{luin} \cdot \struct[\obj]{\w{kirjan}} \vdash \ty{s}}{
+				\infer[\dxbox_E]{\struct[\su]{\w{min\"a}} \vdash \ty{\dxdia[\su]np}}{
+					\infer[\Lex]{\ty{\dxbox[\su]\dxdia[\su]np}}{\w{min\"a}}
+				}
+				&
+				\infer[/_E]{\w{luin} \cdot \struct[\obj]{\w{kirjan}} \vdash \ty{\dxdia[\su]np \bs s}}{
+					\infer[\Lex]{\ty{(\dxdia[\su]np \bs s) / \dxdia[\obj] np}}{\w{luin}}
+					&
+					\infer[\dxbox_E]{\struct[\obj]{\w{kirjan}} \vdash \ty{\dxdia[\obj]np}}{
+						\infer[\Lex]{\ty{\dxbox[\obj]\dxdia[\obj]np}}{\w{kirjan}}
+					}
+				}
+			}
+		$
+		\end{minipage}
+	}{
+		\[
+			(\struct[\su]{(\struct[\ddet]{\w{the}} \sbr \w{culling})}\cdot(\w{was} \sbr \struct[\predc]{\w{necessary}}))
+			\mathbin{\alert{\rightsquigarrow}}
+			\struct[\su]{\struct[\ddet]{\w{the}} \sbr \w{culling}}\cdot \w{was} \sbr \struct[\predc]{\w{necessary}}
+		\]
+	}}}
+\end{frame}
+
 
 \begin{frame}{Nameless\smaller\\
 \quad\light{Horizontal Movement}}\smaller
-
-	\alt<2>{
+	\alt<2->{
 		\[
 		\infer*{
-			((\struct[\ddet]{\markproofleaf{n1}{\w{the}}} \cdot \w{\markproofleaf{n2}{violence}}) \cdot \struct[\dmod]{(\markproofleaf{n3}{\w{that}} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\markproofleaf{n4}{\w{the}}} \cdot \markproofleaf{n5}{\w{world}})} \cdot (\markproofleaf{n6}{\w{ignores}} \cdot \struct[\dmod]{\markproofleaf{n7}{\w{happily}}}))})})
+			((\struct[\ddet]{\markproofleaf{n1}{\w{the}}} \cdot \markproofleaf{n2}{\w{violence}}) \cdot \struct[\dmod]{(\markproofleaf{n3}{\w{that}} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\markproofleaf{n4}{\w{the}}} \cdot \markproofleaf{n5}{\w{world}})} \cdot (\markproofleaf{n6}{\w{ignores}} \cdot \struct[\dmod]{\markproofleaf{n7}{\w{happily}}}))})})
 		}{}
 		\]
+		\begin{tikzpicture}[remember picture, overlay]
+			\arc{n2}{n1}{-0.5}{\ddet}
+			\arc{n2}{n3}{-0.5}{\dmod}
+			\arc{n3}{n6}{-1.5}{\body}
+			\arc{n6}{n5}{-0.5}{\su}
+			\arc{n5}{n4}{-0.5}{\ddet}
+			\arc{n6}{n7}{-0.5}{\dmod}
+		\end{tikzpicture}
 	}{
-	that :: \sout{$\ty{(n \bs n) / (s / np )}$} \ \sout{$\ty{(n \bs n) / (s / \ddia\dbox np )}$} $\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \alert{\ddia\dbox}\dxdia[\su] np))}$
+	that :: \sout{$\ty{(n \bs n) / (s / np )}$} \ \sout{$\ty{(n \bs n) / (s / \ddia\dbox np )}$} $\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \alert{\ddia\dbox}\dxdia[\obj] np))}$
 	\vfill
 	\smaller
-	
-	\[
+	$	\hspace{-1em}
 		\infer[\dxbox_E]{\struct[\dmod]{(\w{that} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))})} \vdash n \bs n}{
 			\infer[/_E]{(\w{that} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))}) \vdash \ty{\dxbox[\dmod](n \bs n)}}{
-				\infer[\Lex]{\dots}{\w{that}} 
-%				\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \ddia\dbox\dxdia[\su] np))}}
+				\infer[\Lex]{\dots\vphantom{\dxdia[\su]}}{\w{that}} 
+%				\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \ddia\dbox\dxdia[\obj] np))}}
 				&
-				\hspace{-4.5em}
-				\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))} \vdash \ty{\dxdia[\body](s / \ddia \dbox\dxdia[\su] np)}}{
-					\infer[/_I]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}})) \vdash \ty{s / \ddia \dbox\dxdia[\su] np}}{
-						\infer[\ddia_E]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\ty{\ddia\dbox\dxdia[\su]np}) \vdash \ty{s}}{
-							\infer[\Ax]{\ty{\ddia\dbox\dxdia[\su] np} \vdash \ty{\ddia\dbox\dxdia[\su] np}}{}
+				\hspace{-3.8em}
+				\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))} \vdash \ty{\dxdia[\body](s / \ddia \dbox\dxdia[\obj] np)}}{
+					\infer[/_I]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}})) \vdash \ty{s / \ddia \dbox\dxdia[\obj] np}}{
+						\infer[\ddia_E]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\ty{\ddia\dbox\dxdia[\obj]np}) \vdash \ty{s}}{
+							\infer[\Ax]{\ty{\ddia\dbox\dxdia[\obj] np} \vdash \ty{\ddia\dbox\dxdia[\obj] np}}{}
 							&
 							\hspace{-8em}
-							\infer[A^r_{\ddia}]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\struct{\ty{\dbox\dxdia[\su] np}}) \vdash \ty{s}}{
-								\infer[C^r_{\ddia}]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct[\dmod]{\w{happily}})\cdot\struct{\ty{\dbox\dxdia[\su] np}})) \vdash \ty{s}}{
-									\infer[\bs_E]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\su] np}})\cdot\struct[\dmod]{\w{happily}}))  \vdash \ty{s}}{
+							\infer[A^r_{\ddia}]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\struct{\ty{\dbox\dxdia[\obj] np}}) \vdash \ty{s}}{
+								\infer[C^r_{\ddia}]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct[\dmod]{\w{happily}})\cdot\struct{\ty{\dbox\dxdia[\obj] np}})) \vdash \ty{s}}{
+									\infer[\bs_E]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}})\cdot\struct[\dmod]{\w{happily}}))  \vdash \ty{s}}{
 										\infer[\dxdia_I]{\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \vdash \ty{\dxdia[\su]np}}{
 											\hspace{-4em}
 											\infer[/_E]{(\struct[\ddet]{\w{the}} \cdot \w{world}) \vdash \ty{np}}{
@@ -1304,7 +1390,7 @@
 										}
 										&
 %										\hspace{-3em}
-										\infer[\bs_E]{((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\su] np}})\cdot\struct[\dmod]{\w{happily}}) \vdash \ty{\dxdia[\su]np \bs s}}{
+										\infer[\bs_E]{((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}})\cdot\struct[\dmod]{\w{happily}}) \vdash \ty{\dxdia[\su]np \bs s}}{
 											\infer[/_E]{(\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}}) \vdash \ty{\dxdia[\su]np \bs s}}{
 												\infer[\Lex]{\ty{(\dxdia[\su] np \bs s)/\dxdia[\obj] np}}{\w{ignores}}
 												&
@@ -1326,7 +1412,17 @@
 				}
 			}
 		}
-	\]
+	$
 	}
 \end{frame}
+
+\begin{frame}{Dependency Modalities\smaller\\
+\quad\light{Vertical Movement}}\smaller
+\end{frame}
+
+\begin{frame}{TLDR}
+
+\end{frame}
+
+
 \end{document}
