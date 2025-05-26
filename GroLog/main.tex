@@ -1264,22 +1264,30 @@
 \begin{frame}{Dependency Modalities\smaller\\
 \quad\light{Variations on a Theme}}\smaller
 	\begin{itemize}
+		\uncover<1>{
 		\item Dependency domains $\supseteq$ constituency structures?\\
 		\light{-\,- a bottleneck of (and argument for) free associativity}
+		}
 		\visible<2->{
+		\uncover<2>{
 		\item Dependency cued by morphology?\\
 		\light{-\,- lexically pre-assigned complements}
+		}
 		\visible<3->{
+		\uncover<3>{
 		\item Movement-like phenomena limited to certain dependencies?\\
 		\light{-\,- dependency-dependent structural rules}
+		}
 		\visible<4->{
+		\uncover<4->{
 		\item Dependency resolves ambiguity?\\
 		\light{-\,- derivational ambiguity $\rightsquigarrow$ lexical ambiguity}
+		}
 		}}}
 	\end{itemize}\vfill
 
 	\alt<4->{
-	Dutch embedded clauses are \alert{verb-final}; e.g.	haten :: $\ty{\dxdia[\su]np \bs (\dxdia[\obj]np \bs s)}$
+	Dutch embedded clauses are \alert{verb-final}; e.g.	haten :: $\ty{\dxdia[\obj]np \bs (\dxdia[\su]np \bs s)}$
 	\vfill
 	
 	\visible<5->{
@@ -1288,7 +1296,7 @@
 		``\textit{mannen die vrouwen haten}'' $\rightsquigarrow$ ``men that hate women'' \ | \ ``men thate women hate''
 	\end{center}
 	
-	consider instead; die :: $\ty{\dxbox[\dmod](n \bs n) / (\dxdia[\obj] np \bs s) \& \dxbox[\dmod](n \bs n) / (\dxdia[\su] np \bs s)}$
+	consider instead; die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](\dxdia[\su] np \bs ssub) \mathbin{\&} \dxbox[\dmod](np \bs np) / \dxdia[\body](ssub / \ddia\dbox\dxdia[\obj] np)}$
 	}}{
 	\smaller
 	\alt<3->{
@@ -1342,68 +1350,64 @@
 \end{frame}
 
 
-\begin{frame}{Nameless\smaller\\
-\quad\light{Horizontal Movement}}\smaller
-	\alt<2->{
-		\[
-		\infer*{
-			((\struct[\ddet]{\markproofleaf{n1}{\w{the}}} \cdot \markproofleaf{n2}{\w{violence}}) \cdot \struct[\dmod]{(\markproofleaf{n3}{\w{that}} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\markproofleaf{n4}{\w{the}}} \cdot \markproofleaf{n5}{\w{world}})} \cdot (\markproofleaf{n6}{\w{ignores}} \cdot \struct[\dmod]{\markproofleaf{n7}{\w{happily}}}))})})
-		}{}
-		\]
-		\begin{tikzpicture}[remember picture, overlay]
-			\arc{n2}{n1}{-0.5}{\ddet}
-			\arc{n2}{n3}{-0.5}{\dmod}
-			\arc{n3}{n6}{-1.5}{\body}
-			\arc{n6}{n5}{-0.5}{\su}
-			\arc{n5}{n4}{-0.5}{\ddet}
-			\arc{n6}{n7}{-0.5}{\dmod}
-		\end{tikzpicture}
-	}{
-	that :: \sout{$\ty{(n \bs n) / (s / np )}$} \ \sout{$\ty{(n \bs n) / (s / \ddia\dbox np )}$} $\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \alert{\ddia\dbox}\dxdia[\obj] np))}$
+\begin{frame}{Dependency Modalities\smaller\\
+\quad\light{Hypothetical Reasoning 1}}\smaller
+	die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](\dxdia[\su] np \bs ssub)}$
 	\vfill
-	\smaller
-	$	\hspace{-1em}
-		\infer[\dxbox_E]{\struct[\dmod]{(\w{that} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))})} \vdash n \bs n}{
-			\infer[/_E]{(\w{that} \cdot \struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))}) \vdash \ty{\dxbox[\dmod](n \bs n)}}{
-				\infer[\Lex]{\dots\vphantom{\dxdia[\su]}}{\w{that}} 
-%				\ty{(\dxbox[\dmod](n \bs n) / \dxdia[\body](s / \ddia\dbox\dxdia[\obj] np))}}
-				&
-				\hspace{-3.8em}
-				\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))} \vdash \ty{\dxdia[\body](s / \ddia \dbox\dxdia[\obj] np)}}{
-					\infer[/_I]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}})) \vdash \ty{s / \ddia \dbox\dxdia[\obj] np}}{
-						\infer[\ddia_E]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\ty{\ddia\dbox\dxdia[\obj]np}) \vdash \ty{s}}{
-							\infer[\Ax]{\ty{\ddia\dbox\dxdia[\obj] np} \vdash \ty{\ddia\dbox\dxdia[\obj] np}}{}
+
+	\[
+		\infer*{}{
+			\infer[\dxdia_I]{\struct[\body]{(\struct[\obj]{\w{vrouwen}} \cdot \w{haten})} \vdash \ty{\dxdia[\body](\dxdia[\su]np \bs ssub)}}{
+				\textcolor{light!50}{\infer[\bs_I]{(\struct[\obj]{\w{vrouwen}} \cdot \w{haten}) \vdash \ty{\dxdia[\su]np \bs ssub}}{
+					\infer[\dxdia_E]{(\ty{\dxdia[\su]np} \cdot (\struct[\obj]{\w{vrouwen}} \cdot \w{haten})) \vdash \ty{ssub}}{
+						\infer[\Ax]{\ty{\dxdia[\su]np} \vdash \ty{\dxdia[\su]np}}{}
+						&
+						\infer[\bs_E]{(\struct[\su]{\ty{np}} \cdot (\struct[\obj]{\w{vrouwen}} \cdot \w{haten}) \vdash \ty{ssub}}{
+							\infer[\dxdia_I]{\struct[\su]{\ty{np}} \vdash \ty{\dxdia[\su]np}}{
+								\infer[\Ax]{\ty{np} \vdash \ty{np}}{}
+							}
 							&
-							\hspace{-8em}
-							\infer[A^r_{\ddia}]{((\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot (\w{ignores} \cdot \struct[\dmod]{\w{happily}}))\cdot\struct{\ty{\dbox\dxdia[\obj] np}}) \vdash \ty{s}}{
-								\infer[C^r_{\ddia}]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct[\dmod]{\w{happily}})\cdot\struct{\ty{\dbox\dxdia[\obj] np}})) \vdash \ty{s}}{
-									\infer[\bs_E]{(\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \cdot ((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}})\cdot\struct[\dmod]{\w{happily}}))  \vdash \ty{s}}{
-										\infer[\dxdia_I]{\struct[\su]{(\struct[\ddet]{\w{the}} \cdot \w{world})} \vdash \ty{\dxdia[\su]np}}{
-											\hspace{-4em}
-											\infer[/_E]{(\struct[\ddet]{\w{the}} \cdot \w{world}) \vdash \ty{np}}{
-													\infer[\dxbox_E]{\struct[\ddet]{\w{the}} \vdash \ty{np / n}}{
-														\infer[\Lex]{\ty{\dxbox[\ddet](np/n)}}{\w{the}}
-													}
-													&
-													\infer[\Lex]{\ty{n}}{\w{world}}
-											}
+							\textcolor{textcolor}{
+							\infer[\bs_E]{(\struct[\obj]{\w{vrouwen}} \cdot \w{haten}) \vdash \ty{\dxdia[\su]np \bs ssub}}{
+								\infer[\dxdia_I]{\struct[\obj]{\w{vrouwen}} \vdash \ty{\dxdia[\obj]np}}{
+									\infer[\Lex]{\ty{np}}{\w{vrouwen}}
+								}
+								& 
+								\infer[\Lex]{\ty{\dxdia[obj1]np\bs(\dxdia[\su]np\bs ssub})}{\w{haten}}
+							}
+						}}
+					}
+				}}
+			}
+		}
+	\]
+\end{frame}
+
+\begin{frame}{Dependency Modalities\smaller\\
+\quad\light{Hypothetical Reasoning 2: Horizontal Movement}}\smaller
+	die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](ssub / \ddia\dbox\dxdia[\obj]np)}$
+	\vfill
+
+	\[
+		\infer*{}{
+			\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{\w{vrouwen}} \cdot \w{haten})} \vdash \ty{\dxdia[\body](ssub / \ddia\dbox\dxdia[\obj]np)}}{
+				\infer[/_I]{(\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \vdash \ty{ssub / \ddia\dbox\dxdia[\obj]np}}{
+					\infer[\dxdia_E]{((\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \cdot \ty{\ddia\dbox\dxdia[\obj]np}) \vdash \ty{ssub}}{
+						\infer[\Ax]{\ty{\ddia\dbox\dxdia[\obj]np} \vdash \ty{\ddia\dbox\dxdia[\obj]np}}{}
+						&
+						\infer[\rulestyle{A}^r_{\ddia}]{((\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \cdot \struct{\ty{\dbox\dxdia[\obj]np}}) \vdash \ty{ssub}}{
+							\infer[\rulestyle{C}^r_{\ddia}]{(\struct[\su]{\w{vrouwen}} \cdot (\w{haten} \cdot \struct{\ty{\dbox\dxdia[\obj]np}})) \vdash \ty{ssub}}{
+								\infer[\bs_E]{(\struct[\su]{\w{vrouwen}} \cdot (\struct{\ty{\dbox\dxdia[\obj]np}} \cdot \w{haten})) \vdash \ty{ssub}}{
+									\infer[\dxdia_I]{\struct[\su]{\w{vrouwen}}) \vdash \ty{\dxdia[\su]np}}{
+										\infer[\Lex]{\ty{np}}{\w{vrouwen}}
+									}
+									&
+									\infer[\bs_E]{(\struct{\ty{\dxdia[\obj]np}} \cdot \w{haten}) \vdash \ty{\dxdia[\su]np \bs ssub}}{
+										\infer[\dbox_E]{\struct{\ty{\dbox\dxdia[\obj]np}} \vdash \ty{\dxdia[\obj]np}}{
+											\infer[\Ax]{\ty{\dbox\dxdia[\obj]np} \vdash \ty{\dbox\dxdia[\obj]np}}{}
 										}
 										&
-%										\hspace{-3em}
-										\infer[\bs_E]{((\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}})\cdot\struct[\dmod]{\w{happily}}) \vdash \ty{\dxdia[\su]np \bs s}}{
-											\infer[/_E]{(\w{ignores} \cdot \struct{\ty{\dbox\dxdia[\obj] np}}) \vdash \ty{\dxdia[\su]np \bs s}}{
-												\infer[\Lex]{\ty{(\dxdia[\su] np \bs s)/\dxdia[\obj] np}}{\w{ignores}}
-												&
-												\infer[\dbox_E]{\struct{\ty{\dbox\dxdia[\obj] np}} \vdash \dxdia[\obj]\ty{np}}{
-													\infer[\Ax]{\ty{\dbox\dxdia[\obj] np} \vdash \ty{\dbox \dxdia[\obj]np}}{}
-												}
-											}
-											&
-											\hspace{-0.5em}
-											\infer[\dxbox_E]{\struct[\dmod]{\w{happily}} \vdash (\dxdia[\su]np\bs s)\bs \dxdia[\su]np\bs s}{
-												\infer[\Lex]{\ty{\dxbox[\dmod]((\dxdia[\su]np\bs s)\bs \dxdia[\su]np\bs s)}}{\w{happily}}
-											}
-										}
+										\infer[\Lex]{\ty{\dxdia[obj1]np\bs(\dxdia[\su]np\bs ssub)}}{\w{haten}}
 									}
 								}
 							}
@@ -1412,12 +1416,38 @@
 				}
 			}
 		}
-	$
-	}
+	\]
 \end{frame}
 
 \begin{frame}{Dependency Modalities\smaller\\
-\quad\light{Vertical Movement}}\smaller
+\quad\light{Hypothetical Reasoning 3: Higher-Order}}\smaller
+	waarom :: $\ty{\dxdia[\body](\dxdia[\dmod]\dxbox[\dmod](sv1 / sv1) \bs sv1)/whq}$
+	\vfill
+	
+	\[
+		\infer*{}{
+			\infer[\dxdia_I]{\struct[\body]{\w{eet} \cdot \struct[\su]{\w{je}} \cdot \struct[\obj]{\struct[\ddet]{\w{mijn}} \cdot \w{ijs}}} \vdash \ty{\dxdia[\body](\dxdia[\dmod]\dxbox[\dmod](sv1 / sv1) \bs sv1)}}{
+				\infer[\bs_I]{\w{eet} \cdot \struct[\su]{\w{je}} \cdot \struct[\obj]{\struct[\ddet]{\w{mijn}} \cdot \w{ijs}} \vdash \ty{\dxdia[\dmod]\dxbox[\dmod](sv1 / sv1) \bs sv1}}{
+					\infer[\dxdia_E]{\dxdia[\dmod]\dxbox[\dmod](\ty{sv1 / sv1)} \cdot\w{eet} \cdot \struct[\su]{\w{je}} \cdot \struct[\obj]{\struct[\ddet]{\w{mijn}} \cdot \w{ijs}} \vdash \ty{sv1}}{
+						\infer[\Ax]{\ty{\dxdia[\dmod]\dxbox[\dmod](sv1 / sv1)}}{}
+						&
+						\infer[/_E]{\struct[\dmod]{\ty{\dxbox[\dmod](sv1 \bs sv1)}} \cdot \w{eet} \cdot \struct[\su]{\w{je}} \cdot \struct[\obj]{\struct[\ddet]{\w{mijn}} \cdot \w{ijs}} \vdash \ty{sv1}}{
+							\infer[{\dxbox[\dmod]}_E]{\struct[\dmod]{\ty{\dxbox[\dmod](sv1 / sv1)}} \vdash \ty{sv1 / sv1}}{
+								\infer[\Ax]{\ty{\dxbox[\dmod](sv1 / sv1)}}{}
+							}
+							&
+							\infer*{\w{eet} \cdot \struct[\su]{\w{je}} \cdot \struct[\obj]{\struct[\ddet]{\w{mijn}} \cdot \w{ijs}} \vdash \ty{sv1}}{}
+						}
+					}
+				}
+			}
+		}
+	\]
+\end{frame}
+
+\begin{frame}{Dependency Modalities\smaller\\
+\quad\light{Hypothetical Reasoning 4: Vertical Movement}}\smaller
+
 \end{frame}
 
 \begin{frame}{TLDR}
