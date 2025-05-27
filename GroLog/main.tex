@@ -13,6 +13,7 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{multirow}
+\usepackage{mathtools}
 
 \usepackage{proof}
 \usepackage{eqparbox}
@@ -87,6 +88,7 @@
 \newcommand{\subst}[1]{\llbracket{#1}\rrbracket}
 \newcommand{\struct}[2][]{\langle #2 \rangle^{\scalebox{0.66}{\dep{#1}}}}
 \newcommand{\alertstruct}[2][]{\textcolor{pred}{\langle} #2 \textcolor{pred}{\rangle}}
+\newcommand{\alertstructat}[3][]{\alt<#2>{\struct[#1]{#3}}{\struct[\#1]{#3}}}
 \renewcommand{\alert}[1]{\textcolor{pred}{#1}}
 \newcommand{\Lex}{\rulestyle{Lex}}
 \newcommand{\w}[1]{\text{#1}}
@@ -134,8 +136,9 @@
 \newcommand{\io}{\dep{obj2}}
 \newcommand{\ddet}{\dep{det}}
 \newcommand{\dmod}{\dep{mod}}
-\newcommand{\predc}{\dep{predc}}
+\newcommand{\predc}{\dep{pc}}
 \newcommand{\body}{\dep{body}}
+\newcommand{\verc}{\dep{vc}}
 
 \makeatletter
 \newcommand{\domodaltermscale}[2]{\raisebox{0.25\getfontdim{#1}}{\scalebox{0.85}{\ensuremath{#1#2}}}}
@@ -1296,7 +1299,7 @@
 		``\textit{mannen die vrouwen haten}'' $\rightsquigarrow$ ``men that hate women'' \ | \ ``men thate women hate''
 	\end{center}
 	
-	consider instead; die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](\dxdia[\su] np \bs ssub) \mathbin{\&} \dxbox[\dmod](np \bs np) / \dxdia[\body](ssub / \ddia\dbox\dxdia[\obj] np)}$
+	consider instead; die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](\dxdia[\su] np \bs ssub) \mathbin{\&} \dxbox[\dmod](np \bs np) / \dxdia[\body](\ddia\dbox\dxdia[\obj] np \bs ssub)}$
 	}}{
 	\smaller
 	\alt<3->{
@@ -1385,30 +1388,28 @@
 
 \begin{frame}{Dependency Modalities\smaller\\
 \quad\light{Hypothetical Reasoning 2: Horizontal Movement}}\smaller
-	die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](ssub / \ddia\dbox\dxdia[\obj]np)}$
+	die :: $\ty{\dxbox[\dmod](np \bs np) / \dxdia[\body](\ddia\dbox\dxdia[\obj]np \bs ssub)}$
 	\vfill
 
 	\[
 		\infer*{}{
-			\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{\w{vrouwen}} \cdot \w{haten})} \vdash \ty{\dxdia[\body](ssub / \ddia\dbox\dxdia[\obj]np)}}{
-				\infer[/_I]{(\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \vdash \ty{ssub / \ddia\dbox\dxdia[\obj]np}}{
-					\infer[\dxdia_E]{((\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \cdot \ty{\ddia\dbox\dxdia[\obj]np}) \vdash \ty{ssub}}{
+			\infer[\dxdia_I]{\struct[\body]{(\struct[\su]{\w{vrouwen}} \cdot \w{haten})} \vdash \ty{\dxdia[\body](\ddia\dbox\dxdia[\obj]np \bs ssub )}}{
+				\infer[\bs_I]{(\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \vdash \ty{\ddia\dbox\dxdia[\obj]np \bs ssub}}{
+					\infer[\dxdia_E]{(\ty{\ddia\dbox\dxdia[\obj]np} \cdot (\struct[\su]{\w{vrouwen}} \cdot \w{haten})) \vdash \ty{ssub}}{
 						\infer[\Ax]{\ty{\ddia\dbox\dxdia[\obj]np} \vdash \ty{\ddia\dbox\dxdia[\obj]np}}{}
 						&
-						\infer[\rulestyle{A}^r_{\ddia}]{((\struct[\su]{\w{vrouwen}} \cdot \w{haten}) \cdot \struct{\ty{\dbox\dxdia[\obj]np}}) \vdash \ty{ssub}}{
-							\infer[\rulestyle{C}^r_{\ddia}]{(\struct[\su]{\w{vrouwen}} \cdot (\w{haten} \cdot \struct{\ty{\dbox\dxdia[\obj]np}})) \vdash \ty{ssub}}{
-								\infer[\bs_E]{(\struct[\su]{\w{vrouwen}} \cdot (\struct{\ty{\dbox\dxdia[\obj]np}} \cdot \w{haten})) \vdash \ty{ssub}}{
-									\infer[\dxdia_I]{\struct[\su]{\w{vrouwen}}) \vdash \ty{\dxdia[\su]np}}{
-										\infer[\Lex]{\ty{np}}{\w{vrouwen}}
+						\infer[\alert{\rulestyle{C}^l_{\ddia}}]{(\struct{\ty{\dbox\dxdia[\obj]np}} \cdot (\struct[\su]{\w{vrouwen}} \cdot \w{haten})) \vdash \ty{ssub}}{
+							\infer[\bs_E]{(\struct[\su]{\w{vrouwen}} \cdot (\struct{\ty{\dbox\dxdia[\obj]np}} \cdot \w{haten})) \vdash \ty{ssub}}{
+								\infer[\dxdia_I]{\struct[\su]{\w{vrouwen}}) \vdash \ty{\dxdia[\su]np}}{
+									\infer[\Lex]{\ty{np}}{\w{vrouwen}}
+								}
+								&
+								\infer[\bs_E]{(\struct{\ty{\dxdia[\obj]np}} \cdot \w{haten}) \vdash \ty{\dxdia[\su]np \bs ssub}}{
+									\infer[\dbox_E]{\struct{\ty{\dbox\dxdia[\obj]np}} \vdash \ty{\dxdia[\obj]np}}{
+										\infer[\Ax]{\ty{\dbox\dxdia[\obj]np} \vdash \ty{\dbox\dxdia[\obj]np}}{}
 									}
 									&
-									\infer[\bs_E]{(\struct{\ty{\dxdia[\obj]np}} \cdot \w{haten}) \vdash \ty{\dxdia[\su]np \bs ssub}}{
-										\infer[\dbox_E]{\struct{\ty{\dbox\dxdia[\obj]np}} \vdash \ty{\dxdia[\obj]np}}{
-											\infer[\Ax]{\ty{\dbox\dxdia[\obj]np} \vdash \ty{\dbox\dxdia[\obj]np}}{}
-										}
-										&
-										\infer[\Lex]{\ty{\dxdia[obj1]np\bs(\dxdia[\su]np\bs ssub)}}{\w{haten}}
-									}
+									\infer[\Lex]{\ty{\dxdia[obj1]np\bs(\dxdia[\su]np\bs ssub)}}{\w{haten}}
 								}
 							}
 						}
@@ -1447,12 +1448,153 @@
 
 \begin{frame}{Dependency Modalities\smaller\\
 \quad\light{Hypothetical Reasoning 4: Vertical Movement}}\smaller
-
+	\alt<3->{
+	Structural blockades backfiring...
+	
+	\vfill
+	\hfil Perhaps:
+		\[
+			\infer[\rulestyle{X}]{\Gamma\subst{\struct[μ]{\Delta} \cdot \struct[ν]{\ty{A}}} \vdash \ty{B}}{\Gamma\subst{\struct[μ]{\Delta \cdot \struct[ν]{\ty{A}}}} \vdash \ty{B}}
+		\]
+	}{
+	\lightat{2}{
+	\[
+		\infer[/_E]{}{
+			\infer*{(\w{op} \cdot \w{wie}) \vdash \ty{whq\bs\dxdia[\body](sv1\bs\alert{???}\dxdia[\predc]{prp})}}{}
+			&
+			\hspace{-6em}
+			\infer*[\alert{?}]{\struct[\body]{((\w{heb} \cdot \struct[\su]{\w{je}}) \cdot \w{gestemd})} \vdash \ty{\dxdia[\body]sv1/\alert{???}\dxdia[\predc] prp}}{
+				\hspace{-2em}
+				\infer[\dxdia_I]{\alertstructat[\body]{2-}{((\w{heb} \cdot \struct[\su]{\w{je}}) \cdot (\w{gestemd} \cdot \ty{\dxdia[\predc] prp}))} \vdash \ty{\dxdia[\body]sv1}}{
+					\infer[/_E]{((\w{heb} \cdot \struct[\su]{\w{je}}) \cdot (\w{gestemd} \cdot \ty{\dxdia[\predc] prp})) \vdash \ty{sv1}}{
+						\infer[/_E]{(\w{heb} \cdot \struct[\su]{\w{je}}) \vdash \ty{sv1/\dxdia[\verc]ppart}}{
+							\infer[\Lex]{\ty{(sv1/\dxdia[\verc]ppart)/\dxdia[\su]np) }}{\w{heb}}
+							&
+							\infer[\dxdia_I]{\struct[\su]{\w{je}} \vdash \ty{\dxdia[\su]np}}{
+								\infer[\Lex]{\ty{np}}{\w{je}}
+							}
+						}
+						&
+						\infer[/_E]{(\w{gestemd} \cdot \ty{\dxdia[\predc] prp}) \vdash \ty{ppart}}{
+							\infer[\Lex]{\ty{ppart / \dxdia[\predc]prp}}{\w{gestemd}}
+							&
+							\infer[\Ax]{\ty{\dxdia[\predc]prp} \vdash \ty{\dxdia[\predc]prp}}{}
+						}
+					}
+				}
+			}
+		}
+	\]
+	}}
 \end{frame}
 
-\begin{frame}{TLDR}
-
+\begin{frame}{Dependency Modalities\smaller\\
+\quad\light{Semantics (?)}}\smaller
+	Open question \light{\{-\,- \textit{read: no idea} -\,-\}} possible options:
+	\begin{itemize}
+		\item dependency marks as ``thematic roles''?
+		\visible<2->{\item S4 modalities $\rightsquigarrow$ monads\\
+		\visible<3->{\quad \light{these modalities $\rightsquigarrow$ ...?}}}
+		\visible<4->{\item passageway to DTT proof-theoretic semantics?}
+	\end{itemize}
 \end{frame}
 
+\begin{frame}{TLDR}\smaller
+	Today's agenda (a posteriori)	
+	\begin{itemize}
+		\item MILL (from above \& below)
+		\item (N)L(P) and linguistic applications
+		\item Traversing between (N)L(P) with modalities
+		\item Modalities for dependency demarcation
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{The Real World}\smaller
+	\centering
+	\begin{tikzpicture}[
+		t/.style={text height=1.5ex, text depth=.25ex, rectangle, outer sep=0pt, color=light},
+		node distance=10pt,
+		arr/.style={thick,->},
+		scale=0.8,
+		tb/.style={anchor=north west,minimum height=40pt,minimum width=3pt,text width=270pt,inner sep=0pt}
+	]
+		\node[t] (w1) 			at (0, 0.2) {w\textsubscript{0}};
+		\node[t] (wdots)		at (2, 0.2) {\dots};		
+		\node[t] (wn) 			at (4, 0.2) {w\textsubscript{n}};
+		\alt<4->{
+		\node[rectangle,draw=pred, minimum width=120pt,minimum height=20pt,fill=gray!20] (lex)
+							 	at (2, -1.5) {\alert{Lexicon}};
+		}{
+		\node[rectangle,draw=black, minimum width=120pt,minimum height=20pt,fill=gray!20] (lex)
+							 	at (2, -1.5) {Lexicon};
+		}
+		\draw[arr]  (w1) -- ++ (0.6, -1.1);
+		\draw[arr] (wn) -- ++ (-0.6, -1.1);
+		\node[t] (t1)			at (0, -3.2) {$\left(\ty{t}_{0,0} \mathbin{\&} \ty{t}_{0, 1} \mathbin{\&} \alt<4->{\alert{\ty{t}_{0,2}} \mathbin{\alert{\&}} \alert{\dots}}{\dots}\right)$};
+		\node[t] (tdots)		at (2, -3.2) 	  {\dots};
+		\node[t] (tn)			at (4, -3.2) {$\left(\ty{t}_{n,0} \mathbin{\&} \ty{t}_{n,1} \mathbin{\&} \alt<4->{\alert{\ty{t}_{n,2}} \mathbin{\alert{\&}} \alert{\dots}}{\dots}\right)$};
+		\draw[arr] ($(w1) + (0.6, -2.2)$) -- ($(t1.north) + (0, 0.1)$);
+		\draw[arr] ($(wn) + (-0.6, -2.2)$) -- ($(tn.north) + (0, 0.1)$);
+		\draw [thick,decorate,decoration={brace,aspect=0.2,amplitude=10pt,mirror}] (-0.5,-3.5) -- (4.5,-3.5) 
+				node[black,xshift=-113.5pt,yshift=-0.6cm] {\footnotesize $\times$}
+				node[xshift=-140pt, yshift=-8.5em, align=right,color=light] {\smaller \alertat{5-}{$j = |\ty{t}_0| \times \dots \times |\ty{t}_n|$ judgements}};				
+		\node[t] (c11)			at (1.7, -5) {$\ty{t}_{0,0} ~ \sbr$};
+		\node[t] 				at (2.75, -5) {\dots};
+		\node[t] (cn1)			at (4.4, -5) {$\sbr ~\ty{t}_{n,0} \vdash ?$};
+		\node[t] (c12)			at (1.7, -6) {$\ty{t}_{0,0} ~ \sbr$};
+		\node[t] 				at (2.75, -6) {\dots};
+		\node[t] (cn2)			at (4.4, -6) {$\sbr ~\ty{t}_{n,1} \vdash ?$};
+		\node[t] (vd)			at (2.75, -7) {\vdots};
+		\node[t] (c1k)			at (1.9, -8) {$\ty{t}_{0,|t_0 - 1|}~\sbr$};
+		\node[t] 				at (2.75, -8) {\dots};
+		\node[t] (cnk)			at (4.2, -8) {$\sbr~\ty{t}_{n,|t_n - 1|} \vdash ?$};
+		\draw[arr, rounded corners] (0.5, -4.3) -- ++ (0, -0.7) -- ++ (0.65, 0);
+		\draw[arr, rounded corners] (0.5, -4.3) -- ++ (0, -1.7) -- ++ (0.65, 0);
+		\draw[arr, rounded corners] (0.5, -4.3) -- ++ (0, -3.7) -- ++ (0.65, 0);
+		\alt<5->{
+		\node[rectangle, draw=pred, minimum height=120pt,fill=gray!20] (pr)
+								at (7.4, -6.5)	{\alert{\begin{tabular}{c}Theorem\\ Prover\end{tabular}}};	
+		}{
+		\node[rectangle, draw=black, minimum height=120pt,fill=gray!20] (pr)
+								at (7.4, -6.5)	{\begin{tabular}{c}Theorem\\ Prover\end{tabular}};	
+		}
+		\draw[arr] (cn1) -- ++ (1.7, 0);
+		\draw[arr] (cn2) -- ++ (1.7, 0);
+		\draw[arr] (cnk) -- ++ (1.9, 0);
+		\draw[arr] (cn1) ++ (4.2, 0) -- ++ (1.2, 0) node[right] {$\{p_0, p_0', \alt<2->{\alert{p_0''},}{}\dots \}$};
+		\draw[arr] (cn2) ++ (4.2, 0) -- ++ (1.2, 0) node[right] {$\{p_1, \alt<3->{p_1'\Large\mathrlap{\mkern-12mu\alert{\crossmark}}}{p_1'}, \dots \}$};
+		\node 					at ($(vd) + (6.6, 0)$) {\vdots};
+		\draw[arr] (cnk) ++ (4.4, 0) -- ++ (1.2, 0) node[right] {$\{p_j, p_j', \dots \}$};
+		
+		
+		\visible<2->{
+		\node[tb]				at (6, -0.25) {	
+				\begin{itemize}
+					\item[\textbf{!}] \eqmakebox[things][l]{logic too strict}
+					    $\leadsto$ \alert{\textbf{undergeneration}}
+					\uncover<3->{
+					\item[\textbf{!}] \eqmakebox[things][l]{logic too lax}
+						$\leadsto$ \alert{\textbf{overgeneration}}
+					\uncover<4->{
+					\item[\textbf{!}] \eqmakebox[things][l]{lexical refinement}
+						$\leadsto$ \textbf{\alert{bigger lexicon}}
+					\uncover<5->{
+					\item[\textbf{!}] \eqmakebox[things][l]{bigger lexicon}
+						$\leadsto$ \textbf{\alert{ambiguity \& sparsity}}
+					\uncover<6->{
+					\item[\textbf{!}] \eqmakebox[things][l]{ambiguity}
+						$\leadsto$ \textbf{\alert{more proof candidates}}
+					}}}}
+				\end{itemize}
+				
+			};
+		}
+	\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{}
+	\vfill
+	\centering fin.
+\end{frame}
 
 \end{document}
